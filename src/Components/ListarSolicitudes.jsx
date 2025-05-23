@@ -208,274 +208,106 @@ const ListarSolicitudes = () => {
                 : new Date(a.fechaSolicitud) - new Date(b.fechaSolicitud);
         });
 
-    if (error) {
-        return (
-            <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh", backgroundColor: "#e0e0d1" }}>
-                <div className="alert alert-danger" role="alert">{error}</div>
-            </div>
-        );
-    }
 
     return (
         <div className="list-div">
             <Header />
             <div className={showModal ? "blur-background flex-grow-1 m-1" : "flex-grow-1 m-1"}>
                 <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
-                    <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3 rounded" style={{maxWidth:'1200px', width:'100%'}}>
-                        <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3" >
-                            <h3 className="text-center mt-2 mb-0 fs-3 text-white fw-semibold">Listado de Solicitudes</h3>
-                            <div className="d-flex flex-wrap justify-content-center gap-2 mt-4">
-                                <div className="btn-group">
-                                    <button
-                                        type="button"
-                                        className={`btn ${dateFilter === "Recientes" ? "btn-mine" : "btn-outline-mine"}`}
-                                        onClick={() => setDateFilter("Recientes")}
-                                    >
-                                        Recientes
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`btn ${dateFilter === "Antiguas" ? "btn-mine" : "btn-outline-mine"}`}
-                                        onClick={() => setDateFilter("Antiguas")}
-                                    >
-                                        Antiguas
-                                    </button>
-                                </div>
-
-                                <div className="btn-group ms-3">
-                                    <button
-                                        type="button"
-                                        className={`btn ${estadoFilter === "Todas" ? "btn-mine" : "btn-outline-mine"}`}
-                                        onClick={() => setEstadoFilter("Todas")}
-                                    >
-                                        Todas
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`btn ${estadoFilter === "Aprobadas" ? "btn-mine" : "btn-outline-mine"}`}
-                                        onClick={() => setEstadoFilter("Aprobadas")}
-                                    >
-                                        Aprobadas
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`btn ${estadoFilter === "Rechazadas" ? "btn-mine" : "btn-outline-mine"}`}
-                                        onClick={() => setEstadoFilter("Rechazadas")}
-                                    >
-                                        Rechazadas
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`btn ${estadoFilter === "Sin contestar" ? "btn-mine" : "btn-outline-mine"}`}
-                                        onClick={() => setEstadoFilter("Sin contestar")}
-                                    >
-                                        Sin contestar
-                                    </button>
+                    <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3 rounded" style={{ maxWidth: '1200px', width: '100%' }}>
+                        {loading ? (
+                            <div className="d-flex justify-content-center align-items-center" style={{ height: "70vh" }}>
+                                <div className="text-center">
+                                    <div className="spinner-border text-primary" role="status" style={{ width: "3rem", height: "3rem" }}>
+                                        <span className="visually-hidden">Cargando...</span>
+                                    </div>
+                                    <p className="text-white mt-3">Cargando solicitudes...</p>
                                 </div>
                             </div>
-                        </div>
-
-                        {filteredRequests.length > 0 ? (
-                            <div className="row g-3 justify-content-center p-1 p-md-3">
-                                {filteredRequests.map((request, index) => (
-                                    <div key={index} className="col-12 col-md-6 col-lg-4">
-                                        <RequestCard
-                                            request={request}
-                                            onOpenModal={onOpenModal}
-                                            onShowDetails={handleShowDetails}
-                                        />
-                                    </div>
-                                ))}
+                        ) : error ? (
+                            <div className="alert alert-danger text-center" role="alert">
+                                {error}
                             </div>
                         ) : (
-                            <div className="text-center p-5">
-                                <p>No hay solicitudes disponibles con los filtros seleccionados</p>
-                            </div>
+                            <>
+                                <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
+                                    <h3 className="text-center mt-2 mb-0 fs-3 text-white fw-semibold">Listado de Solicitudes</h3>
+                                    <div className="d-flex flex-wrap justify-content-center gap-2 mt-4">
+                                        <div className="btn-group">
+                                            <button
+                                                type="button"
+                                                className={`btn ${dateFilter === "Recientes" ? "btn-mine" : "btn-outline-mine"}`}
+                                                onClick={() => setDateFilter("Recientes")}
+                                            >
+                                                Recientes
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`btn ${dateFilter === "Antiguas" ? "btn-mine" : "btn-outline-mine"}`}
+                                                onClick={() => setDateFilter("Antiguas")}
+                                            >
+                                                Antiguas
+                                            </button>
+                                        </div>
+
+                                        <div className="btn-group ms-3">
+                                            <button
+                                                type="button"
+                                                className={`btn ${estadoFilter === "Todas" ? "btn-mine" : "btn-outline-mine"}`}
+                                                onClick={() => setEstadoFilter("Todas")}
+                                            >
+                                                Todas
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`btn ${estadoFilter === "Aprobadas" ? "btn-mine" : "btn-outline-mine"}`}
+                                                onClick={() => setEstadoFilter("Aprobadas")}
+                                            >
+                                                Aprobadas
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`btn ${estadoFilter === "Rechazadas" ? "btn-mine" : "btn-outline-mine"}`}
+                                                onClick={() => setEstadoFilter("Rechazadas")}
+                                            >
+                                                Rechazadas
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`btn ${estadoFilter === "Sin contestar" ? "btn-mine" : "btn-outline-mine"}`}
+                                                onClick={() => setEstadoFilter("Sin contestar")}
+                                            >
+                                                Sin contestar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {filteredRequests.length > 0 ? (
+                                    <div className="row g-3 justify-content-center p-1 p-md-3">
+                                        {filteredRequests.map((request, index) => (
+                                            <div key={index} className="col-12 col-md-6 col-lg-4">
+                                                <RequestCard
+                                                    request={request}
+                                                    onOpenModal={onOpenModal}
+                                                    onShowDetails={handleShowDetails}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center p-5">
+                                        <p>No hay solicitudes disponibles con los filtros seleccionados</p>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
             </div>
-
-            {showModal && (
-                <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header bg-mine text-light">
-                                <h5 className="modal-title">{modalAction === "aceptar" ? "Confirmar Aprobación" : "Confirmar Rechazo"}</h5>
-                                <button type="button" className="btn-close btn-light rounded-pill" onClick={() => setShowModal(false)}></button>
-                            </div>
-                            <div className="modal-body">
-                                <p>¿Estás seguro que deseas {modalAction === "aceptar" ? "aprobar" : "rechazar"} la solicitud?</p>
-                                {modalAction === "rechazar" && (
-                                    <div className="form-group">
-                                        <label htmlFor="motivoRechazo">Motivo del rechazo:</label>
-
-                                        {/* Botones de frases rápidas */}
-                                        <div className="d-flex flex-wrap gap-2 my-2">
-                                            {[
-                                                "La solicitud presenta información incompleta o inconsistente.",
-                                                "El destino reportado ya fue atendido recientemente con recursos similares.",
-                                                "La cantidad de personas afectadas es insuficiente para justificar la asignación de recursos.",
-                                                "La situación reportada no califica como una emergencia según los criterios establecidos."
-                                            ].map((frase, index) => (
-                                                <button
-                                                    key={index}
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-secondary w-100"
-                                                    onClick={() => setMotivoRechazo(frase)}
-                                                >
-                                                    {frase}
-                                                </button>
-                                            ))}
-                                        </div>
-
-                                        {/* Textarea editable con botón de limpiar */}
-                                        <div className="position-relative">
-                                              <textarea
-                                                  id="motivoRechazo"
-                                                  className="form-control pe-5"
-                                                  value={motivoRechazo}
-                                                  onChange={(e) => setMotivoRechazo(e.target.value)}
-                                                  rows="3"
-                                                  required
-                                              />
-                                            {motivoRechazo && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
-                                                    title="Limpiar"
-                                                    onClick={() => setMotivoRechazo("")}
-                                                >
-                                                    ✖
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary rounded-pill" onClick={() => setShowModal(false)}>Cancelar</button>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-dark rounded-pill"
-                                    onClick={handleConfirmAction}
-                                    disabled={modalAction === "rechazar" && !motivoRechazo}
-                                >
-                                    Confirmar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {showDetailModal && detailedSolicitud && (
-                <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content bg-light">
-                            <div className="modal-header bg-mine">
-                                <h5 className="modal-title fw-semibold text-white">Información de la Solicitud</h5>
-                                <button type="button" className="btn-close btn-close-white rounded-pill" onClick={() => setShowDetailModal(false)}></button>
-                            </div>
-                            <div className="modal-body bg-dark-subtle ">
-                                <div className="row mb-1 ">
-                                    <div className="col-4 fw-semibold">Nombre Completo:</div>
-                                    <div
-                                        className="col-8">{detailedSolicitud.nombreSolicitante} {detailedSolicitud.apellidoSolicitante}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1 ">
-                                    <div className="col-4 fw-semibold">CI Usuario:</div>
-                                    <div className="col-8">{detailedSolicitud.ciSolicitante}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Comunidad:</div>
-                                    <div className="col-8">{detailedSolicitud.comunidad}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Fecha Solicitud:</div>
-                                    <div className="col-8">{formatDateTime(detailedSolicitud.fechaSolicitud)}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                {detailedSolicitud.fechaInicioIncendio && (
-                                    <>
-                                        <div className="row mb-1">
-                                            <div className="col-4 fw-semibold">Fecha Inicio:</div>
-                                            <div
-                                                className="col-8">{formatDate(detailedSolicitud.fechaInicioIncendio)}</div>
-                                        </div>
-                                        <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-                                    </>
-                                )}
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Celular:</div>
-                                    <div className="col-8">{detailedSolicitud.telefonoSolicitante}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Cantidad Personas:</div>
-                                    <div className="col-8">{detailedSolicitud.cantidadPersonas}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Productos:</div>
-                                    <div className="col-8">{Array.isArray(detailedSolicitud.listadoProductos)
-                                        ? detailedSolicitud.listadoProductos.join(', ')
-                                        : detailedSolicitud.listadoProductos}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Dirección:</div>
-                                    <div className="col-8">{detailedSolicitud.direccion}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Provincia:</div>
-                                    <div className="col-8">{detailedSolicitud.provincia}</div>
-                                </div>
-                                <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-
-                                <div className="row mb-1">
-                                    <div className="col-4 fw-semibold">Estado:</div>
-                                    <div className="col-8">
-                                        {detailedSolicitud.aprobada === true ? (
-                                            <span className="badge bg-success">Aprobada</span>
-                                        ) : detailedSolicitud.aprobada === false ? (
-                                            <span className="badge bg-danger">Rechazada</span>
-                                        ) : (
-                                            <span className="badge bg-secondary">Sin contestar</span>
-                                        )}
-                                    </div>
-                                </div>
-                                {detailedSolicitud.aprobada !== null && (
-                                    <>
-                                        <div className="ms-2 me-2 mb-2 pb-2 border-bottom border-light-subtle"></div>
-                                        <div className="row mb-1">
-                                            <div className="col-4 fw-semibold">Motivo:</div>
-                                            <div className="col-8" style={{ textAlign: "justify" }}>
-                                                {detailedSolicitud.justificacion}
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
+
 };
 
 export default ListarSolicitudes;
