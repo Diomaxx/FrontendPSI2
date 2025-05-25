@@ -42,56 +42,51 @@ const AdminPanel = () => {
 
     return (
         <div className="list-div">
-            {/* Header component for navigation */}
             <Header />
             
-            <div className="container-fluid px-3 px-md-5 py-4">
+            <div className=" px-3 px-md-5 py-4">
                 {/* Page title section */}
-                <div className="row mb-4">
+                <div className="row mb-2">
                     <div className="col-12">
-                        <div className="glass-card p-4 text-center">
-                            <h1 className="text-white fw-bold mb-3">
-                                <i className="bi bi-shield-check me-3"></i>
+                        <div className="p-3 text-center">
+                            <h4 className="text-white fw-bold mb-1">
                                 Panel de Administración
-                            </h1>
-                            <p className="text-light opacity-75 mb-4">
+                            </h4>
+                            <p className="text-light opacity-75 mb-4" style={{fontSize:'small'}} >
                                 Gestión de usuarios y permisos del sistema
                             </p>
                             
-                            {/* Tab Navigation */}
                             <div className="d-flex justify-content-center">
-                                <div className="btn-group" role="group" style={{borderRadius: '12px', overflow: 'hidden'}}>
+                                <div role="group" style={{overflow: 'hidden'}}>
                                     <button
-                                        type="button"
-                                        className={`btn px-4 py-2 fw-medium ${
+                                        className={`
+                                        py-1 me-3
+                                        ${
                                             activeTab === 'status' 
-                                                ? 'text-light' 
-                                                : 'btn-outline-light text-light'
+                                                ? 'btn-mine' 
+                                                : 'btn-outline-mine'
                                         }`}
+                                        style={{whiteSpace: "nowrap"}}
                                         onClick={() => handleTabChange('status')}
                                         style={{
-                                            borderRadius: '12px 0 0 12px',
                                             transition: 'all 0.3s ease',
-                                            backgroundColor: activeTab === 'status' ? 'rgb(25, 73, 115)' : 'transparent',
-                                            border: activeTab === 'status' ? '2px solid rgb(59, 119, 157)' : '2px solid rgba(255, 255, 255, 0.3)'
                                         }}
                                     >
                                         <i className="bi bi-toggle-on me-2"></i>
                                         Gestión de Estado
                                     </button>
                                     <button
-                                        type="button"
-                                        className={`btn px-4 py-2 fw-medium ${
-                                            activeTab === 'promotion' 
-                                                ? 'text-light' 
-                                                : 'btn-outline-light text-light'
+                                        className={`
+                                        py-1 me-3
+                                        ${
+                                            activeTab === 'promotion'
+                                                ? 'btn-mine'
+                                                : 'btn-outline-mine'
                                         }`}
+                                        style={{whiteSpace: "nowrap"}}
                                         onClick={() => handleTabChange('promotion')}
                                         style={{
-                                            borderRadius: '0 12px 12px 0',
                                             transition: 'all 0.3s ease',
-                                            backgroundColor: activeTab === 'promotion' ? 'rgb(25, 73, 115)' : 'transparent',
-                                            border: activeTab === 'promotion' ? '2px solid rgb(59, 119, 157)' : '2px solid rgba(255, 255, 255, 0.3)'
                                         }}
                                     >
                                         <i className="bi bi-person-badge me-2"></i>
@@ -135,7 +130,7 @@ const AdminPanel = () => {
                 {!loading && !error && (
                     <div className="row">
                         <div className="col-12">
-                            <div className="glass-card p-0" style={{borderRadius: '16px', overflow: 'hidden'}}>
+                            <div className="p-0" style={{borderRadius: '16px', overflow: 'hidden'}}>
                                 {/* Tab Content Container */}
                                 <div className="position-relative">
                                     {/* Status Management Tab */}
@@ -146,13 +141,11 @@ const AdminPanel = () => {
                                         }}
                                     >
                                         <div className="p-4">
-                                            <div className="d-flex align-items-center justify-content-between mb-4">
+                                            <div className="  d-flex align-items-center justify-content-between mb-4" style={{borderRadius:'10px'}}>
                                                 <div className="d-flex align-items-center">
-                                                    <div className="rounded-circle p-3 me-3" style={{width: '50px', height: '50px', backgroundColor: 'rgb(25, 73, 115)'}}>
-                                                        <i className="bi bi-toggle-on text-light" style={{fontSize: '1.5rem'}}></i>
-                                                    </div>
+
                                                     <div>
-                                                        <h3 className="text-white fw-bold mb-1">Gestión de Estado de Usuarios</h3>
+                                                        <h5 className="text-white fw-bold mb-1">Gestión de Estado de Usuarios</h5>
                                                         <p className="text-light opacity-75 mb-0 small">
                                                             Activar o desactivar usuarios en el sistema
                                                         </p>
@@ -164,10 +157,13 @@ const AdminPanel = () => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <ActiveManager
-                                                users={users} 
-                                                onUserUpdated={handleRefreshUsers}
-                                            />
+                                            <div className="bg-opacity-0">
+                                                <ActiveManager
+                                                    users={users}
+                                                    onUserUpdated={handleRefreshUsers}
+                                                />
+                                            </div>
+
                                         </div>
                                     </div>
 
@@ -181,12 +177,10 @@ const AdminPanel = () => {
                                         <div className="p-4">
                                             <div className="d-flex align-items-center justify-content-between mb-4">
                                                 <div className="d-flex align-items-center">
-                                                    <div className="rounded-circle p-3 me-3" style={{width: '50px', height: '50px', backgroundColor: 'rgb(25, 73, 115)'}}>
-                                                        <i className="bi bi-person-badge text-light" style={{fontSize: '1.5rem'}}></i>
-                                                    </div>
+
                                                     <div>
-                                                        <h3 className="text-white fw-bold mb-1">Promoción a Administrador</h3>
-                                                        <p className="text-light opacity-75 mb-0 small">
+                                                        <h5 className="text-white fw-bold mb-1">Promoción a Administrador</h5>
+                                                        <p className="text-light opacity-75 mb-0 smaller">
                                                             Otorgar permisos de administrador a usuarios del sistema
                                                         </p>
                                                     </div>

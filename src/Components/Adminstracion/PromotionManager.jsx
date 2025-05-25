@@ -75,91 +75,80 @@ const ConfirmationModal = ({ show, user, onConfirm, onCancel, isLoading }) => {
     if (!show || !user) return null;
 
     return (
-        <div className="modal show d-block" style={{backgroundColor: 'rgba(0, 0, 0, 0.7)'}}>
-            <div className="modal-dialog modal-dialog-centered">
-                <div className="glass-modal modal-content border-0"
-                     style={{
-                         backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                         backdropFilter: 'blur(10px)',
-                         borderRadius: '16px',
-                         border: '1px solid rgba(255, 255, 255, 0.1)'
-                     }}>
-                    
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <div className="modal-dialog">
+                <div className="modal-content">
+
                     {/* Modal header */}
-                    <div className="modal-header border-0 pb-0">
-                        <h5 className="modal-title text-white fw-bold">
+                    <div className="modal-header bg-mine text-light">
+                        <h5 className="modal-title">
                             <i className="bi bi-exclamation-triangle text-warning me-2"></i>
                             Confirmar Promoción a Administrador
                         </h5>
-                        <button 
-                            type="button" 
-                            className="btn-close btn-close-white" 
+                        <button
+                            type="button"
+                            className="btn-close btn-light rounded-pill"
                             onClick={onCancel}
                             disabled={isLoading}
                         ></button>
                     </div>
-                    
+
                     {/* Modal body */}
                     <div className="modal-body">
                         <div className="alert alert-warning" role="alert">
                             <i className="bi bi-info-circle me-2"></i>
                             <strong>¡Atención!</strong> Esta acción no se puede deshacer.
                         </div>
-                        
-                        <p className="text-white mb-3">
+
+                        <p className="mb-3">
                             ¿Está seguro que desea promover al siguiente usuario a administrador?
                         </p>
-                        
-                        {/* User details in modal */}
-                        <div className="glass-panel p-3 mb-3"
-                             style={{
-                                 borderRadius: "8px",
-                                 backgroundColor: 'rgba(255, 255, 255, 0.05)'
-                             }}>
+
+                        <div className="p-3 mb-3 bg-light rounded shadow-sm">
                             <div className="row">
                                 <div className="col-6">
-                                    <small className="text-light opacity-75">Nombre:</small>
-                                    <p className="text-white mb-2 fw-medium">
+                                    <small className="text-muted">Nombre:</small>
+                                    <p className="mb-2 fw-medium">
                                         {user.nombre} {user.apellido}
                                     </p>
                                 </div>
                                 <div className="col-6">
-                                    <small className="text-light opacity-75">CI:</small>
-                                    <p className="text-white mb-2 fw-medium">{user.ci}</p>
+                                    <small className="text-muted">CI:</small>
+                                    <p className="mb-2 fw-medium">{user.ci}</p>
                                 </div>
                                 {user.telefono && (
                                     <div className="col-6">
-                                        <small className="text-light opacity-75">Teléfono:</small>
-                                        <p className="text-white mb-2 fw-medium">{user.telefono}</p>
+                                        <small className="text-muted">Teléfono:</small>
+                                        <p className="mb-2 fw-medium">{user.telefono}</p>
                                     </div>
                                 )}
                                 {user.correoElectronico && (
                                     <div className={user.telefono ? "col-6" : "col-12"}>
-                                        <small className="text-light opacity-75">Email:</small>
-                                        <p className="text-white mb-0 fw-medium">{user.correoElectronico}</p>
+                                        <small className="text-muted">Email:</small>
+                                        <p className="mb-0 fw-medium">{user.correoElectronico}</p>
                                     </div>
                                 )}
                             </div>
                         </div>
-                        
-                        <p className="text-light opacity-75 small mb-0">
+
+                        <p className="text-muted small mb-0">
                             El usuario obtendrá permisos completos de administrador del sistema.
                         </p>
                     </div>
-                    
+
                     {/* Modal footer */}
-                    <div className="modal-footer border-0 pt-0">
-                        <button 
-                            type="button" 
-                            className="btn btn-outline-light me-2" 
+                    <div className="modal-footer">
+                        <button
+                            type="button"
+                            className="btn btn-secondary rounded-pill"
                             onClick={onCancel}
                             disabled={isLoading}
                         >
                             Cancelar
                         </button>
-                        <button 
-                            type="button" 
-                            className="btn btn-warning text-dark fw-medium" 
+                        <button
+                            type="button"
+                            className="btn btn-outline-dark rounded-pill"
                             onClick={onConfirm}
                             disabled={isLoading}
                         >
@@ -222,6 +211,7 @@ const PromotionManager = ({ users, onUserUpdated }) => {
             setSelectedUser(null);
             
             // Show success message
+
             alert(`${selectedUser.nombre} ${selectedUser.apellido} ha sido promovido a administrador exitosamente.`);
             
         } catch (error) {
@@ -277,7 +267,7 @@ const PromotionManager = ({ users, onUserUpdated }) => {
                             <div className="flex-grow-1">
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className="form-control bg-light"
                                     placeholder="Buscar por nombre, apellido, CI, teléfono o email..."
                                     value={searchTerm}
                                     onChange={handleSearchChange}
@@ -285,8 +275,9 @@ const PromotionManager = ({ users, onUserUpdated }) => {
                                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
                                         border: '1px solid rgb(59, 119, 157)',
                                         borderRadius: '8px',
-                                        color: 'white',
-                                        padding: '8px 12px'
+                                        color: 'black',
+                                        padding: '4px 8px'
+
                                     }}
                                 />
                             </div>
@@ -309,11 +300,11 @@ const PromotionManager = ({ users, onUserUpdated }) => {
 
             {/* Summary statistics */}
             <div className="row mb-4">
-                <div className="col-12 col-md-4">
+            <div className="col-12 col-md-4">
                     <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(25, 73, 115, 0.3)'}}>
-                        <h4 className="fw-bold mb-1" style={{color: 'rgb(102, 147, 194)'}}>
+                        <h5 className="fw-bold mb-1" style={{color: 'rgb(102, 147, 194)'}}>
                             {filteredUsers.length}
-                        </h4>
+                        </h5>
                         <small className="text-light opacity-75">
                             {searchTerm ? 'Resultados Encontrados' : 'Usuarios Elegibles'}
                         </small>
@@ -321,24 +312,24 @@ const PromotionManager = ({ users, onUserUpdated }) => {
                 </div>
                 <div className="col-6 col-md-4">
                     <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(40, 167, 69, 0.2)'}}>
-                        <h4 className="text-success fw-bold mb-1">
+                        <h5 className="text-success fw-bold mb-1">
                             {filteredUsers.filter(u => u.active).length}
-                        </h4>
+                        </h5>
                         <small className="text-light opacity-75">Activos</small>
                     </div>
                 </div>
                 <div className="col-6 col-md-4">
                     <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(108, 117, 125, 0.2)'}}>
-                        <h4 className="text-secondary fw-bold mb-1">
+                        <h5 className="text-secondary fw-bold mb-1">
                             {filteredUsers.filter(u => !u.active).length}
-                        </h4>
+                        </h5>
                         <small className="text-light opacity-75">Inactivos</small>
                     </div>
                 </div>
             </div>
 
             {/* Information alert */}
-            <div className="alert alert-info mb-4" role="alert">
+            <div className="alert alert-info mb-4"style={{fontSize:"14px"}}  role="alert">
                 <i className="bi bi-info-circle me-2"></i>
                 <strong>Información:</strong> Solo se muestran usuarios que no son administradores. 
                 Los usuarios promovidos desaparecerán de esta lista.

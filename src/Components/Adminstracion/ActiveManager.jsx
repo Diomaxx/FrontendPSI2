@@ -12,16 +12,15 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
         <div className="col-12 col-md-6 col-lg-4 mb-3">
             <div className="glass-card p-3 h-100 position-relative"
                  style={{
-                     borderRadius: "16px",
+                     borderRadius: "8px",
                      transition: "transform 0.2s ease, box-shadow 0.2s ease"
                  }}>
                 
-                {/* Status indicator bar */}
                 <div className="position-absolute top-0 start-0 h-100"
                      style={{
                          width: "4px",
                          backgroundColor: user.active ? "#28a745" : "#6c757d",
-                         borderRadius: "16px 0 0 16px"
+                         borderRadius: "50px 0 0 50px"
                      }}></div>
 
                 {/* User information section */}
@@ -41,21 +40,21 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
                     </div>
 
                     {/* User details */}
-                    <div className="mb-2">
-                        <small className="text-light opacity-75">CI:</small>
+                    <div className="mb-2 d-flex flex-row ">
+                        <small className="text-light opacity-75 me-2">CI:</small>
                         <p className="text-white mb-1 small">{user.ci}</p>
                     </div>
 
                     {user.telefono && (
-                        <div className="mb-2">
-                            <small className="text-light opacity-75">Teléfono:</small>
+                        <div className="mb-2 d-flex flex-row ">
+                            <small className="text-light opacity-75 me-2">Teléfono:</small>
                             <p className="text-white mb-1 small">{user.telefono}</p>
                         </div>
                     )}
 
                     {user.correoElectronico && (
-                        <div className="mb-3">
-                            <small className="text-light opacity-75">Email:</small>
+                        <div className="mb-3 d-flex flex-row ">
+                            <small className="text-light opacity-75 me-2">Email:</small>
                             <p className="text-white mb-0 small text-truncate" title={user.correoElectronico}>
                                 {user.correoElectronico}
                             </p>
@@ -68,13 +67,13 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
                             className={`btn btn-sm px-3 ${
                                 user.active 
                                     ? 'btn-outline-light' 
-                                    : 'btn-light text-dark'
+                                    : 'btn-light'
                             }`}
                             onClick={handleToggleStatus}
                             disabled={isLoading}
                             style={{
-                                borderRadius: "6px",
-                                transition: "all 0.2s ease"
+                                transition: "all 0.2s ease",
+                                fontSize:'12px'
                             }}
                         >
                             {isLoading ? (
@@ -84,7 +83,6 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
                                 </>
                             ) : (
                                 <>
-                                    <i className={`bi ${user.active ? 'bi-toggle-off' : 'bi-toggle-on'} me-1`}></i>
                                     {user.active ? 'Desactivar' : 'Activar'}
                                 </>
                             )}
@@ -159,18 +157,18 @@ const ActiveManager = ({ users, onUserUpdated }) => {
     return (
         <div>
             {/* Search Controls */}
-            <div className="row mb-4">
+            <div className="row mb-4 mt-0">
                 <div className="col-12">
                     <div className="glass-panel p-3" style={{borderRadius: '12px'}}>
                         <div className="d-flex align-items-center gap-3">
                             <div className="d-flex align-items-center">
                                 <i className="bi bi-search me-2" style={{color: 'rgb(102, 147, 194)', fontSize: '1.2rem'}}></i>
-                                <h6 className="text-white fw-bold mb-0">Buscar Usuarios</h6>
+                                <p className="text-white fw-bold mb-0" style={{fontSize:'medium'}} >Buscar Usuarios</p>
                             </div>
                             <div className="flex-grow-1">
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className="form-control bg-light"
                                     placeholder="Buscar por nombre, apellido, CI, teléfono o email..."
                                     value={searchTerm}
                                     onChange={handleSearchChange}
@@ -178,8 +176,9 @@ const ActiveManager = ({ users, onUserUpdated }) => {
                                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
                                         border: '1px solid rgb(59, 119, 157)',
                                         borderRadius: '8px',
-                                        color: 'white',
-                                        padding: '8px 12px'
+                                        color: 'black',
+                                        padding: '4px 8px'
+
                                     }}
                                 />
                             </div>
@@ -203,39 +202,38 @@ const ActiveManager = ({ users, onUserUpdated }) => {
             {/* Summary statistics */}
             <div className="row mb-4">
                 <div className="col-6 col-md-3">
-                    <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
-                        <h4 className="text-white fw-bold mb-1">{filteredUsers.length}</h4>
+                    <div className="text-center p-2 rounded" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
+                        <h5 className="text-white fw-bold mb-1">{filteredUsers.length}</h5>
                         <small className="text-light opacity-75">
                             {searchTerm ? 'Resultados Encontrados' : 'Total Usuarios'}
                         </small>
                     </div>
                 </div>
                 <div className="col-6 col-md-3">
-                    <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(40, 167, 69, 0.2)'}}>
-                        <h4 className="text-success fw-bold mb-1">
+                    <div className="text-center p-2 rounded" style={{backgroundColor: 'rgba(40, 167, 69, 0.2)'}}>
+                        <h5 className="text-success fw-bold mb-1">
                             {filteredUsers.filter(u => u.active).length}
-                        </h4>
+                        </h5>
                         <small className="text-light opacity-75">Activos</small>
                     </div>
                 </div>
                 <div className="col-6 col-md-3">
-                    <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(108, 117, 125, 0.2)'}}>
-                        <h4 className="text-secondary fw-bold mb-1">
+                    <div className="text-center p-2 rounded" style={{backgroundColor: 'rgba(108, 117, 125, 0.2)'}}>
+                        <h5 className="text-secondary fw-bold mb-1">
                             {filteredUsers.filter(u => !u.active).length}
-                        </h4>
+                        </h5>
                         <small className="text-light opacity-75">Inactivos</small>
                     </div>
                 </div>
                 <div className="col-6 col-md-3">
-                    <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(25, 73, 115, 0.3)'}}>
-                        <h4 className="fw-bold mb-1" style={{color: 'rgb(102, 147, 194)'}}>
+                    <div className="text-center p-2 rounded" style={{backgroundColor: 'rgba(25, 73, 115, 0.3)'}}>
+                        <h5 className="fw-bold mb-1" style={{color: 'rgb(102, 147, 194)'}}>
                             {loadingUsers.size}
-                        </h4>
+                        </h5>
                         <small className="text-light opacity-75">Procesando</small>
                     </div>
                 </div>
             </div>
-
             {/* Users grid */}
             {sortedUsers.length > 0 ? (
                 <div className="row">
