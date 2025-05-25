@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getMetricas } from '../services/metricasService.js';
-import './Style.css';
+import { getMetricas } from '../../Services/metricasService.js';
+import '../Style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Header from "./Header.jsx";
+import Header from "../Common/Header.jsx";
 import MetricasWebSocketListener from './MetricasWebsocketListener.jsx';
 // Chart.js imports
 import {
@@ -844,16 +844,42 @@ const MetricasComponent = () => {
     };
 
     if (loading) return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="spinner-border text-light" role="status">
-                <span className="visually-hidden">Cargando...</span>
+        <div className="list-div">
+            <Header/>
+            <div className="container-fluid d-flex justify-content-center">
+                <div className="w-100 align-items-center justify-content-center container-fluid"
+                     style={{maxWidth: "1500px"}}>
+                    <div className="mb-4 mt-4">
+                        <h2 className="fs-3 m-0 text-light mb-4">Dashboard de Métricas</h2>
+                        <div className="glass-card p-4 text-center">
+                            <div className="spinner-border text-warning" role="status">
+                                <span className="visually-hidden">Cargando...</span>
+                            </div>
+                            <p className="text-white mt-3 mb-0">Cargando métricas...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
 
     if (error) return (
-        <div className="alert alert-danger text-center" role="alert">
-            {error}
+        <div className="list-div">
+            <Header/>
+            <div className="container-fluid d-flex justify-content-center">
+                <div className="w-100 align-items-center justify-content-center container-fluid"
+                     style={{maxWidth: "1500px"}}>
+                    <div className="mb-4 mt-4">
+                        <h2 className="fs-3 m-0 text-light mb-4">Dashboard de Métricas</h2>
+                        <div className="glass-card p-4">
+                            <div className="alert alert-danger mb-0" role="alert">
+                                <i className="bi bi-exclamation-triangle me-2"></i>
+                                {error}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 

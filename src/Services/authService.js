@@ -79,8 +79,47 @@ export const getUserCI = () => {
     return globalCI || localStorage.getItem('userCI');
 };
 
+// Function to fetch user data by CI to check admin status
+export const fetchUserByCI = async (ci) => {
+    try {
+        const response = await axios.get(`${USUARIO_URL}/ci/${ci}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user by CI:', error);
+        throw error.response?.data?.message || 'Error al obtener datos del usuario';
+    }
+};
+
+// Function to save admin status in localStorage
+export const saveAdminStatus = (isAdmin) => {
+    localStorage.setItem('isAdmin', isAdmin.toString());
+    console.log('Estado de administrador guardado:', isAdmin);
+};
+
+// Function to get admin status from localStorage
+export const getAdminStatus = () => {
+    const adminStatus = localStorage.getItem('isAdmin');
+    return adminStatus === 'true';
+};
+
+// Function to check admin status after login
+export const checkAndSaveAdminStatus = async (ci) => {
+    try {
+        const userData = await fetchUserByCI(ci);
+        const isAdmin = userData.admin || false;
+        saveAdminStatus(isAdmin);
+        return isAdmin;
+    } catch (error) {
+        console.error('Error checking admin status:', error);
+        // If there's an error, default to false (not admin)
+        saveAdminStatus(false);
+        return false;
+    }
+};
+
 export const logoutUser = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userCI');
+    localStorage.removeItem('isAdmin'); // Clear admin status on logout
     globalCI = null;
 };

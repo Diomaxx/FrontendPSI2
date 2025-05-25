@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import {Link, useNavigate} from 'react-router-dom';
-import {loginUser, saveToken, getUserCI} from '../services/authService';
+import {loginUser, saveToken, getUserCI, checkAndSaveAdminStatus} from '../../Services/authService.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from "./Header.jsx";
@@ -34,6 +34,15 @@ function InicioSesion() {
             // Get and log the CI extracted from the token
             const userCI = getUserCI();
             console.log('INICIO DE SESIÓN - CI del usuario:', userCI);
+            
+            // Check admin status and save it to localStorage
+            try {
+                const isAdmin = await checkAndSaveAdminStatus(userCI);
+                console.log('Estado de administrador del usuario:', isAdmin);
+            } catch (adminError) {
+                console.error('Error al verificar estado de administrador:', adminError);
+                // Continue with login even if admin check fails
+            }
             
             navigate('/Donaciones');
         } catch (error) {

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { getAdminStatus, logoutUser } from '../../Services/authService.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = ({ showLogout = true }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [bgStyle, setBgStyle] = useState({});
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const isActive = (path) => {
         return location.pathname === path;
@@ -41,8 +43,15 @@ const Header = ({ showLogout = true }) => {
         }
     }, [location.pathname]);
 
+    // Check admin status on component mount and when location changes
+    useEffect(() => {
+        const adminStatus = getAdminStatus();
+        setIsAdmin(adminStatus);
+        console.log('Header - Estado de administrador:', adminStatus);
+    }, [location.pathname]);
+
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
+        logoutUser(); // This will clear authToken, userCI, and isAdmin from localStorage
         navigate("/login");
     };
 
@@ -95,6 +104,17 @@ const Header = ({ showLogout = true }) => {
                 >
                     Dashboard
                 </Link>
+                {/* Conditionally render admin tab only if user is admin */}
+                {isAdmin && (
+                    <Link
+                        to="/admin"
+                        className={`mx-2 mx-md-3 my-1 px-2 text-decoration-none fw-medium ${isActive('/admin')
+                            ? 'text-white border-bottom border-2 border-warning pb-1'
+                            : 'text-light opacity-75 hover-effect'}`}
+                    >
+                        Administración
+                    </Link>
+                )}
 
                 {showLogout && (
                     <button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Row, Col, ListGroup, Form, Spinner, Pagination } from "react-bootstrap";
-import './Style.css';
+import '../Style.css';
 
 export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }) {
     const [show, setShow] = useState(false);

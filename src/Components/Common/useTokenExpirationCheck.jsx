@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logoutUser } from '../Services/authService.js';
+import { logoutUser } from '../../Services/authService.js';
 
 const useTokenExpirationCheck = () => {
     const navigate = useNavigate();

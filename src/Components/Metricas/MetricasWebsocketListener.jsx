@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Client } from "@stomp/stompjs";
-import { getMetricas } from "../services/metricasService"; // Import the metrics service
+import { getMetricas } from "../../Services/metricasService.js"; // Import the metrics service
 
 /**
  * WebSocket listener component for Metricas

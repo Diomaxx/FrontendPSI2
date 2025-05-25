@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Link, useNavigate } from "react-router-dom";
-import './Style.css';
-import { fetchDonations, actualizarEstadoDonacion } from "../Services/donacionService";
+import '../Style.css';
+import { fetchDonations, actualizarEstadoDonacion } from "../../Services/donacionService.js";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import Header from "./Header.jsx";
+import Header from "../Common/Header.jsx";
 
 // Helper functions for date formatting
 const formatDate = (dateString) => {
@@ -97,8 +97,8 @@ const DonationCard = ({donation, onActualizarClick}) => {
                             onClick={() => onActualizarClick(donation)}
                             data-bs-toggle="modal"
                             data-bs-target="#estadoModal"
-                            disabled={donation.fechaEntrega || donation.estado === "Iniciando armado de paquete"}
-                            hidden={donation.fechaEntrega || donation.estado === "Iniciando armado de paquete" }
+                            disabled={donation.fechaEntrega || donation.estado === "Iniciando armado de paquete" || donation.estado === "Pendiente"}
+                            hidden={donation.fechaEntrega || donation.estado === "Iniciando armado de paquete" || donation.estado === "Pendiente" }
                         >
                             <i className="bi bi-arrow-repeat me-1"></i> Actualizar
                         </button>

@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link, useNavigate} from 'react-router-dom';
-import {registerUser} from "../Services/authService.js";
+import {registerUser} from "../../Services/authService.js";
 import Header from "./Header.jsx";
 
 
@@ -15,6 +15,7 @@ function Registro() {
         apellido: '',
         correoElectronico: '',
         ci: '',
+        telefono: '',
         contrasena: ''
     };
 
@@ -30,6 +31,10 @@ function Registro() {
             .required('El correo electrónico es obligatorio')
             .email('Verifica el formato de correo electronico')
         ,
+        telefono: Yup.number()
+            .required('El numero de celular es obligatorio')
+            .max(79999999, 'Ingrese un numero de celular válido')
+            .min(60000000, 'Ingrese un numero de celular válido'),
         contrasena: Yup.string()
             .min(6, 'Minimo 6 caracteres')
             .required('La contraseña es obligatoria')
@@ -104,6 +109,15 @@ function Registro() {
                                                className="form-control  ps-4"
                                                placeholder="Ej. nombre@email.com"/>
                                         <ErrorMessage name="correoElectronico" component="div"
+                                                      className="text-light opacity-50"
+                                                      style={{fontSize: 'smaller'}}/>
+                                    </div>
+                                    <div className="mb-3 mt-1">
+                                        <label htmlFor="telefono" className="form-label">Número de Celular:</label>
+                                        <Field type="number" name="telefono"
+                                               className="form-control  ps-4"
+                                               placeholder="Ej. 77312305"/>
+                                        <ErrorMessage name="telefono" component="div"
                                                       className="text-light opacity-50"
                                                       style={{fontSize: 'smaller'}}/>
                                     </div>

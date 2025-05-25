@@ -3,15 +3,15 @@ import {Formik, Form, Field, ErrorMessage, useFormikContext, useField} from 'for
 import * as Yup from 'yup';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link, useNavigate} from 'react-router-dom';
-import { addSolicitud } from "../Services/solicitudService";
+import { addSolicitud } from "../../Services/solicitudService.js";
 
 import DatePicker, {registerLocale} from 'react-datepicker';
 import { es } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
-import './Style.css';
+import '../Style.css';
 import ProductSelectorModal from "./ProductosSelectorModal.jsx";
 import MapSelector from "./MapSelector.jsx";
-import Header from "./Header.jsx";
+import Header from "../Common/Header.jsx";
 
 // CSS for animations
 const animationStyles = {

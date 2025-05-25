@@ -1,14 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import InicioSesion from "./Components/InicioSesion.jsx";
-import Registro from "./Components/Registro.jsx";
-import useTokenExpirationCheck from "./Components/useTokenExpirationCheck";
+import InicioSesion from "./Components/Common/InicioSesion.jsx";
+import Registro from "./Components/Common/Registro.jsx";
+import useTokenExpirationCheck from "./Components/Common/useTokenExpirationCheck.jsx";
 import HolaMundo from "./Components/HolaMundo.jsx";
-import Donaciones from "./Components/Donaciones.jsx";
-import FormularioSolicitud from "./Components/FormularioSolicitud.jsx";
-import Seguimiento from "./Components/Seguimiento.jsx";
-import ListarSolicitudes from "./Components/ListarSolicitudes.jsx";
-import RutaProtegida from './Components/RutaProtegida.jsx';
-import Metricas from "./Components/Metricas.jsx";
+import Donaciones from "./Components/Donaciones/Donaciones.jsx";
+import FormularioSolicitud from "./Components/Formulario/FormularioSolicitud.jsx";
+import Seguimiento from "./Components/Donaciones/Seguimiento/Seguimiento.jsx";
+import ListarSolicitudes from "./Components/Solicitudes/ListarSolicitudes.jsx";
+import RutaProtegida from './Components/Common/RutaProtegida.jsx';
+import RutaProtegidaAdmin from './Components/Common/RutaProtegidaAdmin.jsx';
+import Metricas from "./Components/Metricas/Metricas.jsx";
+import AdminPanel from "./Components/Adminstracion/AdminPanel.jsx";
 
 function TokenExpirationCheck() {
     useTokenExpirationCheck();
@@ -24,10 +26,11 @@ function App() {
                 <Route path="/login" element={<InicioSesion/>}/>
                 <Route path="/registrate" element={<Registro/>}/>
                 <Route path="/metricas" element={<RutaProtegida><Metricas/></RutaProtegida>}/>
-                <Route path="/Seguimiento" element={<RutaProtegida><Seguimiento/></RutaProtegida>} />
-                <Route path="/Solicitudes" element={<RutaProtegida><ListarSolicitudes/></RutaProtegida>} />
-                <Route path="/Solicitar" element={<FormularioSolicitud/>} />
-                <Route path="/Donaciones" element={<RutaProtegida><Donaciones/></RutaProtegida>} />
+                <Route path="/seguimiento" element={<RutaProtegida><Seguimiento/></RutaProtegida>} />
+                <Route path="/solicitudes" element={<RutaProtegida><ListarSolicitudes/></RutaProtegida>} />
+                <Route path="/solicitar" element={<FormularioSolicitud/>} />
+                <Route path="/donaciones" element={<RutaProtegida><Donaciones/></RutaProtegida>} />
+                <Route path="/admin" element={<RutaProtegidaAdmin><AdminPanel/></RutaProtegidaAdmin>} />
 
                 <Route path="/HolaMundo" element={<HolaMundo/>}/>  {/* ARCHIVO TEMPORAL SOLO  PARA TESTEAR LOGIN*/}
             </Routes>

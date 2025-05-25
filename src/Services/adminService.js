@@ -1,0 +1,50 @@
+import axios from "axios";
+
+const API_BASE = "http://34.123.227.162:8080/api/usuarios";
+
+const getAuthHeaders = () => {
+    const token = localStorage.getItem('authToken');
+    return {
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : ""
+    };
+};
+
+export const fetchNonAdminUsers = async () => {
+    try {
+        const response = await axios.get(`${API_BASE}/noAdmin`, {
+            headers: getAuthHeaders(),
+            withCredentials: false,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching non-admin users:", error);
+        throw error;
+    }
+};
+
+export const toggleUserActiveStatus = async (userId) => {
+    try {
+        const response = await axios.post(`${API_BASE}/active/${userId}`, {}, {
+            headers: getAuthHeaders(),
+            withCredentials: false,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error toggling user active status:", error);
+        throw error;
+    }
+};
+
+export const promoteUserToAdmin = async (userId) => {
+    try {
+        const response = await axios.post(`${API_BASE}/admin/${userId}`, {}, {
+            headers: getAuthHeaders(),
+            withCredentials: false,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error promoting user to admin:", error);
+        throw error;
+    }
+}; 
