@@ -223,7 +223,7 @@ function BuscarCI() {
                         </>
                     )}
 
-                    <p className="mt-3 mb-3 text-center ms-5 me-5"
+                    <p className="mt-3 mb-3 text-center"
                        style={{color: 'grey', fontSize: 'smaller'}}>
                         ¿Ya tienes una cuenta?{' '}
                         <Link to="/login" style={{color: '#ffd833'}}>

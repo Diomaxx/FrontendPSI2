@@ -198,7 +198,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                     ) : (
                         <Row className="px-2">
                             <Col md={6}>
-                                <div className="mt-3">
+                                <div className="mt-1">
                                     <h5>Disponibles {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, products.length)} de {products.length}</h5>
                                     <ListGroup>
                                         {currentProducts.map((product) => {
@@ -208,21 +208,43 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                                 <ListGroup.Item key={product.id_articulo}
                                                                 className="d-flex justify-content-between align-items-center mb-2">
                                                     <div>
-                                                        <div className="fw-semibold">{product.nombre_articulo}</div>
+                                                        <div className="d-flex flex-row align-items-center">
+                                                            <div className="fw-semibold">{product.nombre_articulo}</div>
+                                                            <div className="text-opacity-50 text-black ms-2" style={{fontSize:'small'}}>
+                                                                   {product.medida_abreviada}
+                                                            </div>
+                                                        </div>
+
                                                         <div className="d-flex align-items-center">
-                                                            <p className="text-opacity-50 text-black mb-0 me-2"
-                                                               style={{fontSize: "small"}}>{product.medida_abreviada}</p>
-                                                            {/* Mostrar recomendación simple */}
+
+                                                        {/* Mostrar recomendación simple */}
                                                             {recommendedQuantity > 0 && (
                                                                 <small className="text-muted">
                                                                     Sugerido: {recommendedQuantity}
                                                                 </small>
                                                             )}
+                                                            {/* Botón de recomendación con icono */}
+                                                            {recommendedQuantity > 0 && (
+                                                                <Button
+                                                                    variant="link"
+                                                                    size="sm"
+                                                                    className="ms-2 text-success text-center"
+                                                                    onClick={() => applyRecommendedQuantity(product)}
+                                                                    title={`Aplicar cantidad sugerida: ${recommendedQuantity}`}
+                                                                    style={{
+                                                                        padding: "0.25rem 0.5rem",
+                                                                        backgroundColor: "transparent"
+                                                                    }}
+                                                                >
+                                                                    <p className=" text-success mb-0 py-0 underline"
+                                                                       style={{fontSize: "small"}}>Aplicar</p>
+                                                                </Button>
+                                                            )}
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div className="d-flex flex-column align-items-end">
-                                                        <div className="d-flex align-items-center justify-content-center mb-1">
+                                                    <div className="d-flex align-items-center justify-content-center mb-1">
                                                             <Button
                                                                 variant="outline-secondary"
                                                                 size="sm"
@@ -242,22 +264,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                                             >
                                                                 +
                                                             </Button>
-                                                            {/* Botón de recomendación con icono */}
-                                                            {recommendedQuantity > 0 && (
-                                                                <Button
-                                                                    variant="outline-secondary"
-                                                                    size="sm"
-                                                                    className="ms-2 text-muted border-0"
-                                                                    onClick={() => applyRecommendedQuantity(product)}
-                                                                    title={`Aplicar cantidad sugerida: ${recommendedQuantity}`}
-                                                                    style={{
-                                                                        padding: "0.25rem 0.5rem",
-                                                                        backgroundColor: "transparent"
-                                                                    }}
-                                                                >
-                                                                    <BsCheckCircle size={16} />
-                                                                </Button>
-                                                            )}
+
                                                         </div>
                                                         <small className="text-muted">{getQuantityMessage(product.id_articulo)}</small>
                                                     </div>
@@ -352,15 +359,14 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                 </div>
                             </Col>
 
-                            <Col md={6} className="bg-body-tertiary pt-2 rounded mt-3 pb-4" style={{height:"fit-content"}}>
-                                <div className="d-flex justify-content-center align-items-center">
+                            <Col md={6} className=" pt-2 rounded mt-1 pb-4" style={{height:"fit-content"}}>
+                                <div className="d-flex justify-content-center align-items-center mt-3 mb-3">
                                     <img src="/caja.svg" width="45%" height="45%" alt="Caja" className="opacity-50"/>
                                 </div>
                                 {/* Scrollable container for selected products */}
                                 <div className="selected-products-container" style={{
-                                    maxHeight: '250px',
+                                    maxHeight: '225px',
                                     overflowY: 'auto',
-                                    border: '1px solid #eee',
                                     borderRadius: '4px',
                                     padding: Object.keys(selectedProducts).length === 0 ? '0' : '8px'
                                 }}>
