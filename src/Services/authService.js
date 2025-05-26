@@ -117,6 +117,19 @@ export const checkAndSaveAdminStatus = async (ci) => {
     }
 };
 
+// Function to set new password for existing user
+export const setNewPassword = async (ci, password) => {
+    try {
+        const response = await axios.post(`${USUARIO_URL}/newPassword/${ci}`, {
+            contrasena: password
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error setting new password:', error);
+        throw error.response?.data?.message || 'Error al establecer la nueva contraseña';
+    }
+};
+
 export const logoutUser = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userCI');

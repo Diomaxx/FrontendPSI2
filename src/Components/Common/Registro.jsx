@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link, useNavigate} from 'react-router-dom';
 import {registerUser} from "../../Services/authService.js";
 import Header from "./Header.jsx";
+import PasswordField from "./PasswordField.jsx";
 
 
 function Registro() {
@@ -121,15 +122,14 @@ function Registro() {
                                                       className="text-light opacity-50"
                                                       style={{fontSize: 'smaller'}}/>
                                     </div>
-                                    <div className="mb-3 mt-1">
-                                        <label htmlFor="contrasena" className="form-label">Contraseña:</label>
-                                        <Field type="password" name="contrasena"
-                                               className="form-control  ps-4"
-                                               placeholder="Contraseña"/>
-                                        <ErrorMessage name="contrasena" component="div"
-                                                      className="text-light opacity-50"
-                                                      style={{fontSize: 'smaller'}}/>
-                                    </div>
+                                    <PasswordField
+                                        name="contrasena"
+                                        label="Contraseña:"
+                                        placeholder="Contraseña"
+                                        disabled={isSubmitting}
+                                        className="form-control ps-4 pe-5"
+                                        errorClassName="text-light opacity-50"
+                                    />
                                     <div className="mb-4 mt-2 visually-hidden" id="passConf">
                                     <label htmlFor="passwordConf" className="form-label">Confirmar
                                             Contraseña</label>

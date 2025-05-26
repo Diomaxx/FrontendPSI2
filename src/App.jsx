@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import InicioSesion from "./Components/Common/InicioSesion.jsx";
 import Registro from "./Components/Common/Registro.jsx";
+import BuscarCI from "./Components/Common/BuscarCI.jsx";
 import useTokenExpirationCheck from "./Components/Common/useTokenExpirationCheck.jsx";
 import HolaMundo from "./Components/HolaMundo.jsx";
 import Donaciones from "./Components/Donaciones/Donaciones.jsx";
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/" element={<InicioSesion/>}/>
                 <Route path="/login" element={<InicioSesion/>}/>
                 <Route path="/registrate" element={<Registro/>}/>
+                <Route path="/buscar-ci" element={<BuscarCI/>}/>
                 <Route path="/metricas" element={<RutaProtegida><Metricas/></RutaProtegida>}/>
                 <Route path="/seguimiento" element={<RutaProtegida><Seguimiento/></RutaProtegida>} />
                 <Route path="/solicitudes" element={<RutaProtegida><ListarSolicitudes/></RutaProtegida>} />

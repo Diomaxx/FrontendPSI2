@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Row, Col, ListGroup, Form, Spinner, Pagination } from "react-bootstrap";
+import { BsCheckCircle } from "react-icons/bs";
 import '../Style.css';
 
 export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }) {
@@ -12,7 +13,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
     
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of products per page
+    const [itemsPerPage] = useState(5); 
 
     // Función para obtener los productos del inventario
     const fetchProductos = async () => {
@@ -46,42 +47,55 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
     // Cargar productos cuando se abre el modal
     const handleShow = () => {
         setShow(true);
-        setCurrentPage(1); // Reset to first page when opening modal
+        setCurrentPage(1); 
         fetchProductos();
     };
 
     const handleClose = () => setShow(false);
 
-    // Calcular la cantidad máxima disponible (30% del inventario)
+    const getRecommendedQuantity = (product) => {
+        if (!cantidadPersonas || isNaN(parseInt(cantidadPersonas)) || !product.cantidad_estimada_por_persona) {
+            return 0;
+        }
+        
+        const personas = parseInt(cantidadPersonas);
+        const estimadaPorPersona = product.cantidad_estimada_por_persona;
+        
+        const recomendada = Math.ceil(personas * estimadaPorPersona);
+        
+        return recomendada;
+    };
+
     const getMaxQuantity = (productId) => {
-        // Verificar si existe stock disponible para este producto
         if (availableStock[productId]) {
-            // Obtener el stock total disponible para este producto
             const stockTotal = availableStock[productId];
 
-            // Calcular el 10% del stock disponible como base
-            let baseMax = Math.floor(stockTotal * 0.02);
-
-            // Ajustar según la cantidad de personas (si está disponible)
-            if (cantidadPersonas && !isNaN(parseInt(cantidadPersonas))) {
-                // Calcular el factor de multiplicación: cantidadPersonas / 50
-                const factor = Math.max(1, Math.ceil(parseInt(cantidadPersonas) * 0.2));
-
-                // Calcular cantidad ajustada pero nunca exceder el stock disponible
-                const adjustedMax = Math.min(baseMax * factor, stockTotal);
-                return adjustedMax;
+            const product = products.find(p => p.id_articulo === productId);
+            if (product && cantidadPersonas && !isNaN(parseInt(cantidadPersonas))) {
+                const cantidadRecomendada = getRecommendedQuantity(product);
+                
+                const maxConRecomendacion = Math.ceil(cantidadRecomendada * 1.5);
+                
+                return Math.min(maxConRecomendacion, stockTotal);
             }
 
-            return baseMax;
+            return Math.min(Math.floor(stockTotal * 0.1), stockTotal);
         }
-        return 0; // Si no hay stock disponible
+        return 0; 
+    };
+
+    // Obtener la cantidad final recomendada (limitada por el stock máximo)
+    const getFinalRecommendedQuantity = (product) => {
+        const recommended = getRecommendedQuantity(product);
+        const maxQuantity = getMaxQuantity(product.id_articulo);
+        
+        return Math.min(recommended, maxQuantity);
     };
 
     const increment = (id) => {
         const maxQuantity = getMaxQuantity(id);
         setSelectedProducts((prev) => {
             const currentQuantity = prev[id] || 0;
-            // No permitir incrementar más allá del 30% disponible
             if (currentQuantity >= maxQuantity) {
                 return prev;
             }
@@ -105,6 +119,27 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                 [id]: current - 1,
             };
         });
+    };
+
+    const applyRecommendedQuantity = (product) => {
+        const recommendedQuantity = getFinalRecommendedQuantity(product);
+        if (recommendedQuantity > 0) {
+            setSelectedProducts(prev => ({
+                ...prev,
+                [product.id_articulo]: recommendedQuantity
+            }));
+        }
+    };
+
+    const applyAllRecommendations = () => {
+        const newSelectedProducts = {};
+        products.forEach(product => {
+            const recommendedQuantity = getFinalRecommendedQuantity(product);
+            if (recommendedQuantity > 0) {
+                newSelectedProducts[product.id_articulo] = recommendedQuantity;
+            }
+        });
+        setSelectedProducts(newSelectedProducts);
     };
 
     // Mostrar el mensaje con el límite de cantidad
@@ -166,41 +201,69 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                 <div className="mt-3">
                                     <h5>Disponibles {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, products.length)} de {products.length}</h5>
                                     <ListGroup>
-                                        {currentProducts.map((product) => (
-                                            <ListGroup.Item key={product.id_articulo}
-                                                            className="d-flex justify-content-between align-items-center mb-2">
-                                                <div>
-                                                    {product.nombre_articulo}
-                                                    <p className="text-opacity-50 text-black mb-0"
-                                                       style={{fontSize: "small"}}> {product.medida_abreviada}</p>
-                                                </div>
-                                                <div className="d-flex flex-row align-items-end">
-                                                    <div className="d-flex align-items-center justify-content-center">
-                                                        <Button
-                                                            variant="outline-secondary"
-                                                            size="sm"
-                                                            onClick={() => decrement(product.id_articulo)}
-                                                            disabled={!selectedProducts[product.id_articulo]}
-                                                        >
-                                                            -
-                                                        </Button>
-                                                        <div className="w-75">
-                                                            <h6 className="mx-2 fw-lighter">{selectedProducts[product.id_articulo] || 0}</h6>
+                                        {currentProducts.map((product) => {
+                                            const recommendedQuantity = getFinalRecommendedQuantity(product);
+                                            
+                                            return (
+                                                <ListGroup.Item key={product.id_articulo}
+                                                                className="d-flex justify-content-between align-items-center mb-2">
+                                                    <div>
+                                                        <div className="fw-semibold">{product.nombre_articulo}</div>
+                                                        <div className="d-flex align-items-center">
+                                                            <p className="text-opacity-50 text-black mb-0 me-2"
+                                                               style={{fontSize: "small"}}>{product.medida_abreviada}</p>
+                                                            {/* Mostrar recomendación simple */}
+                                                            {recommendedQuantity > 0 && (
+                                                                <small className="text-muted">
+                                                                    Sugerido: {recommendedQuantity}
+                                                                </small>
+                                                            )}
                                                         </div>
-                                                        <Button
-                                                            variant="outline-secondary"
-                                                            size="sm"
-                                                            onClick={() => increment(product.id_articulo)}
-                                                            disabled={selectedProducts[product.id_articulo] >= getMaxQuantity(product.id_articulo)}
-                                                        >
-                                                            +
-                                                        </Button>
                                                     </div>
-                                                    <small
-                                                        className="text-muted ms-2">{getQuantityMessage(product.id_articulo)}</small>
-                                                </div>
-                                            </ListGroup.Item>
-                                        ))}
+                                                    
+                                                    <div className="d-flex flex-column align-items-end">
+                                                        <div className="d-flex align-items-center justify-content-center mb-1">
+                                                            <Button
+                                                                variant="outline-secondary"
+                                                                size="sm"
+                                                                onClick={() => decrement(product.id_articulo)}
+                                                                disabled={!selectedProducts[product.id_articulo]}
+                                                            >
+                                                                -
+                                                            </Button>
+                                                            <div className="mx-2" style={{minWidth: "40px", textAlign: "center"}}>
+                                                                <h6 className="fw-lighter mb-0">{selectedProducts[product.id_articulo] || 0}</h6>
+                                                            </div>
+                                                            <Button
+                                                                variant="outline-secondary"
+                                                                size="sm"
+                                                                onClick={() => increment(product.id_articulo)}
+                                                                disabled={selectedProducts[product.id_articulo] >= getMaxQuantity(product.id_articulo)}
+                                                            >
+                                                                +
+                                                            </Button>
+                                                            {/* Botón de recomendación con icono */}
+                                                            {recommendedQuantity > 0 && (
+                                                                <Button
+                                                                    variant="outline-secondary"
+                                                                    size="sm"
+                                                                    className="ms-2 text-muted border-0"
+                                                                    onClick={() => applyRecommendedQuantity(product)}
+                                                                    title={`Aplicar cantidad sugerida: ${recommendedQuantity}`}
+                                                                    style={{
+                                                                        padding: "0.25rem 0.5rem",
+                                                                        backgroundColor: "transparent"
+                                                                    }}
+                                                                >
+                                                                    <BsCheckCircle size={16} />
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                        <small className="text-muted">{getQuantityMessage(product.id_articulo)}</small>
+                                                    </div>
+                                                </ListGroup.Item>
+                                            );
+                                        })}
                                     </ListGroup>
                                     
                                     {/* Pagination controls with custom styling */}
