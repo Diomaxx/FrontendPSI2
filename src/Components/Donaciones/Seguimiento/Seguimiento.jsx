@@ -53,7 +53,7 @@ const SeguimientoCard = ({ seguimiento }) => {
 
                         <div className="col-md-3 mb-3 mb-md-0 text-center text-md-start">
                             {seguimiento.imagenEvidencia ? (
-                                <img src={`http://34.123.227.162:8080${seguimiento.imagenEvidencia}`} className="img-fluid rounded" alt="Donación"
+                                <img src={`${seguimiento.imagenEvidencia}`} className="img-fluid rounded" alt="Donación"
                                      style={{ width: "100%", maxWidth: "160px", height: "auto", maxHeight: "160px", objectFit: "cover" }} />
                             ) : (
                                 <img src="/boxboxbox.png" className="img-fluid rounded bg-dark p-2" alt="Truck"
