@@ -106,7 +106,7 @@ const DonationCard = ({donation, onActualizarClick}) => {
 
                     <div className="mt-3">
                         {donation.imagen ? (
-                            <img src={`http://34.123.227.162:8080${donation.imagen}`} className="card-img-top mt-2 img-fluid"
+                            <img src={`${donation.imagen}`} className="card-img-top mt-2 img-fluid"
                                  alt="Donación" style={{borderRadius: "8px"}}/>
                         ) : (
                             <img src="/boxbox.png" className="card-img-bottom mt-2 img-fluid" alt="Truck"

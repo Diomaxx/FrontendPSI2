@@ -12,7 +12,7 @@ import RutaProtegida from './Components/Common/RutaProtegida.jsx';
 import RutaProtegidaAdmin from './Components/Common/RutaProtegidaAdmin.jsx';
 import Metricas from "./Components/Metricas/Metricas.jsx";
 import AdminPanel from "./Components/Adminstracion/AdminPanel.jsx";
-
+import GaleriaDonaciones from './Components/Metricas/GaleriaDonaciones.jsx';
 function TokenExpirationCheck() {
     useTokenExpirationCheck();
     return null;
@@ -27,6 +27,7 @@ function App() {
                 <Route path="/login" element={<InicioSesion/>}/>
                 <Route path="/registrate" element={<Registro/>}/>
                 <Route path="/buscar-ci" element={<BuscarCI/>}/>
+                <Route path="/gracias" element={<RutaProtegida><GaleriaDonaciones/></RutaProtegida>}/>
                 <Route path="/metricas" element={<RutaProtegida><Metricas/></RutaProtegida>}/>
                 <Route path="/seguimiento" element={<RutaProtegida><Seguimiento/></RutaProtegida>} />
                 <Route path="/solicitudes" element={<RutaProtegida><ListarSolicitudes/></RutaProtegida>} />
