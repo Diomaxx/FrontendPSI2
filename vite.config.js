@@ -7,14 +7,6 @@ export default defineConfig({
   server:{
     port: 3000,
     host: true,
-    proxy: {
-      '/renderapi': {
-        target: 'https://backenddonaciones.onrender.com',
-        changeOrigin: true,
-        secure: false,
-        rewrite: path => path.replace(/^\/renderapi/, '/api'),
-      }
-    }
 
   }
 })
