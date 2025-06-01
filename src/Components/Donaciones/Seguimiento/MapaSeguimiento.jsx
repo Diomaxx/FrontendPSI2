@@ -166,7 +166,7 @@ const RoutingMachine = ({ seguimiento }) => {
             
             // API request to OpenRouteService
             const response = await axios.post(
-                'https:/http://34.123.227.162:8080/api.openrouteservice.org/v2/directions/driving-car/geojson',
+                'https:/https://34.123.227.162:8443/api.openrouteservice.org/v2/directions/driving-car/geojson',
                 {
                     coordinates: coordinates,
                     preference: 'fastest',
