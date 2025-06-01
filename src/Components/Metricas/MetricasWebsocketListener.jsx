@@ -9,7 +9,7 @@ import { getMetricas } from "../../Services/metricasService.js"; // Import the m
 const MetricasWebSocketListener = ({ onActualizarMetricas }) => {
     useEffect(() => {
         const client = new Client({
-            brokerURL: "wss://34.123.227.162:8080/ws",
+            brokerURL: "wss://34.123.227.162:8443/ws",
             reconnectDelay: 5000,
             onConnect: () => {
                 console.log("Conectado a WebSocket para Métricas");
