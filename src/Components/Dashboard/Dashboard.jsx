@@ -73,7 +73,9 @@ const Dashboard = () => {
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease-in-out',
                                         border: '1px solid rgba(255, 255, 255, 0.1)',
-                                        minHeight: '300px'
+                                        minHeight: '300px',
+                                        borderRadius:'20px'
+
                                     }}
                                     onClick={handleShowMetrics}
                                     onMouseEnter={(e) => {
@@ -161,7 +163,8 @@ const Dashboard = () => {
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease-in-out',
                                         border: '1px solid rgba(255, 255, 255, 0.1)',
-                                        minHeight: '300px'
+                                        minHeight: '300px',
+                                        borderRadius:'20px'
                                     }}
                                     onClick={handleShowGallery}
                                     onMouseEnter={(e) => {
