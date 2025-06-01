@@ -28,7 +28,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
             setProducts(productsData);
 
             // Obtener stock disponible sin reservar
-            const stockResponse = await fetch('http://34.123.227.162:8080/api/solicitudes-sin-responder/inventario');
+            const stockResponse = await fetch('/api/solicitudes-sin-responder/inventario');
             if (!stockResponse.ok) {
                 throw new Error('Error al obtener el stock disponible');
             }

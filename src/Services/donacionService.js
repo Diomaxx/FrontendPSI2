@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_DONACIONES = "http://34.123.227.162:8080/api/donaciones/new";
+const API_DONACIONES = "/api/donaciones/new";
 
 const token = localStorage.getItem('authToken');
 
@@ -30,7 +30,7 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
 
     try {
         const response = await axios.post(
-            `http://34.123.227.162:8080/api/donaciones/actualizar/${idDonacion}`,
+            `/api/donaciones/actualizar/${idDonacion}`,
             {
                 ciUsuario,
                 estado,
@@ -62,7 +62,7 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
 
 export const solicitudesAprobadas = async () => {
     try {
-        const response = await axios.get('http://34.123.227.162:8080/api/donaciones/total', {
+        const response = await axios.get('/api/donaciones/total', {
             headers: getAuthHeaders(),
         });
         console.log("Total solicitudes aprobadas:", response.data);
