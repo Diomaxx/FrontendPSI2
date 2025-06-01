@@ -10,7 +10,7 @@ body {
     overflow-x: hidden;
     overflow-y: scroll;
     background: linear-gradient(to right, rgba(31, 32, 51, 0.93) 40%, rgba(0, 0, 0, 0.38)),
-    url('public/chiquitos.jpg') no-repeat center center/cover;
+    url('chiquitos.jpg') no-repeat center center/cover;
     font-family: 'Segoe UI', sans-serif !important;
 }
 .list-div { /**Este se usa en solicitudes*/
@@ -21,7 +21,7 @@ body {
     overflow-x: hidden;
     overflow-y: scroll;
     background: linear-gradient(to bottom, rgba(31, 32, 51, 0.96) 40%, rgba(0, 0, 0, 0.38)),
-    url('public/arboles.webp') no-repeat center center/cover;
+    url('arboles.webp') no-repeat center center/cover;
     font-family: 'Segoe UI', sans-serif !important;
 }
 .don-div { /**Este se usa en donaciones*/
@@ -32,7 +32,7 @@ body {
     overflow-x: hidden;
     overflow-y: scroll;
     background: linear-gradient(to bottom, rgba(31, 32, 51, 0.95) 50%, rgba(0, 0, 0, 0.38)),
-    url('public/road.jpg') no-repeat center center/cover;
+    url('road.jpg') no-repeat center center/cover;
     font-family: 'Segoe UI', sans-serif !important;
 }
 .form-control{
