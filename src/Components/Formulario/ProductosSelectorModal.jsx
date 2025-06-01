@@ -20,7 +20,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
         setLoading(true);
         try {
             // Obtener lista de productos
-            const productsResponse = await fetch("https://backenddonaciones.onrender.com/api/inventario/stock");
+            const productsResponse = await fetch("https://34.123.227.162:8443/proxy/inventario");
             ;
             if (!productsResponse.ok) {
                 throw new Error('Error al obtener los productos');
