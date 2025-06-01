@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3000,
     host: true,
     proxy: {
-      '/api': {
+      '/apinato': {
         target: 'https://backenddonaciones.onrender.com',
         changeOrigin: true,
         secure: false
