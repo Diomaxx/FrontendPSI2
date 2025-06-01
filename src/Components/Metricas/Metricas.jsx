@@ -846,16 +846,18 @@ const MetricasComponent = () => {
     if (loading) return (
         <div className="list-div">
             <Header/>
-            <div className="container-fluid d-flex justify-content-center">
-                <div className="w-100 align-items-center justify-content-center container-fluid"
-                     style={{maxWidth: "1500px"}}>
-                    <div className="mb-4 mt-4">
-                        <h2 className="fs-3 m-0 text-light mb-4">Dashboard de Métricas</h2>
-                        <div className="glass-card p-4 text-center">
-                            <div className="spinner-border text-warning" role="status">
-                                <span className="visually-hidden">Cargando...</span>
+            <div className="flex-grow-1 m-1">
+                <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
+                    <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1500px', width:'100%'}}>
+                        {/* Centered loading content */}
+                        <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+                            <div className="glass-card p-5 text-center">
+                                <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+                                    <span className="visually-hidden">Cargando...</span>
+                                </div>
+                                <p className="text-white mb-0 fs-5">Cargando métricas del sistema...</p>
+                                <p className="text-light opacity-75 mt-2 mb-0 small">Obteniendo datos estadísticos</p>
                             </div>
-                            <p className="text-white mt-3 mb-0">Cargando métricas...</p>
                         </div>
                     </div>
                 </div>
@@ -866,15 +868,19 @@ const MetricasComponent = () => {
     if (error) return (
         <div className="list-div">
             <Header/>
-            <div className="container-fluid d-flex justify-content-center">
-                <div className="w-100 align-items-center justify-content-center container-fluid"
-                     style={{maxWidth: "1500px"}}>
-                    <div className="mb-4 mt-4">
-                        <h2 className="fs-3 m-0 text-light mb-4">Dashboard de Métricas</h2>
-                        <div className="glass-card p-4">
-                            <div className="alert alert-danger mb-0" role="alert">
-                                <i className="bi bi-exclamation-triangle me-2"></i>
-                                {error}
+            <div className="flex-grow-1 m-1">
+                <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
+                    <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1500px', width:'100%'}}>
+                        {/* Centered error content */}
+                        <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+                            <div className="glass-card p-5 text-center">
+                                <div className="alert alert-danger mb-0" role="alert">
+                                    <i className="bi bi-exclamation-triangle me-2 fs-4"></i>
+                                    <div className="mt-2">
+                                        <strong>Error al cargar las métricas</strong>
+                                        <p className="mb-0 mt-2">{error}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1110,8 +1116,7 @@ const MetricasComponent = () => {
                      style={{maxWidth: "1500px"}}>
                 
                     <div className="mb-4 mt-4">
-                        <div className="d-flex justify-content-between align-items-center mb-4">
-                            <h2 className="fs-3 m-0 text-light">Dashboard de Métricas</h2>
+                        <div className="d-flex justify-content-end align-items-center mb-4">
                             <div className="d-flex gap-3">
                                 <button 
                                     className="btn btn-sm btn-warning text-dark fw-medium rounded-pill"
@@ -1125,8 +1130,8 @@ const MetricasComponent = () => {
                                 >
                                     <i className="bi bi-file-earmark-pdf me-1"></i> Descargar PDF
                                 </button>
-                                        </div>
-                                        </div>
+                            </div>
+                        </div>
 
                         {/* WebSocket Listener */}
                         <MetricasWebSocketListener onActualizarMetricas={handleMetricasActualizadas} />

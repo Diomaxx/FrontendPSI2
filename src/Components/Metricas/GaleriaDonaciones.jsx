@@ -225,9 +225,30 @@ const GaleriaDonaciones = () => {
     // Loading state
     if (loading) {
         return (
-            <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh", backgroundColor: "#e0e0d1" }}>
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Cargando...</span>
+            <div className="list-div">
+                <Header />
+                <div className="flex-grow-1 m-1">
+                    <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
+                        <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1200px', width:'100%'}}>
+                            {/* Header section */}
+                            <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
+                                <h3 className="text-center mt-2 mb-4 fs-3 text-white fw-semibold">
+                                    Galería de Agradecimientos
+                                </h3>
+                                
+                                {/* Centered loading content */}
+                                <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+                                    <div className="glass-card p-5 text-center">
+                                        <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+                                            <span className="visually-hidden">Cargando...</span>
+                                        </div>
+                                        <p className="text-white mb-0 fs-5">Cargando galería de donaciones...</p>
+                                        <p className="text-light opacity-75 mt-2 mb-0 small">Por favor, espere un momento</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -236,8 +257,33 @@ const GaleriaDonaciones = () => {
     // Error state
     if (error) {
         return (
-            <div className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh", backgroundColor: "#e0e0d1" }}>
-                <div className="alert alert-danger" role="alert">{error}</div>
+            <div className="list-div">
+                <Header />
+                <div className="flex-grow-1 m-1">
+                    <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
+                        <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1200px', width:'100%'}}>
+                            {/* Header section */}
+                            <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
+                                <h3 className="text-center mt-2 mb-4 fs-3 text-white fw-semibold">
+                                    Galería de Agradecimientos
+                                </h3>
+                                
+                                {/* Centered error content */}
+                                <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+                                    <div className="glass-card p-5 text-center">
+                                        <div className="alert alert-danger mb-0" role="alert">
+                                            <i className="bi bi-exclamation-triangle me-2 fs-4"></i>
+                                            <div className="mt-2">
+                                                <strong>Error al cargar la galería</strong>
+                                                <p className="mb-0 mt-2">{error}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

@@ -97,7 +97,7 @@ function Registro() {
                                         </div>
                                     </div>
                                     <div className="mb-3 mt-2">
-                                        <label htmlFor="ci" className="form-label">Cédula de Identidad (C.I.):</label>
+                                        <label htmlFor="ci" className="form-label">Carnet de Identidad (C.I.):</label>
                                         <Field type="number" name="ci"
                                                className="form-control  ps-4"
                                                placeholder="Ej. 1234567"/>

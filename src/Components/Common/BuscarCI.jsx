@@ -131,7 +131,7 @@ function BuscarCI() {
                                         <Form>
                                             <div className="mb-3">
                                                 <label htmlFor="ci" className="form-label">
-                                                    Cédula de Identidad (C.I.):
+                                                    Carnet de Identidad (C.I.):
                                                 </label>
                                                 <Field
                                                     type="number"
