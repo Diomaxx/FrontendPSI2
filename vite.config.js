@@ -8,12 +8,14 @@ export default defineConfig({
     port: 3000,
     host: true,
     proxy: {
-      '/apinato': {
+      '/renderapi': {
         target: 'https://backenddonaciones.onrender.com',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        rewrite: path => path.replace(/^\/renderapi/, 'http://34.123.227.162:8080/api'),
       }
     }
+
   }
 })
 

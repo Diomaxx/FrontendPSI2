@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-const API_URL = '/auth';
-const USUARIO_URL = '/api/usuarios';
+const API_URL = 'http://34.123.227.162:8080/auth';
+const USUARIO_URL = 'http://34.123.227.162:8080/api/usuarios';
 
 // Global variable to store the CI (subject) from token
 export let globalCI = null;

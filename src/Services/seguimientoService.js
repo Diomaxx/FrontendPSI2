@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_SEGUIMIENTOS = "/api/seguimientodonaciones/completos"; // Ajusta si el endpoint es diferente
+const API_SEGUIMIENTOS = "http://34.123.227.162:8080/api/seguimientodonaciones/completos"; // Ajusta si el endpoint es diferente
 
 export const fetchSeguimientos = async () => {
     try {
@@ -16,7 +16,7 @@ export const fetchSeguimientos = async () => {
 };
 export const donacionesEntregadas = async () => {
     try {
-        const response = await axios.get('/api/seguimientodonaciones/contar-entregadas');
+        const response = await axios.get('http://34.123.227.162:8080/api/seguimientodonaciones/contar-entregadas');
         console.log("Total donaciones entregadas:", response.data);
         return response.data;
     } catch (error) {

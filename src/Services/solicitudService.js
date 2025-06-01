@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getUserCI } from "./authService";
 
-const API_SOLICITUDES = "/api/solicitudes/resumen";
+const API_SOLICITUDES = "http://34.123.227.162:8080/api/solicitudes/resumen";
 
 export const fetchSolicitudes = () => axios.get(API_SOLICITUDES);
 
@@ -57,7 +57,7 @@ export const aprobarSolicitud = async (idSolicitud) => {
         
         // Send the CI as plain text in the request body
         const response = await axios.post(
-            `/api/solicitudes-sin-responder/aprobar/${idSolicitud}`, 
+            `http://34.123.227.162:8080/api/solicitudes-sin-responder/aprobar/${idSolicitud}`, 
             userCI, // Send the CI as plain text
             {
                 headers: {
@@ -77,7 +77,7 @@ export const aprobarSolicitud = async (idSolicitud) => {
 export const rechazarSolicitud = async (idSolicitud, motivo) => {
     try {
         const response = await axios.post(
-            `/api/solicitudes-sin-responder/rechazar/${idSolicitud}`, 
+            `http://34.123.227.162:8080/api/solicitudes-sin-responder/rechazar/${idSolicitud}`, 
             motivo,
             {
                 headers: {
@@ -95,7 +95,7 @@ export const rechazarSolicitud = async (idSolicitud, motivo) => {
 
 export const addSolicitud = async (solicitudData) => {
     try {
-        const response = await axios.post("/api/solicitudes-sin-responder/crear-completa", solicitudData, {
+        const response = await axios.post("http://34.123.227.162:8080/api/solicitudes-sin-responder/crear-completa", solicitudData, {
             headers: {
                 "Content-Type": "application/json"
             },
