@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Link, useNavigate } from "react-router-dom";
 import { donacionesEntregadas, fetchSeguimientos } from "../../../Services/seguimientoService.js";
-import { solicitudesAprobadas } from "../../../Services/donacionService.js";
 import MapaSeguimiento from "./MapaSeguimiento.jsx";
 import SeguimientoWebSocketListener from "./SeguimientoWebsocketListener.jsx";
 import Header from '../../Common/Header.jsx';

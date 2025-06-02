@@ -60,15 +60,3 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
     }
 };
 
-export const solicitudesAprobadas = async () => {
-    try {
-        const response = await axios.get('https://34.123.227.162:8443/api/donaciones/total', {
-            headers: getAuthHeaders(),
-        });
-        console.log("Total solicitudes aprobadas:", response.data);
-        return response.data;
-    } catch (error) {
-        console.error("Error al obtener donaciones entregadas:", error);
-        return 0;
-    }
-};
