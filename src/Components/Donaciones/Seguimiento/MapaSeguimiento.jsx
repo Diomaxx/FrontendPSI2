@@ -166,21 +166,15 @@ const RoutingMachine = ({ seguimiento }) => {
             
             // API request to OpenRouteService
             const response = await axios.post(
-                'https://api.openrouteservice.org/v2/directions/driving-car/geojson',
+                'https://34.123.227.162:8443/proxy/ruta',
                 {
                     coordinates: coordinates,
                     preference: 'fastest',
                     format: 'geojson',
                     instructions: false
-                },
-                {
-                    headers: {
-                        'Authorization': apiKey,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json, application/geo+json'
-                    }
                 }
             );
+
             
             // Return the route points
             if (response.data && response.data.features && response.data.features.length > 0) {
