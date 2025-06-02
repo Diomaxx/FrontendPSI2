@@ -136,12 +136,9 @@ const SeguimientoCard = ({ seguimiento }) => {
 
 const Seguimiento = () => {
     const [seguimientos, setSeguimientos] = useState([]);
-    const [total, setTotal] = useState(0);
-    const [entregadas, setEntregadas] = useState(0);
-    const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // 🔄 Carga inicial
+    // Carga inicial
     useEffect(() => {
         const cargarSeguimientos = async () => {
             setLoading(true);
@@ -157,27 +154,8 @@ const Seguimiento = () => {
         cargarSeguimientos();
     }, []);
 
-    // 📊 Estadísticas
-    useEffect(() => {
-        if (!loaded) {
-            const loadData = async () => {
-                try {
-                    const [totalAprobadas, totalEntregadas] = await Promise.all([
-                        solicitudesAprobadas(),
-                        donacionesEntregadas()
-                    ]);
-                    setTotal(totalAprobadas);
-                    setEntregadas(totalEntregadas);
-                    setLoaded(true);
-                } catch (e) {
-                    console.error("Error en loadData:", e);
-                }
-            };
-            loadData();
-        }
-    }, [loaded]);
 
-    // 🔁 Se recargan todos los seguimientos al recibir un evento WebSocket
+
     const recargarSeguimientosDesdeWS = (nuevos) => {
         setSeguimientos(nuevos);
     };
