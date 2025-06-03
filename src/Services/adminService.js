@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "https://34.123.227.162:8443/api/usuarios";
+const API_BASE = "https://dasalas.shop:8443/api/usuarios";
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('authToken');

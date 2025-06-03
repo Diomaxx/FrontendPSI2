@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_DONACIONES = "https://34.123.227.162:8443/api/donaciones/new";
+const API_DONACIONES = "https://dasalas.shop:8443/api/donaciones/new";
 
 const token = localStorage.getItem('authToken');
 
@@ -30,7 +30,7 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
 
     try {
         const response = await axios.post(
-            `https://34.123.227.162:8443/api/donaciones/actualizar/${idDonacion}`,
+            `https://dasalas.shop:8443/api/donaciones/actualizar/${idDonacion}`,
             {
                 ciUsuario,
                 estado,

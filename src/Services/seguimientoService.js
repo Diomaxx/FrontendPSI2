@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_SEGUIMIENTOS = "https://34.123.227.162:8443/api/seguimientodonaciones/completos"; // Ajusta si el endpoint es diferente
+const API_SEGUIMIENTOS = "https://dasalas.shop:8443/api/seguimientodonaciones/completos"; // Ajusta si el endpoint es diferente
 
 export const fetchSeguimientos = async () => {
     try {
@@ -16,7 +16,7 @@ export const fetchSeguimientos = async () => {
 };
 export const donacionesEntregadas = async () => {
     try {
-        const response = await axios.get('https://34.123.227.162:8443/api/seguimientodonaciones/contar-entregadas');
+        const response = await axios.get('https://dasalas.shop:8443/api/seguimientodonaciones/contar-entregadas');
         console.log("Total donaciones entregadas:", response.data);
         return response.data;
     } catch (error) {

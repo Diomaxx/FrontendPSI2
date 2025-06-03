@@ -20,7 +20,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
         setLoading(true);
         try {
             // Obtener lista de productos
-            const productsResponse = await fetch("https://34.123.227.162:8443/proxy/inventario");
+            const productsResponse = await fetch("https://dasalas.shop:8443/proxy/inventario");
             ;
             if (!productsResponse.ok) {
                 throw new Error('Error al obtener los productos');
@@ -29,7 +29,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
             setProducts(productsData);
 
             // Obtener stock disponible sin reservar
-            const stockResponse = await fetch('https://34.123.227.162:8443/api/solicitudes-sin-responder/inventario');
+            const stockResponse = await fetch('https://dasalas.shop:8443/api/solicitudes-sin-responder/inventario');
             if (!stockResponse.ok) {
                 throw new Error('Error al obtener el stock disponible');
             }

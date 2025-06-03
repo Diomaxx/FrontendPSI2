@@ -166,7 +166,7 @@ const RoutingMachine = ({ seguimiento }) => {
             
             // API request to OpenRouteService
             const response = await axios.post(
-                'https://34.123.227.162:8443/proxy/ruta',
+                'https://dasalas.shop:8443/proxy/ruta',
                 {
                     coordinates: coordinates,
                     preference: 'fastest',
