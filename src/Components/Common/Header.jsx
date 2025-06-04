@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { getAdminStatus, logoutUser } from '../../Services/authService.js';
+import { getAdminStatus, logoutUser, getToken } from '../../Services/authService.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = ({ showLogout = true }) => {
@@ -8,6 +8,13 @@ const Header = ({ showLogout = true }) => {
     const location = useLocation();
     const [bgStyle, setBgStyle] = useState({});
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // Function to check if user is logged in
+    const checkAuthStatus = () => {
+        const token = getToken();
+        return !!token; // Returns true if token exists, false otherwise
+    };
 
     const isActive = (path) => {
         return location.pathname === path;
@@ -43,11 +50,14 @@ const Header = ({ showLogout = true }) => {
         }
     }, [location.pathname]);
 
-    // Check admin status on component mount and when location changes
+    // Check admin status and authentication status on component mount and when location changes
     useEffect(() => {
         const adminStatus = getAdminStatus();
+        const authStatus = checkAuthStatus();
         setIsAdmin(adminStatus);
+        setIsLoggedIn(authStatus);
         console.log('Header - Estado de administrador:', adminStatus);
+        console.log('Header - Estado de autenticación:', authStatus);
     }, [location.pathname]);
 
     const handleLogout = () => {
@@ -58,10 +68,14 @@ const Header = ({ showLogout = true }) => {
     return (
         <header className="p-2 p-md-3 d-flex flex-column flex-md-row align-items-center justify-content-between"
                 style={bgStyle}>
-            <div className="ms-md-3 col-12 col-md-auto mb-2 mb-md-0 text-center text-md-start">
+            <div className="ms-md-3 col-12 col-md-auto mb-2 mb-md-0 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-start">
                 <Link to="/login" className="d-inline-block">
                     <img src="/logoMIN.png" alt="Logo" style={{maxHeight: '50px', height: '100%'}} className="img-fluid" />
                 </Link>
+                {/* D A S text next to logo */}
+                <span className="ms-3 fw-bold text-white" style={{fontSize: '1.5rem', letterSpacing: '0.2rem'}}>
+                    D.A.S
+                </span>
             </div>
             <nav className="col-12 col-md-auto d-flex flex-wrap justify-content-center justify-content-md-end align-items-center">
                 <Link
@@ -116,7 +130,8 @@ const Header = ({ showLogout = true }) => {
                     </Link>
                 )}
 
-                {showLogout && (
+                {/* Only show logout button if user is logged in and showLogout prop is true */}
+                {showLogout && isLoggedIn && (
                     <button
                         className="btn btn-sm btn-warning ms-3 me-md-4 px-3 py-2 fw-medium text-dark rounded-pill"
                         onClick={handleLogout}

@@ -853,8 +853,8 @@ const MetricasComponent = () => {
                         <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
                             <div className="glass-card p-5 text-center">
                                 <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-                                    <span className="visually-hidden">Cargando...</span>
-                                </div>
+                                <span className="visually-hidden">Cargando...</span>
+                            </div>
                                 <p className="text-white mb-0 fs-5">Cargando métricas del sistema...</p>
                                 <p className="text-light opacity-75 mt-2 mb-0 small">Obteniendo datos estadísticos</p>
                             </div>
@@ -874,7 +874,7 @@ const MetricasComponent = () => {
                         {/* Centered error content */}
                         <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
                             <div className="glass-card p-5 text-center">
-                                <div className="alert alert-danger mb-0" role="alert">
+                            <div className="alert alert-danger mb-0" role="alert">
                                     <i className="bi bi-exclamation-triangle me-2 fs-4"></i>
                                     <div className="mt-2">
                                         <strong>Error al cargar las métricas</strong>
@@ -1130,8 +1130,8 @@ const MetricasComponent = () => {
                                 >
                                     <i className="bi bi-file-earmark-pdf me-1"></i> Descargar PDF
                                 </button>
-                            </div>
-                        </div>
+                                        </div>
+                                        </div>
 
                         {/* WebSocket Listener */}
                         <MetricasWebSocketListener onActualizarMetricas={handleMetricasActualizadas} />
