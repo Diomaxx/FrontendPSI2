@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Formik, Form, Field, ErrorMessage, useFormikContext, useField} from 'formik';
 import * as Yup from 'yup';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import { addSolicitud } from "../../Services/solicitudService.js";
 
 import DatePicker, {registerLocale} from 'react-datepicker';
@@ -12,43 +12,15 @@ import '../Style.css';
 import ProductSelectorModal from "./ProductosSelectorModal.jsx";
 import MapSelector from "./MapSelector.jsx";
 import Header from "../Common/Header.jsx";
-import FormularioSolicitudMobile from "./FormularioSolicitudMobile.jsx";
 
-// CSS for animations
-const animationStyles = {
-    fadeIn: {
-        animation: 'fadeIn 0.5s ease forwards',
-    },
-    slideDown: {
-        animation: 'slideDown 0.4s ease-out forwards',
-    },
-    pulse: {
-        animation: 'pulse 1.5s infinite',
-    },
-    transitionAll: {
-        transition: 'all 0.3s ease-in-out',
-    },
-    '@keyframes fadeIn': {
-        from: { opacity: 0 },
-        to: { opacity: 1 },
-    },
-    '@keyframes slideDown': {
-        from: { transform: 'translateY(-20px)', opacity: 0 },
-        to: { transform: 'translateY(0)', opacity: 1 },
-    },
-    '@keyframes pulse': {
-        '0%': { transform: 'scale(1)' },
-        '50%': { transform: 'scale(1.05)' },
-        '100%': { transform: 'scale(1)' },
-    },
-};
-
-function FormularioSolicitud() {
+/**
+ * Mobile-optimized version of FormularioSolicitud
+ * Maintains the same design as desktop but with mobile-responsive improvements
+ */
+function FormularioSolicitudMobile() {
     const navigate = useNavigate();
     const formikRef = useRef(null);
-    
-    // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY CONDITIONAL RETURNS
-    const [isMobile, setIsMobile] = useState(false);
+
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [ubicacion, setUbicacion] = useState({ 
@@ -61,12 +33,14 @@ function FormularioSolicitud() {
         preciseDireccion: ""
     });
     
+    // Track section completion status - SAME AS DESKTOP
     const [sectionStatus, setSectionStatus] = useState({
         solicitante: false,
         entrega: false,
         emergencia: false
     });
     
+    // Track validation errors for sections - SAME AS DESKTOP
     const [validationErrors, setValidationErrors] = useState({
         solicitante: false,
         entrega: false,
@@ -74,45 +48,14 @@ function FormularioSolicitud() {
         productos: false
     });
 
+    // Track which section should be forcibly opened due to errors - SAME AS DESKTOP
     const [forceOpenSection, setForceOpenSection] = useState(null);
+
+    // Desktop-like section states - SAME AS DESKTOP
     const [showSolicitante, setShowSolicitante] = useState(false);
     const [showEntrega, setShowEntrega] = useState(false);
     const [showEmergencia, setShowEmergencia] = useState(false);
 
-    // Screen size detection effect
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        checkScreenSize();
-        window.addEventListener('resize', checkScreenSize);
-        return () => window.removeEventListener('resize', checkScreenSize);
-    }, []);
-
-    // Other effects
-    useEffect(() => {
-        if (formikRef.current) {
-            const values = formikRef.current.values;
-            checkSolicitanteComplete(values);
-            checkEntregaComplete(values);
-            checkEmergenciaComplete(values);
-        }
-    }, [formikRef.current?.values]);
-
-    useEffect(() => {
-        if (forceOpenSection) {
-            if (forceOpenSection === 'solicitante') setShowSolicitante(true);
-            if (forceOpenSection === 'entrega') setShowEntrega(true);
-            if (forceOpenSection === 'emergencia') setShowEmergencia(true);
-            setTimeout(() => setForceOpenSection(null), 500);
-        }
-    }, [forceOpenSection]);
-
-    useEffect(() => {
-        console.log("Initial form values loaded");
-    }, []);
-
-    // ALL FUNCTIONS AND CONSTANTS
     const initialValues = {
         nombreSolicitante: '',
         apellidoSolicitante: '',
@@ -147,6 +90,7 @@ function FormularioSolicitud() {
         categoria: Yup.string().required('Seleccione el tipo de emergencia')
     });
 
+    // SAME FUNCTIONS AS DESKTOP
     const checkSolicitanteComplete = (values) => {
         const isComplete = values.nombreSolicitante && 
                           values.apellidoSolicitante && 
@@ -177,6 +121,33 @@ function FormularioSolicitud() {
         return isComplete;
     };
 
+    // Check all sections on values change - SAME AS DESKTOP
+    useEffect(() => {
+        if (formikRef.current) {
+            const values = formikRef.current.values;
+            checkSolicitanteComplete(values);
+            checkEntregaComplete(values);
+            checkEmergenciaComplete(values);
+        }
+    }, [formikRef.current?.values]);
+
+    useEffect(() => {
+        // Open section that needs attention if forced - SAME AS DESKTOP
+        if (forceOpenSection) {
+            if (forceOpenSection === 'solicitante') setShowSolicitante(true);
+            if (forceOpenSection === 'entrega') setShowEntrega(true);
+            if (forceOpenSection === 'emergencia') setShowEmergencia(true);
+            
+            // Clear the force after handling
+            setTimeout(() => setForceOpenSection(null), 500);
+        }
+    }, [forceOpenSection]);
+
+    useEffect(() => {
+        console.log("Mobile form initial values loaded");
+    }, []);
+
+    // Handle location change for mobile - SAME AS DESKTOP
     const handleLocationChange = async (location) => {
         const { lat, lng } = location;
         try {
@@ -222,6 +193,7 @@ function FormularioSolicitud() {
         }
     };
 
+    // Mobile-specific form submission - SAME LOGIC AS DESKTOP
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const solicitanteComplete = checkSolicitanteComplete(values);
@@ -307,8 +279,9 @@ function FormularioSolicitud() {
     };
 
     registerLocale('es', es);
-    
-    const FormikDatePicker = ({ name }) => {
+
+    // Mobile DatePicker component - SAME AS DESKTOP BUT MOBILE-OPTIMIZED
+    const MobileDatePicker = ({ name }) => {
         const { setFieldValue } = useFormikContext();
         const [field, meta] = useField(name);
 
@@ -319,38 +292,31 @@ function FormularioSolicitud() {
         }, []);
 
         return (
-            <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                <label htmlFor={name} className="mt-1 me-md-3 p-0 form-label w-100">
+            <div className="mb-0 mt-3 d-flex flex-column">
+                <label htmlFor={name} className="mt-1 p-0 form-label text-white mb-2">
                     Inicio de la Emergencia:
                 </label>
-                <div>
-                    <DatePicker
-                        selected={field.value ? new Date(field.value) : null}
-                        onChange={(date) => setFieldValue(name, date)}
-                        dateFormat="dd/MM/yyyy"
-                        className="form-control w-100"
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        locale="es"
-                        maxDate={new Date()}
-                    />
-                </div>
+                <DatePicker
+                    selected={field.value ? new Date(field.value) : null}
+                    onChange={(date) => setFieldValue(name, date)}
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control w-100"
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    locale="es"
+                    maxDate={new Date()}
+                />
             </div>
         );
     };
 
-    // CONDITIONAL RENDER - AFTER ALL HOOKS
-    if (isMobile) {
-        return <FormularioSolicitudMobile />;
-    }
-
-    // DESKTOP VERSION
     return (
         <div className="list-div">
             <Header/>
             <style>
                 {`
+                    /* Mobile-specific improvements while maintaining desktop design */
                     @keyframes fadeIn {
                         from { opacity: 0; }
                         to { opacity: 1; }
@@ -376,19 +342,37 @@ function FormularioSolicitud() {
                     .transition-section.show {
                         animation: slideDown 0.5s ease-in-out;
                     }
+                    
+                    /* Mobile optimizations */
+                    .form-control {
+                        font-size: 16px !important; /* Prevents zoom on iOS */
+                        padding: 12px 15px !important;
+                        border-radius: 8px !important;
+                    }
+                    
+                    .btn {
+                        min-height: 48px !important; /* Better touch target */
+                        font-size: 16px !important;
+                        padding: 12px 20px !important;
+                    }
+                    
                     .btn-outline-light:hover, .btn-mine:hover {
                         transform: translateY(-2px);
                         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
                         transition: all 0.3s ease;
                     }
+                    
                     .form-control:focus {
                         transition: all 0.3s ease;
                         box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+                        border-color: #86b7fe !important;
                     }
+                    
                     .highlight-error {
                         animation: highlightError 1s ease-in-out;
                         border-color: #dc3545 !important;
                     }
+                    
                     .validation-error-section {
                         background-color: rgba(220, 53, 69, 0.1);
                         border-left: 3px solid #dc3545;
@@ -397,17 +381,78 @@ function FormularioSolicitud() {
                         margin-bottom: 10px;
                         animation: fadeIn 0.3s ease-in-out;
                     }
+                    
+                    /* Mobile-specific spacing and layout */
+                    @media (max-width: 767px) {
+                        .form-label {
+                            font-weight: 500 !important;
+                            margin-bottom: 8px !important;
+                            color: white !important;
+                        }
+                        
+                        .d-flex.flex-column.flex-md-row {
+                            flex-direction: column !important;
+                        }
+                        
+                        .d-flex.flex-column.flex-md-row .form-label {
+                            width: 100% !important;
+                            margin-right: 0 !important;
+                            margin-bottom: 8px !important;
+                        }
+                        
+                        .gap-3 {
+                            gap: 0.75rem !important;
+                        }
+                        
+                        .btn.rounded-pill {
+                            border-radius: 25px !important;
+                            margin-bottom: 8px !important;
+                        }
+                        
+                        .shadow.rounded {
+                            border-radius: 15px !important;
+                            margin: 1rem !important;
+                            padding: 1.5rem !important;
+                        }
+                        
+                        .container-fluid {
+                            padding: 0 !important;
+                        }
+                    }
+                    
+                    /* Ensure better touch targets on mobile */
+                    @media (max-width: 767px) {
+                        .btn-outline-light, .btn-success, .btn-danger {
+                            padding: 15px 20px !important;
+                            font-size: 14px !important;
+                            font-weight: 600 !important;
+                        }
+                        
+                        .form-control, .form-select {
+                            padding: 15px !important;
+                            font-size: 16px !important;
+                            line-height: 1.4 !important;
+                        }
+                        
+                        textarea.form-control {
+                            resize: vertical !important;
+                            min-height: 80px !important;
+                        }
+                    }
                 `}
             </style>
-            <div
-                className={showSuccessModal ? "blur-background container-fluid d-flex flex-column align-items-center mb-3" : "container-fluid d-flex flex-column align-items-center  mb-3 "}
-                 >
+            
+            <div className={showSuccessModal ? "blur-background container-fluid d-flex flex-column align-items-center mb-3" : "container-fluid d-flex flex-column align-items-center mb-3"}>
                 <div className="">
-                    <div className=" m-5 p-5 shadow rounded flex-grow-1 shadow w-auto text-light  "
+                    <div className="m-5 p-5 shadow rounded flex-grow-1 shadow w-auto text-light"
                          style={{background: 'rgba(15,16,21,0.63)', width: '100%', maxWidth: '1400px', margin: '0 auto', transition: 'all 0.3s ease-in-out'}}>
+                        
                         <h3 className="text-center mt-3 mb-4 display-6 text-light"
-                            style={{fontSize: 'xx-large', fontWeight: "bold"}}>Solicitar
-                            Insumos</h3>
+                            style={{fontSize: 'xx-large', fontWeight: "bold"}}>
+                            Solicitar Insumos
+                        </h3>
+                        
+                        {/* SAME BUTTON STRUCTURE AS DESKTOP */}
                         <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 mt-3 ms-3">
                             <button
                                 type="button"
@@ -466,7 +511,7 @@ function FormularioSolicitud() {
                             >
                                 Datos de la Emergencia
                                 {sectionStatus.emergencia && (
-                                    <span className="position-absolute top-0 end-0 translate-middle p-1 bg-success border border-light rounded-circle rounded-pill ">
+                                    <span className="position-absolute top-0 end-0 translate-middle p-1 bg-success border border-light rounded-circle rounded-pill">
                                         <span className="visually-hidden">Completado</span>
                                     </span>
                                 )}
@@ -480,11 +525,11 @@ function FormularioSolicitud() {
                             innerRef={formikRef}
                         >
                             {({isSubmitting, setFieldValue}) => (
-                                <Form style={{fontSize: 'medium'}} >
+                                <Form style={{fontSize: 'medium'}}>
                                     <div className="row">
                                         <div className="col-md-12 pe-0 px-3">
                                             <div className="w-100">
-                                                {/**DATOS DEL SOLICITANTE**/}
+                                                {/* DATOS DEL SOLICITANTE - SAME AS DESKTOP */}
                                                 <div
                                                     className={`transition-section ${showSolicitante ? 'show' : 'hide'}`}
                                                     style={{
@@ -492,59 +537,44 @@ function FormularioSolicitud() {
                                                         animation: showSolicitante ? 'fadeIn 0.5s ease-in-out' : 'none'
                                                     }}
                                                 >
-                                                    <h3 className="mt-2 text-black-100 " style={{fontSize: 'large'}}>
+                                                    <h3 className="mt-2 text-white" style={{fontSize: 'large'}}>
                                                         Ingresa tus Datos
                                                     </h3>
+                                                    
                                                     <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                                                        <label htmlFor="nombreSolicitante"
-                                                               className="mt-1 me-md-3 p-0 form-label w-100">Nombre:</label>
-                                                        <Field type="text" name="nombreSolicitante"
-                                                               className="form-control m-0"
-                                                               placeholder="Ingrese su nombre"/>
+                                                        <label htmlFor="nombreSolicitante" className="mt-1 me-md-3 p-0 form-label w-100">Nombre:</label>
+                                                        <Field type="text" name="nombreSolicitante" className="form-control m-0" placeholder="Ingrese su nombre"/>
                                                     </div>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="nombreSolicitante" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="nombreSolicitante" component="div" className="text-danger"/>
                                                     </div>
 
                                                     <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                                                        <label htmlFor="apellidoSolicitante"
-                                                               className="mt-1 me-md-3 p-0 form-label w-100">Apellido:</label>
-                                                        <Field type="text" name="apellidoSolicitante"
-                                                               className="form-control m-0"
-                                                               placeholder="Ingrese su apellido"/>
+                                                        <label htmlFor="apellidoSolicitante" className="mt-1 me-md-3 p-0 form-label w-100">Apellido:</label>
+                                                        <Field type="text" name="apellidoSolicitante" className="form-control m-0" placeholder="Ingrese su apellido"/>
                                                     </div>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="apellidoSolicitante" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="apellidoSolicitante" component="div" className="text-danger"/>
                                                     </div>
 
                                                     <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                                                        <label htmlFor="ciSolicitante"
-                                                               className="mt-1 me-md-3 p-0 form-label w-100">Carnet
-                                                            de Indentidad (C.I.):</label>
-                                                        <Field type="number" name="ciSolicitante"
-                                                               className="form-control m-0"
-                                                               placeholder="Ej. 1234567"/>
+                                                        <label htmlFor="ciSolicitante" className="mt-1 me-md-3 p-0 form-label w-100">Carnet de Identidad (C.I.):</label>
+                                                        <Field type="number" name="ciSolicitante" className="form-control m-0" placeholder="Ej. 1234567"/>
                                                     </div>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="ciSolicitante" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="ciSolicitante" component="div" className="text-danger"/>
                                                     </div>
 
                                                     <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                                                        <label htmlFor="comunidad"
-                                                               className="mt-1 me-md-3 p-0 form-label w-100">Comunidad
-                                                            Solicitante:</label>
-                                                        <Field type="text" name="comunidad"
-                                                               className="form-control m-0"
-                                                               placeholder="Ej. San Jose de Chiquitos"/>
+                                                        <label htmlFor="comunidad" className="mt-1 me-md-3 p-0 form-label w-100">Comunidad Solicitante:</label>
+                                                        <Field type="text" name="comunidad" className="form-control m-0" placeholder="Ej. San Jose de Chiquitos"/>
                                                     </div>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="comunidad" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="comunidad" component="div" className="text-danger"/>
                                                     </div>
                                                 </div>
+
+                                                {/* DATOS DE LA EMERGENCIA - SAME AS DESKTOP */}
                                                 <div
                                                     className={`transition-section ${showEmergencia ? 'show' : 'hide'}`}
                                                     style={{
@@ -552,36 +582,26 @@ function FormularioSolicitud() {
                                                         animation: showEmergencia ? 'fadeIn 0.5s ease-in-out' : 'none'
                                                     }}
                                                 >
-                                                    <h3 className="mt-2 text-black-100 " style={{fontSize: 'large'}}>
+                                                    <h3 className="mt-2 text-white" style={{fontSize: 'large'}}>
                                                         Información Sobre la Emergencia
                                                     </h3>
+                                                    
                                                     <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                                                        <label htmlFor="cantidadPersonas"
-                                                               className="mt-1 me-md-3 p-0 form-label w-100">Cantidad
-                                                            de
-                                                            Personas:</label>
-                                                        <Field type="number" name="cantidadPersonas"
-                                                               className="form-control m-0"
-                                                               placeholder="Ingrese el aproximado de personas afectadas"/>
+                                                        <label htmlFor="cantidadPersonas" className="mt-1 me-md-3 p-0 form-label w-100">Cantidad de Personas:</label>
+                                                        <Field type="number" name="cantidadPersonas" className="form-control m-0" placeholder="Ingrese el aproximado de personas afectadas"/>
                                                     </div>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="cantidadPersonas" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="cantidadPersonas" component="div" className="text-danger"/>
                                                     </div>
 
-                                                    <FormikDatePicker name="fechaInicioIncendio"/>
-
+                                                    <MobileDatePicker name="fechaInicioIncendio"/>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="fechaInicioIncendio" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="fechaInicioIncendio" component="div" className="text-danger"/>
                                                     </div>
+
                                                     <div className="mb-0 mt-3 d-flex flex-column flex-md-row">
-                                                        <label htmlFor="categoria"
-                                                               className="mt-1 me-md-3 p-0 form-label w-100">Tipo de
-                                                            Emergencia:</label>
-                                                        <Field as="select" name="categoria"
-                                                               className="form-select m-0"
-                                                               defaultValue="Incendio">
+                                                        <label htmlFor="categoria" className="mt-1 me-md-3 p-0 form-label w-100">Tipo de Emergencia:</label>
+                                                        <Field as="select" name="categoria" className="form-select m-0" defaultValue="Incendio">
                                                             <option value="Incendio">Incendio</option>
                                                             <option value="Inundacion">Inundación</option>
                                                             <option value="Escasez">Escasez Alimentaria</option>
@@ -590,17 +610,17 @@ function FormularioSolicitud() {
                                                         </Field>
                                                     </div>
                                                     <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                        <ErrorMessage name="categoria" component="div"
-                                                                      className="text-danger"/>
+                                                        <ErrorMessage name="categoria" component="div" className="text-danger"/>
                                                     </div>
-                                                    <div className="mb-0 mt-3 ">
-                                                        <label htmlFor="listaProductos"
-                                                               className="mt-1 me-3 p-0 form-label">
+
+                                                    <div className="mb-0 mt-3">
+                                                        <label htmlFor="listaProductos" className="mt-1 me-3 p-0 form-label">
                                                             Insumos Necesarios:
                                                         </label>
-                                                        <ProductSelectorModal setFieldValue={setFieldValue}
-                                                                              cantidadPersonas={formikRef.current?.values.cantidadPersonas}
-                                                                              disabled={!formikRef.current?.values.cantidadPersonas}
+                                                        <ProductSelectorModal 
+                                                            setFieldValue={setFieldValue}
+                                                            cantidadPersonas={formikRef.current?.values.cantidadPersonas}
+                                                            disabled={!formikRef.current?.values.cantidadPersonas}
                                                         />
                                                         <Field name="listaProductos">
                                                             {({field}) => (
@@ -608,7 +628,7 @@ function FormularioSolicitud() {
                                                                     {...field}
                                                                     readOnly
                                                                     rows="2"
-                                                                    className={`form-control m-0 baba ${validationErrors.productos ? 'border-danger' : ''}`}
+                                                                    className={`form-control m-0 ${validationErrors.productos ? 'border-danger' : ''}`}
                                                                     placeholder="No tiene productos seleccionados"
                                                                     disabled={!formikRef.current?.values.cantidadPersonas}
                                                                 />
@@ -617,7 +637,8 @@ function FormularioSolicitud() {
                                                         <Field type="hidden" name="listaProductosAPI"/>
                                                     </div>
                                                 </div>
-                                                {/*ENTREGA*/}
+
+                                                {/* DATOS DE LA ENTREGA - SAME AS DESKTOP */}
                                                 <div
                                                     className={`transition-section ${showEntrega ? 'show' : 'hide'}`}
                                                     style={{
@@ -626,102 +647,66 @@ function FormularioSolicitud() {
                                                     }}
                                                 >
                                                     <div className="rounded p-3 flex-column">
-                                                        <h3 className="mt-2 text-black-100 "
-                                                            style={{fontSize: 'large'}}>
+                                                        <h3 className="mt-2 text-white" style={{fontSize: 'large'}}>
                                                             Datos para la Entrega
                                                         </h3>
 
-                                                        <div
-                                                            className="mb-0 mt-3 d-flex flex-column flex-md-row align-items-start">
-                                                            {/* Label aligned to the top */}
-                                                            <label
-                                                                htmlFor="direccion"
-                                                                className="mt-1 me-md-3 p-0 form-label"
-                                                                style={{whiteSpace: 'nowrap'}}
-                                                            >
-                                                            Dirección:
+                                                        <div className="mb-0 mt-3 d-flex flex-column">
+                                                            <label htmlFor="direccion" className="mt-1 p-0 form-label text-white mb-2">
+                                                                Dirección:
                                                             </label>
-
-                                                            {/* Map and Dirección preview in column */}
-                                                            <div className="flex-grow-1 d-flex flex-column gap-2">
-                                                                <div>
-                                                                    <MapSelector
-                                                                        onLocationChange={handleLocationChange}/>
-                                                                </div>
-
-                                                                {ubicacion.direccion && (
-                                                                    <div className="alert alert-dark py-2 mb-0"
-                                                                         style={{
-                                                                             fontSize: 'small',
-                                                                             maxWidth: '100%',
-                                                                             width: '500px' /* Set fixed width */
-                                                                         }}>
-                                                                        <p className="fw-bold mb-0">Dirección
-                                                                            seleccionada:</p>
-                                                                        <p className="mb-0">{ubicacion.direccion}</p>
-                                                                    </div>
-                                                                )}
-
-                                                                <Field type="hidden" name="direccion"/>
-                                                                <ErrorMessage
-                                                                    name="direccion"
-                                                                    component="div"
-                                                                    className="text-danger"
-                                                                    style={{fontSize: 'smaller'}}
-                                                                />
+                                                            
+                                                            <div className="mb-2">
+                                                                <MapSelector onLocationChange={handleLocationChange}/>
                                                             </div>
+
+                                                            {ubicacion.direccion && (
+                                                                <div className="alert alert-dark py-2 mb-2" style={{fontSize: 'small'}}>
+                                                                    <p className="fw-bold mb-0">Dirección seleccionada:</p>
+                                                                    <p className="mb-0">{ubicacion.direccion}</p>
+                                                                </div>
+                                                            )}
+
+                                                            <Field type="hidden" name="direccion"/>
+                                                            <ErrorMessage name="direccion" component="div" className="text-danger" style={{fontSize: 'smaller'}}/>
                                                         </div>
 
-
-                                                        {/* Campo oculto para dirección */}
-
-                                                        <div className="mb-0 mt-2 d-flex flex-column flex-md-row">
-                                                            <label htmlFor="provincia"
-                                                                   className="mt-1 me-md-3 p-0 form-label ">Provincia:</label>
-                                                            <div className="form-control ">
+                                                        <div className="mb-0 mt-2 d-flex flex-column">
+                                                            <label htmlFor="provincia" className="mt-1 p-0 form-label text-white mb-2">Provincia:</label>
+                                                            <div className="form-control">
                                                                 {ubicacion.provincia || 'No detectada aún - Seleccione una ubicación en el mapa'}
                                                             </div>
                                                         </div>
-                                                        {/* Campo oculto para provincia */}
                                                         <Field type="hidden" name="provincia"/>
                                                         <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                            <ErrorMessage name="provincia" component="div"
-                                                                          className="text-danger"/>
+                                                            <ErrorMessage name="provincia" component="div" className="text-danger"/>
                                                         </div>
 
-                                                        <div className="mb-0 mt-2 d-flex flex-column flex-md-row">
-                                                            <label htmlFor="telefonoSolicitante"
-                                                                   className="mt-1 me-md-3 p-0 form-label w-100">Nro
-                                                                de
-                                                                Celular:</label>
-                                                            <Field type="number" name="telefonoSolicitante"
-                                                                   className="form-control m-0 w-100"
-                                                                   style={{maxWidth: "inherit", width: "100%"}}
-                                                                   placeholder="Ej. +591 77312305"/>
+                                                        <div className="mb-0 mt-2 d-flex flex-column">
+                                                            <label htmlFor="telefonoSolicitante" className="mt-1 p-0 form-label text-white mb-2">Nro de Celular:</label>
+                                                            <Field type="number" name="telefonoSolicitante" className="form-control m-0 w-100" placeholder="Ej. 77312305"/>
                                                         </div>
                                                         <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                            <ErrorMessage name="telefonoSolicitante" component="div"
-                                                                          className="text-danger"/>
+                                                            <ErrorMessage name="telefonoSolicitante" component="div" className="text-danger"/>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <Field type="hidden" name="listaProductos"/>
                                                 <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
-                                                    <ErrorMessage name="listaProductos" component="div"
-                                                                  className="text-danger"/>
+                                                    <ErrorMessage name="listaProductos" component="div" className="text-danger"/>
                                                     {validationErrors.productos && (
                                                         <div className="text-danger">Por favor, seleccione al menos un producto</div>
                                                     )}
                                                 </div>
+                                                
                                                 <div className="mt-2 mb-3 text-center">
-                                                    <p className="text-center"
-                                                       style={{color: 'whitesmoke', fontSize: "smaller"}}>Al
-                                                        realizar esta
-                                                        solicitud eres responsable de
-                                                        recibirla en el lugar</p>
+                                                    <p className="text-center" style={{color: 'whitesmoke', fontSize: "smaller"}}>
+                                                        Al realizar esta solicitud eres responsable de recibirla en el lugar
+                                                    </p>
                                                 </div>
                                             </div>
+                                            
                                             <div className="d-flex justify-content-center">
                                                 <button type="submit"
                                                         className="btn w-100 w-md-50 mt-1 mb-3 btn-mine-yellow p-2 rounded-pill"
@@ -739,65 +724,41 @@ function FormularioSolicitud() {
                 </div>
             </div>
 
-            {/* Success Modal */}
-            <div className={`modal fade ${showSuccessModal ? 'show  d-block ' : ''}`} tabIndex="-1"
-                 style={{
-                     backgroundColor: "rgba(0,0,0,0.5)",
-                     transition: "all 0.3s ease-in-out"
-                 }} role="dialog">
-                <div className="modal-dialog modal-dialog-centered" 
-                     style={{
-                         transform: showSuccessModal ? 'translateY(0)' : 'translateY(-25px)',
-                         opacity: showSuccessModal ? 1 : 0,
-                         transition: "all 0.3s ease-out"
-                     }} 
-                     role="document">
+            {/* Success Modal - SAME AS DESKTOP */}
+            <div className={`modal fade ${showSuccessModal ? 'show d-block' : ''}`} 
+                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header bg-mine text-black">
                             <h5 className="modal-title text-white">Éxito</h5>
-                            <button type="button" className="btn-close rounded-pill" onClick={() => {
-                                setShowSuccessModal(false);
-                            }}></button>
+                            <button type="button" className="btn-close" onClick={() => setShowSuccessModal(false)}></button>
                         </div>
                         <div className="modal-body">
                             <p>Solicitud enviada con éxito.</p>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-mine rounded-pill" onClick={() => {
-                                setShowSuccessModal(false);
-                            }}>
-                            OK
+                            <button className="btn btn-mine" onClick={() => setShowSuccessModal(false)}>
+                                OK
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Error Modal */}
-            <div className={`modal fade ${showErrorModal ? 'show d-block' : ''}`} tabIndex="-1" 
-                 style={{
-                     backgroundColor: "rgba(0,0,0,0.5)",
-                     transition: "all 0.3s ease-in-out"
-                 }} 
-                 role="dialog">
-                <div className="modal-dialog modal-dialog-centered" 
-                     style={{
-                         transform: showErrorModal ? 'translateY(0)' : 'translateY(-25px)',
-                         opacity: showErrorModal ? 1 : 0,
-                         transition: "all 0.1s ease-out"
-                     }} 
-                     role="document">
+            {/* Error Modal - SAME AS DESKTOP */}
+            <div className={`modal fade ${showErrorModal ? 'show d-block' : ''}`} 
+                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header bg-danger text-white">
                             <h5 className="modal-title">Error</h5>
-                            <button type="button" className="btn-close rounded-pill"
-                                    onClick={() => setShowErrorModal(false)}></button>
+                            <button type="button" className="btn-close" onClick={() => setShowErrorModal(false)}></button>
                         </div>
                         <div className="modal-body">
                             <p>Hubo un error al enviar la solicitud. Intenta nuevamente.</p>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-danger rounded-pill" onClick={() => setShowErrorModal(false)}>
+                            <button className="btn btn-danger" onClick={() => setShowErrorModal(false)}>
                                 Cerrar
                             </button>
                         </div>
@@ -808,4 +769,4 @@ function FormularioSolicitud() {
     );
 }
 
-export default FormularioSolicitud;
+export default FormularioSolicitudMobile; 
