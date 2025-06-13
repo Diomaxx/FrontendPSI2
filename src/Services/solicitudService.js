@@ -3,13 +3,11 @@ import { getUserCI } from "./authService";
 
 const API_SOLICITUDES = "https://dasalas.shop:8443/api/solicitudes/resumen";
 
-export const fetchSolicitudes = () => axios.get(API_SOLICITUDES);
 
 export const getSolicitudesResumen = async () => {
     try {
         const response = await axios.get(API_SOLICITUDES);
         
-        // Format the solicitudes data for the component
         if (Array.isArray(response.data)) {
             return response.data.map(item => formatSolicitud(item));
         }
@@ -21,10 +19,8 @@ export const getSolicitudesResumen = async () => {
     }
 };
 
-// Helper function to format solicitud data
 const formatSolicitud = (item) => {
-    // Format the products list
-    const productsList = Array.isArray(item.listaProductos) 
+    const productsList = Array.isArray(item.listaProductos)
         ? item.listaProductos 
         : typeof item.listaProductos === 'string'
             ? [item.listaProductos]
@@ -51,17 +47,15 @@ const formatSolicitud = (item) => {
 export const aprobarSolicitud = async (idSolicitud) => {
     console.log("Enviando aprobación para:", idSolicitud);
     try {
-        // Get the CI of the current user
         const userCI = getUserCI();
         console.log("Aprobando con CI del usuario:", userCI);
         
-        // Send the CI as plain text in the request body
         const response = await axios.post(
             `https://dasalas.shop:8443/api/solicitudes-sin-responder/aprobar/${idSolicitud}`, 
-            userCI, // Send the CI as plain text
+            userCI,
             {
                 headers: {
-                    "Content-Type": "text/plain" // Changed from application/json to text/plain
+                    "Content-Type": "text/plain"
                 },
                 withCredentials: false
             }

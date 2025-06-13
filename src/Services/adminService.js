@@ -13,7 +13,6 @@ const getAuthHeaders = () => {
 export const fetchNonAdminUsers = async () => {
     try {
         const response = await axios.get(`${API_BASE}/noAdmin`, {
-            headers: getAuthHeaders(),
             withCredentials: false,
         });
         return response.data;
@@ -26,7 +25,6 @@ export const fetchNonAdminUsers = async () => {
 export const toggleUserActiveStatus = async (userId) => {
     try {
         const response = await axios.post(`${API_BASE}/active/${userId}`, {}, {
-            headers: getAuthHeaders(),
             withCredentials: false,
         });
         return response.data;
@@ -39,7 +37,6 @@ export const toggleUserActiveStatus = async (userId) => {
 export const promoteUserToAdmin = async (userId) => {
     try {
         const response = await axios.post(`${API_BASE}/admin/${userId}`, {}, {
-            headers: getAuthHeaders(),
             withCredentials: false,
         });
         return response.data;

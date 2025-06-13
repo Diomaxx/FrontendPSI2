@@ -15,11 +15,9 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); 
 
-    // Función para obtener los productos del inventario
     const fetchProductos = async () => {
         setLoading(true);
         try {
-            // Obtener lista de productos
             const productsResponse = await fetch("https://dasalas.shop:8443/proxy/inventario");
             ;
             if (!productsResponse.ok) {
@@ -28,7 +26,6 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
             const productsData = await productsResponse.json();
             setProducts(productsData);
 
-            // Obtener stock disponible sin reservar
             const stockResponse = await fetch('https://dasalas.shop:8443/api/solicitudes-sin-responder/inventario');
             if (!stockResponse.ok) {
                 throw new Error('Error al obtener el stock disponible');
@@ -45,7 +42,6 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
         }
     };
 
-    // Cargar productos cuando se abre el modal
     const handleShow = () => {
         setShow(true);
         setCurrentPage(1); 
@@ -85,7 +81,6 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
         return 0; 
     };
 
-    // Obtener la cantidad final recomendada (limitada por el stock máximo)
     const getFinalRecommendedQuantity = (product) => {
         const recommended = getRecommendedQuantity(product);
         const maxQuantity = getMaxQuantity(product.id_articulo);
@@ -132,18 +127,8 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
         }
     };
 
-    const applyAllRecommendations = () => {
-        const newSelectedProducts = {};
-        products.forEach(product => {
-            const recommendedQuantity = getFinalRecommendedQuantity(product);
-            if (recommendedQuantity > 0) {
-                newSelectedProducts[product.id_articulo] = recommendedQuantity;
-            }
-        });
-        setSelectedProducts(newSelectedProducts);
-    };
 
-    // Mostrar el mensaje con el límite de cantidad
+
     const getQuantityMessage = (productId) => {
         const maxQuantity = getMaxQuantity(productId);
         const currentQuantity = selectedProducts[productId] || 0;

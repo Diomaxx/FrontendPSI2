@@ -14,7 +14,6 @@ const MetricasWebSocketListener = ({ onActualizarMetricas }) => {
             onConnect: () => {
                 console.log("Conectado a WebSocket para Métricas");
 
-                // Subscribe to the metrics update topic
                 client.subscribe("/topic/nueva-metrica", async () => {
                     console.log("Notificación de nuevas métricas recibida");
 
@@ -31,15 +30,10 @@ const MetricasWebSocketListener = ({ onActualizarMetricas }) => {
                 console.error("STOMP Error:", frame);
             }
         });
-
-        // Activate the client
         client.activate();
 
-        // Clean up on unmount
         return () => client.deactivate();
     }, [onActualizarMetricas]);
-
-    // This component doesn't render anything
     return null;
 };
 

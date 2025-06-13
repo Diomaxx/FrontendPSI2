@@ -7,12 +7,11 @@ const token = localStorage.getItem('authToken');
 const getAuthHeaders = () => {
     return {
         "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : "" // Asegúrate de que el token se agregue correctamente
+        "Authorization": token ? `Bearer ${token}` : ""
     };
 };
 
 export const fetchDonations = async () => {
-    console.log("Token JWT:", getAuthHeaders()); // Log para verificar que el token está en el localStorage
     try {
         const response = await axios.get(API_DONACIONES, {
             withCredentials: false,
@@ -34,7 +33,7 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
             {
                 ciUsuario,
                 estado,
-                imagen: imagenBase64,  // Enviamos la imagen en base64
+                imagen: imagenBase64,
                 latitud,
                 longitud
             },
