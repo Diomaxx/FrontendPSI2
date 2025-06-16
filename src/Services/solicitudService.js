@@ -1,12 +1,13 @@
 import axios from "axios";
 import { getUserCI } from "./authService";
+import { getAuthHeadersWithContentType, getAuthConfig } from "../Components/Common/authHeaders";
 
 const API_SOLICITUDES = "https://dasalas.shop:8443/api/solicitudes/resumen";
 
 
 export const getSolicitudesResumen = async () => {
     try {
-        const response = await axios.get(API_SOLICITUDES);
+        const response = await axios.get(API_SOLICITUDES, getAuthConfig());
         
         if (Array.isArray(response.data)) {
             return response.data.map(item => formatSolicitud(item));
@@ -18,6 +19,7 @@ export const getSolicitudesResumen = async () => {
         throw error;
     }
 };
+
 
 const formatSolicitud = (item) => {
     const productsList = Array.isArray(item.listaProductos)
@@ -44,6 +46,7 @@ const formatSolicitud = (item) => {
     };
 };
 
+
 export const aprobarSolicitud = async (idSolicitud) => {
     console.log("Enviando aprobación para:", idSolicitud);
     try {
@@ -54,9 +57,7 @@ export const aprobarSolicitud = async (idSolicitud) => {
             `https://dasalas.shop:8443/api/solicitudes-sin-responder/aprobar/${idSolicitud}`, 
             userCI,
             {
-                headers: {
-                    "Content-Type": "text/plain"
-                },
+                headers: getAuthHeadersWithContentType("text/plain"),
                 withCredentials: false
             }
         );
@@ -68,15 +69,14 @@ export const aprobarSolicitud = async (idSolicitud) => {
     }
 };
 
+
 export const rechazarSolicitud = async (idSolicitud, motivo) => {
     try {
         const response = await axios.post(
             `https://dasalas.shop:8443/api/solicitudes-sin-responder/rechazar/${idSolicitud}`, 
             motivo,
             {
-                headers: {
-                    "Content-Type": "text/plain"
-                },
+                headers: getAuthHeadersWithContentType("text/plain"),
                 withCredentials: false
             }
         );
@@ -86,6 +86,7 @@ export const rechazarSolicitud = async (idSolicitud, motivo) => {
         throw error;
     }
 };
+
 
 export const addSolicitud = async (solicitudData) => {
     try {

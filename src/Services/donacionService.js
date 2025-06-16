@@ -1,20 +1,12 @@
 import axios from "axios";
+import { getAuthHeaders, getAuthConfig } from "../Components/Common/authHeaders";
 
 const API_DONACIONES = "https://dasalas.shop:8443/api/donaciones/new";
-
-const token = localStorage.getItem('authToken');
-
-const getAuthHeaders = () => {
-    return {
-        "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : ""
-    };
-};
 
 export const fetchDonations = async () => {
     try {
         const response = await axios.get(API_DONACIONES, {
-            withCredentials: false,
+            ...getAuthConfig(),
         });
         console.log("Donations API Response:", response.data);
         return response.data;
@@ -23,6 +15,7 @@ export const fetchDonations = async () => {
         return [];
     }
 };
+
 
 export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, imagenBase64, latitud, longitud) => {
     console.log("Actualizando estado de donación:", { idDonacion, ciUsuario, estado, imagenBase64, latitud, longitud });
@@ -37,9 +30,7 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
                 latitud,
                 longitud
             },
-            {
-                withCredentials: false
-            }
+            getAuthConfig()
         );
 
         console.log("Respuesta de actualización:", response.data);
