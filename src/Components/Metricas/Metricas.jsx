@@ -849,7 +849,7 @@ const MetricasComponent = () => {
             <div className="flex-grow-1 m-1">
                 <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                     <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1500px', width:'100%'}}>
-                        {/* Centered loading content */}
+                        
                         <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
                             <div className="glass-card p-5 text-center">
                                 <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
@@ -871,7 +871,7 @@ const MetricasComponent = () => {
             <div className="flex-grow-1 m-1">
                 <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                     <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1500px', width:'100%'}}>
-                        {/* Centered error content */}
+                        
                         <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
                             <div className="glass-card p-5 text-center">
                             <div className="alert alert-danger mb-0" role="alert">
@@ -1133,10 +1133,10 @@ const MetricasComponent = () => {
                                         </div>
                                         </div>
 
-                        {/* WebSocket Listener */}
+                        
                         <MetricasWebSocketListener onActualizarMetricas={handleMetricasActualizadas} />
 
-                        {/* Navigation Tabs */}
+                        
                         <ul className="nav nav-tabs border-0 mb-4 d-flex justify-content-center">
                             <li className="nav-item">
                                 <button 
@@ -1167,9 +1167,9 @@ const MetricasComponent = () => {
                             </li>
                         </ul>
 
-                        {/* Main Content Layout with Sidebar */}
+                        
                         <div className="row">
-                            {/* Left Sidebar - Metrics Selection */}
+                            
                             <div className="col-md-3 mb-4">
                                 <div className="glass-panel p-3 rounded-3 h-100">
                                     <div className="d-flex justify-content-between align-items-center mb-3">
@@ -1435,11 +1435,11 @@ const MetricasComponent = () => {
                                 </div>
                             </div>
                             
-                            {/* Right Content Area */}
+                            
                             <div className="col-md-9">
                         <div className="tab-content">
 
-                            {/* General Tab */}
+                            
                             {activeTab === 'general' && (
                                 <div>
                                             {visibleMetrics.general.solicitudesRecibidas || 
@@ -1490,7 +1490,7 @@ const MetricasComponent = () => {
                                     </div>
                                             ) : null}
 
-                                    {/* Charts Row */}
+                                    
                                             {visibleMetrics.general.solicitudesPorMes || visibleMetrics.general.productosMasSolicitados ? (
                                     <div className="row g-4">
                                                     {visibleMetrics.general.solicitudesPorMes && (
@@ -1548,10 +1548,10 @@ const MetricasComponent = () => {
                                 </div>
                             )}
 
-                            {/* Solicitudes Tab */}
+                            
                             {activeTab === 'solicitudes' && (
                                 <div>
-                                    {/* Key Metrics Summary */}
+                                    
                                             {visibleMetrics.solicitudes.sinResponder || 
                                              visibleMetrics.solicitudes.aprobadas || 
                                              visibleMetrics.solicitudes.rechazadas ? (
@@ -1589,7 +1589,7 @@ const MetricasComponent = () => {
                         </div>
                                             ) : null}
 
-                                    {/* Charts Row */}
+                                    
                                             {visibleMetrics.solicitudes.estadoSolicitudes || visibleMetrics.solicitudes.solicitudesPorProvincia ? (
                                     <div className="row g-4">
                                                     {visibleMetrics.solicitudes.estadoSolicitudes && (
@@ -1626,10 +1626,10 @@ const MetricasComponent = () => {
                                 </div>
                             )}
 
-                            {/* Donaciones Tab */}
+                            
                             {activeTab === 'donaciones' && (
                                 <div>
-                                    {/* Key Metrics Summary */}
+                                    
                                             {visibleMetrics.donaciones.pendientes || visibleMetrics.donaciones.entregadas ? (
                                     <div className="row g-4 mb-4">
                                                     {visibleMetrics.donaciones.pendientes && (
@@ -1655,7 +1655,7 @@ const MetricasComponent = () => {
                                     </div>
                                             ) : null}
 
-                                    {/* Charts Row */}
+                                    
                                             {visibleMetrics.donaciones.estadoDonaciones || visibleMetrics.donaciones.informacion ? (
                                     <div className="row g-4">
                                                     {visibleMetrics.donaciones.estadoDonaciones && (

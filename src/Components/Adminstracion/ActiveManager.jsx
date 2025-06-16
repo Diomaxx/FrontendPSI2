@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { toggleUserActiveStatus } from "../../Services/adminService.js";
 
 const UserCard = ({ user, onToggleStatus, isLoading }) => {
-    // Handle the toggle status action
     const handleToggleStatus = async () => {
         await onToggleStatus(user.idUsuario);
     };
@@ -23,7 +22,6 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
                          borderRadius: "50px 0 0 50px"
                      }}></div>
 
-                {/* User information section */}
                 <div className="ps-3">
                     <div className="d-flex justify-content-between align-items-start mb-3">
                         <h6 className="text-white fw-bold mb-0">
@@ -39,7 +37,6 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
                         </span>
                     </div>
 
-                    {/* User details */}
                     <div className="mb-2 d-flex flex-row ">
                         <small className="text-light opacity-75 me-2">CI:</small>
                         <p className="text-white mb-1 small">{user.ci}</p>
@@ -61,7 +58,6 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
                         </div>
                     )}
 
-                    {/* Action button */}
                     <div className="d-flex justify-content-end">
                         <button
                             className={`btn btn-sm px-3 ${
@@ -95,28 +91,27 @@ const UserCard = ({ user, onToggleStatus, isLoading }) => {
 };
 
 const ActiveManager = ({ users, onUserUpdated }) => {
-    // State for tracking loading status of individual users
     const [loadingUsers, setLoadingUsers] = useState(new Set());
-    // State for search functionality
+    
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Handle status toggle for a specific user
+    
     const handleToggleUserStatus = async (userId) => {
         try {
-            // Add user to loading set
+            
             setLoadingUsers(prev => new Set([...prev, userId]));
             
-            // Call the API to toggle status
+            
             await toggleUserActiveStatus(userId);
             
-            // Refresh the users list
+            
             onUserUpdated();
             
         } catch (error) {
             console.error("Error toggling user status:", error);
             alert("Error al cambiar el estado del usuario. Intente nuevamente.");
         } finally {
-            // Remove user from loading set
+            
             setLoadingUsers(prev => {
                 const newSet = new Set(prev);
                 newSet.delete(userId);
@@ -125,12 +120,10 @@ const ActiveManager = ({ users, onUserUpdated }) => {
         }
     };
 
-    // Handle search input change
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    // Filter and sort users for display based on search term
     const filteredUsers = users.filter(user => {
         if (!searchTerm.trim()) return true;
         
@@ -147,7 +140,6 @@ const ActiveManager = ({ users, onUserUpdated }) => {
     });
 
     const sortedUsers = [...filteredUsers].sort((a, b) => {
-        // Sort by active status first (active users first), then by name
         if (a.active !== b.active) {
             return b.active - a.active;
         }
@@ -156,7 +148,6 @@ const ActiveManager = ({ users, onUserUpdated }) => {
 
     return (
         <div>
-            {/* Search Controls */}
             <div className="row mb-4 mt-0">
                 <div className="col-12">
                     <div className="glass-panel p-3" style={{borderRadius: '12px'}}>
@@ -199,7 +190,6 @@ const ActiveManager = ({ users, onUserUpdated }) => {
                 </div>
             </div>
 
-            {/* Summary statistics */}
             <div className="row mb-4">
                 <div className="col-6 col-md-3">
                     <div className="text-center p-2 rounded" style={{backgroundColor: 'rgba(255, 255, 255, 0.1)'}}>
@@ -234,7 +224,6 @@ const ActiveManager = ({ users, onUserUpdated }) => {
                     </div>
                 </div>
             </div>
-            {/* Users grid */}
             {sortedUsers.length > 0 ? (
                 <div className="row">
                     {sortedUsers.map(user => (

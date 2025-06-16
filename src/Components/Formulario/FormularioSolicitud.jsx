@@ -484,7 +484,7 @@ function FormularioSolicitud() {
                                     <div className="row">
                                         <div className="col-md-12 pe-0 px-3">
                                             <div className="w-100">
-                                                {/**DATOS DEL SOLICITANTE**/}
+                                                
                                                 <div
                                                     className={`transition-section ${showSolicitante ? 'show' : 'hide'}`}
                                                     style={{
@@ -617,7 +617,7 @@ function FormularioSolicitud() {
                                                         <Field type="hidden" name="listaProductosAPI"/>
                                                     </div>
                                                 </div>
-                                                {/*ENTREGA*/}
+                                                
                                                 <div
                                                     className={`transition-section ${showEntrega ? 'show' : 'hide'}`}
                                                     style={{
@@ -633,7 +633,7 @@ function FormularioSolicitud() {
 
                                                         <div
                                                             className="mb-0 mt-3 d-flex flex-column flex-md-row align-items-start">
-                                                            {/* Label aligned to the top */}
+                                                            
                                                             <label
                                                                 htmlFor="direccion"
                                                                 className="mt-1 me-md-3 p-0 form-label"
@@ -642,7 +642,7 @@ function FormularioSolicitud() {
                                                             Dirección:
                                                             </label>
 
-                                                            {/* Map and Dirección preview in column */}
+                                                            
                                                             <div className="flex-grow-1 d-flex flex-column gap-2">
                                                                 <div>
                                                                     <MapSelector
@@ -673,7 +673,7 @@ function FormularioSolicitud() {
                                                         </div>
 
 
-                                                        {/* Campo oculto para dirección */}
+                                                        
 
                                                         <div className="mb-0 mt-2 d-flex flex-column flex-md-row">
                                                             <label htmlFor="provincia"
@@ -682,7 +682,7 @@ function FormularioSolicitud() {
                                                                 {ubicacion.provincia || 'No detectada aún - Seleccione una ubicación en el mapa'}
                                                             </div>
                                                         </div>
-                                                        {/* Campo oculto para provincia */}
+                                                        
                                                         <Field type="hidden" name="provincia"/>
                                                         <div className="mb-2 mt-0" style={{fontSize: 'smaller'}}>
                                                             <ErrorMessage name="provincia" component="div"
@@ -739,7 +739,7 @@ function FormularioSolicitud() {
                 </div>
             </div>
 
-            {/* Success Modal */}
+            
             <div className={`modal fade ${showSuccessModal ? 'show  d-block ' : ''}`} tabIndex="-1"
                  style={{
                      backgroundColor: "rgba(0,0,0,0.5)",
@@ -773,7 +773,7 @@ function FormularioSolicitud() {
                 </div>
             </div>
 
-            {/* Error Modal */}
+            
             <div className={`modal fade ${showErrorModal ? 'show d-block' : ''}`} tabIndex="-1" 
                  style={{
                      backgroundColor: "rgba(0,0,0,0.5)",

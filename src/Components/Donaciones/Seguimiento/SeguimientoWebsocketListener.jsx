@@ -8,21 +8,21 @@ const SeguimientoWebSocketListener = ({ onRecargarSeguimientos }) => {
             brokerURL: "wss://dasalas.shop:8443/ws",
             reconnectDelay: 5000,
             onConnect: () => {
-                console.log("🟢 Conectado a WebSocket");
+                console.log("Conectado a WebSocket");
 
                 client.subscribe("/topic/donacion-actualizada", async () => {
-                    console.log("📥 Notificación de actualización recibida");
+                    console.log("Notificación de actualización recibida");
 
                     try {
                         const nuevos = await fetchSeguimientos();
                         onRecargarSeguimientos(nuevos);
                     } catch (error) {
-                        console.error("❌ Error al recargar seguimientos:", error);
+                        console.error("Error al recargar seguimientos:", error);
                     }
                 });
             },
             onStompError: (frame) => {
-                console.error("❌ STOMP Error:", frame);
+                console.error("STOMP Error:", frame);
             }
         });
 

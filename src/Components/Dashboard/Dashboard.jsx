@@ -8,27 +8,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Style.css';
 
-/**
- * Dashboard Component - Main dashboard container
- * Shows selection cards for everyone, but routes to appropriate components based on authentication
- */
+
 const Dashboard = () => {
-    // State to manage which view is currently active
-    // 'selection' | 'metrics' | 'metrics-public' | 'gallery'
     const [activeView, setActiveView] = useState('selection');
     
-    // State to track if user is authenticated
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // Check authentication status on component mount
+    
     useEffect(() => {
         const token = getToken();
         setIsAuthenticated(!!token);
     }, []);
 
-    /**
-     * Handle navigation to metrics view - routes based on authentication
-     */
+    
     const handleShowMetrics = () => {
         if (isAuthenticated) {
             setActiveView('metrics');
@@ -37,35 +29,25 @@ const Dashboard = () => {
         }
     };
 
-    /**
-     * Handle navigation to gallery view
-     */
+    
     const handleShowGallery = () => {
         setActiveView('gallery');
     };
 
-    /**
-     * Handle returning to selection view
-     */
+    
     const handleBackToSelection = () => {
         setActiveView('selection');
     };
 
-    /**
-     * Render the selection view with both cards (for everyone)
-     */
+    
     const renderSelectionView = () => (
         <div className="list-div">
-            {/* Header component for consistent navigation */}
             <Header />
             
-            {/* Main dashboard container */}
             <div className="container-fluid flex-grow-1 d-flex align-items-center justify-content-center py-5">
                 <div className="row w-100 justify-content-center">
                     <div className="col-12">
-                        {/* Cards container */}
                         <div className="row justify-content-center g-4">
-                            {/* Metrics Visualization Card */}
                             <div className="col-12 col-md-6 col-lg-5">
                                 <div 
                                     className="glass-card h-100 p-4 position-relative cursor-pointer"
@@ -89,7 +71,6 @@ const Dashboard = () => {
                                         e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                                     }}
                                 >
-                                    {/* Card icon section */}
                                     <div className="text-center mb-4">
                                         <div 
                                             className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
@@ -104,7 +85,6 @@ const Dashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Card content */}
                                     <div className="text-center">
                                         <h3 className="h4 fw-bold text-white mb-3">
                                             Visualización de Métricas
@@ -116,7 +96,6 @@ const Dashboard = () => {
                                             }
                                         </p>
                                         
-                                        {/* Features list */}
                                         <div className="text-start mb-4">
                                             <div className="d-flex align-items-center mb-2">
                                                 <i className="bi bi-check-circle-fill text-success me-2"></i>
@@ -145,7 +124,6 @@ const Dashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Card action button */}
                                     <div className="text-center">
                                         <div className="d-inline-flex align-items-center text-warning fw-medium">
                                             <span className="me-2">Ver Métricas</span>
@@ -155,7 +133,6 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Gallery Card */}
                             <div className="col-12 col-md-6 col-lg-5">
                                 <div 
                                     className="glass-card h-100 p-4 position-relative cursor-pointer"
@@ -178,7 +155,6 @@ const Dashboard = () => {
                                         e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                                     }}
                                 >
-                                    {/* Card icon section */}
                                     <div className="text-center mb-4">
                                         <div 
                                             className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
@@ -193,7 +169,6 @@ const Dashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Card content */}
                                     <div className="text-center">
                                         <h3 className="h4 fw-bold text-white mb-3">
                                             Galería de Donaciones
@@ -203,7 +178,6 @@ const Dashboard = () => {
                                             celebra el impacto positivo de la comunidad.
                                         </p>
                                         
-                                        {/* Features list */}
                                         <div className="text-start mb-4">
                                             <div className="d-flex align-items-center mb-2">
                                                 <i className="bi bi-check-circle-fill text-success me-2"></i>
@@ -224,7 +198,6 @@ const Dashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Card action button */}
                                     <div className="text-center">
                                         <div className="d-inline-flex align-items-center text-info fw-medium">
                                             <span className="me-2">Ver Galería</span>
@@ -242,12 +215,9 @@ const Dashboard = () => {
         </div>
     );
 
-    /**
-     * Render the full metrics view with back navigation (authenticated users)
-     */
+    
     const renderMetricsView = () => (
         <div style={{ position: 'relative' }}>
-            {/* Back button overlay - simplified white arrow */}
             <div style={{
                 position: 'fixed',
                 top: '90px',
@@ -283,17 +253,13 @@ const Dashboard = () => {
                     <i className="bi bi-arrow-left"></i>
                 </button>
             </div>
-            {/* Render the actual Metrics component */}
             <Metricas />
         </div>
     );
 
-    /**
-     * Render the public metrics view with back navigation (non-authenticated users)
-     */
+    
     const renderPublicMetricsView = () => (
         <div style={{ position: 'relative' }}>
-            {/* Back button overlay - simplified white arrow */}
             <div style={{
                 position: 'fixed',
                 top: '90px',
@@ -329,17 +295,13 @@ const Dashboard = () => {
                     <i className="bi bi-arrow-left"></i>
                 </button>
             </div>
-            {/* Render the public Metrics component */}
             <MetricasPublicas />
         </div>
     );
 
-    /**
-     * Render the gallery view with back navigation
-     */
+    
     const renderGalleryView = () => (
         <div style={{ position: 'relative' }}>
-            {/* Back button overlay - simplified white arrow */}
             <div style={{
                 position: 'fixed',
                 top: '90px',
@@ -375,12 +337,11 @@ const Dashboard = () => {
                     <i className="bi bi-arrow-left"></i>
                 </button>
             </div>
-            {/* Render the actual Gallery component */}
             <GaleriaDonaciones />
         </div>
     );
 
-    // Main render logic based on active view
+    
     switch (activeView) {
         case 'metrics':
             return renderMetricsView();

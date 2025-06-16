@@ -203,13 +203,13 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
 
                                                         <div className="d-flex align-items-center">
 
-                                                        {/* Mostrar recomendación simple */}
+                                                        
                                                             {recommendedQuantity > 0 && (
                                                                 <small className="text-muted">
                                                                     Sugerido: {recommendedQuantity}
                                                                 </small>
                                                             )}
-                                                            {/* Botón de recomendación con icono */}
+                                                            
                                                             {recommendedQuantity > 0 && (
                                                                 <Button
                                                                     variant="link"
@@ -259,7 +259,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                         })}
                                     </ListGroup>
                                     
-                                    {/* Pagination controls with custom styling */}
+                                    
                                     <div className="d-flex justify-content-center mt-3">
                                         <Pagination className="mb-0 pagination-custom">
                                             <Pagination.Prev 
@@ -268,7 +268,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                                 className="bg-mine-light text-white border-0"
                                             />
                                             
-                                            {/* Show only a limited number of page numbers */}
+                                            
                                             {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
                                                 // Calculate which page numbers to show
                                                 let pageNum;
@@ -306,7 +306,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                         </Pagination>
                                     </div>
 
-                                    {/* CSS for pagination styling */}
+                                    
                                     <style jsx="true">{`
                                         .pagination-custom .page-item .page-link {
                                             background-color: rgba(39, 83, 126, 0.7);
@@ -349,7 +349,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                 <div className="d-flex justify-content-center align-items-center mt-3 mb-3">
                                     <img src="/caja.svg" width="45%" height="45%" alt="Caja" className="opacity-50"/>
                                 </div>
-                                {/* Scrollable container for selected products */}
+                                
                                 <div className="selected-products-container" style={{
                                     maxHeight: '225px',
                                     overflowY: 'auto',

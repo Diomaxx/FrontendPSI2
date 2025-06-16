@@ -4,7 +4,6 @@ import axios from 'axios';
 const API_URL = 'https://dasalas.shop:8443/auth';
 const USUARIO_URL = 'https://dasalas.shop:8443/api/usuarios';
 
-// Global variable to store the CI (subject) from token
 export let globalCI = null;
 
 export const loginUser = async (credentials) => {
@@ -81,19 +80,16 @@ export const fetchUserByCI = async (ci) => {
     }
 };
 
-// Function to save admin status in localStorage
 export const saveAdminStatus = (isAdmin) => {
     localStorage.setItem('isAdmin', isAdmin.toString());
     console.log('Estado de administrador guardado:', isAdmin);
 };
 
-// Function to get admin status from localStorage
 export const getAdminStatus = () => {
     const adminStatus = localStorage.getItem('isAdmin');
     return adminStatus === 'true';
 };
 
-// Function to check admin status after login
 export const checkAndSaveAdminStatus = async (ci) => {
     try {
         const userData = await fetchUserByCI(ci);
@@ -102,13 +98,11 @@ export const checkAndSaveAdminStatus = async (ci) => {
         return isAdmin;
     } catch (error) {
         console.error('Error checking admin status:', error);
-        // If there's an error, default to false (not admin)
         saveAdminStatus(false);
         return false;
     }
 };
 
-// Function to set new password for existing user
 export const setNewPassword = async (ci, password) => {
     try {
         const response = await axios.post(`${USUARIO_URL}/newPassword/${ci}`, {

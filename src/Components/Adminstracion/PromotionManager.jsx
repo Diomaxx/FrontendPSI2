@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { promoteUserToAdmin } from "../../Services/adminService.js";
 
 const PromotionUserRow = ({ user, onPromoteUser, isLoading }) => {
-    // Handle the promotion action
     const handlePromoteUser = () => {
         onPromoteUser(user);
     };
@@ -79,7 +78,7 @@ const ConfirmationModal = ({ show, user, onConfirm, onCancel, isLoading }) => {
             <div className="modal-dialog">
                 <div className="modal-content">
 
-                    {/* Modal header */}
+                    
                     <div className="modal-header bg-mine text-light">
                         <h5 className="modal-title">
                             <i className="bi bi-exclamation-triangle text-warning me-2"></i>
@@ -93,7 +92,7 @@ const ConfirmationModal = ({ show, user, onConfirm, onCancel, isLoading }) => {
                         ></button>
                     </div>
 
-                    {/* Modal body */}
+                    
                     <div className="modal-body">
                         <div className="alert alert-warning" role="alert">
                             <i className="bi bi-info-circle me-2"></i>
@@ -136,7 +135,7 @@ const ConfirmationModal = ({ show, user, onConfirm, onCancel, isLoading }) => {
                         </p>
                     </div>
 
-                    {/* Modal footer */}
+                    
                     <div className="modal-footer">
                         <button
                             type="button"
@@ -255,7 +254,7 @@ const PromotionManager = ({ users, onUserUpdated }) => {
 
     return (
         <div>
-            {/* Search Controls */}
+            
             <div className="row mb-4">
                 <div className="col-12">
                     <div className="glass-panel p-3" style={{borderRadius: '12px'}}>
@@ -298,7 +297,7 @@ const PromotionManager = ({ users, onUserUpdated }) => {
                 </div>
             </div>
 
-            {/* Summary statistics */}
+            
             <div className="row mb-4">
             <div className="col-12 col-md-4">
                     <div className="text-center p-3 rounded" style={{backgroundColor: 'rgba(25, 73, 115, 0.3)'}}>
@@ -328,14 +327,14 @@ const PromotionManager = ({ users, onUserUpdated }) => {
                 </div>
             </div>
 
-            {/* Information alert */}
+            
             <div className="alert alert-info mb-4"style={{fontSize:"14px"}}  role="alert">
                 <i className="bi bi-info-circle me-2"></i>
                 <strong>Información:</strong> Solo se muestran usuarios que no son administradores. 
                 Los usuarios promovidos desaparecerán de esta lista.
             </div>
 
-            {/* Users table */}
+            
             {sortedUsers.length > 0 ? (
                 <div className="glass-panel" style={{borderRadius: '16px', overflow: 'hidden'}}>
                     <table className="table table-dark mb-0">
@@ -390,7 +389,7 @@ const PromotionManager = ({ users, onUserUpdated }) => {
                 </div>
             )}
 
-            {/* Confirmation Modal */}
+            
             <ConfirmationModal
                 show={showModal}
                 user={selectedUser}

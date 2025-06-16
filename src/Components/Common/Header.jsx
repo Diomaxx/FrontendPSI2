@@ -10,10 +10,10 @@ const Header = ({ showLogout = true }) => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // Function to check if user is logged in
+    
     const checkAuthStatus = () => {
         const token = getToken();
-        return !!token; // Returns true if token exists, false otherwise
+        return !!token; 
     };
 
     const isActive = (path) => {
@@ -50,7 +50,7 @@ const Header = ({ showLogout = true }) => {
         }
     }, [location.pathname]);
 
-    // Check admin status and authentication status on component mount and when location changes
+    
     useEffect(() => {
         const adminStatus = getAdminStatus();
         const authStatus = checkAuthStatus();
@@ -61,7 +61,7 @@ const Header = ({ showLogout = true }) => {
     }, [location.pathname]);
 
     const handleLogout = () => {
-        logoutUser(); // This will clear authToken, userCI, and isAdmin from localStorage
+        logoutUser(); 
         navigate("/login");
     };
 
@@ -72,7 +72,7 @@ const Header = ({ showLogout = true }) => {
                 <Link to="/login" className="d-inline-block">
                     <img src="/logoMIN.png" alt="Logo" style={{maxHeight: '50px', height: '100%'}} className="img-fluid" />
                 </Link>
-                {/* D A S text next to logo */}
+                
                 <span className="ms-3 fw-bold text-white" style={{fontSize: '1.5rem', letterSpacing: '0.2rem'}}>
                     D.A.S
                 </span>
@@ -118,7 +118,7 @@ const Header = ({ showLogout = true }) => {
                 >
                     Dashboard
                 </Link>
-                {/* Conditionally render admin tab only if user is admin */}
+                
                 {isAdmin && (
                     <Link
                         to="/admin"
@@ -130,7 +130,7 @@ const Header = ({ showLogout = true }) => {
                     </Link>
                 )}
 
-                {/* Only show logout button if user is logged in and showLogout prop is true */}
+                
                 {showLogout && isLoggedIn && (
                     <button
                         className="btn btn-sm btn-warning ms-3 me-md-4 px-3 py-2 fw-medium text-dark rounded-pill"

@@ -15,14 +15,14 @@ function InicioSesion() {
     const [successMessage, setSuccessMessage] = useState('');
     const [initialCI, setInitialCI] = useState('');
 
-    // Verificar si hay mensaje de éxito desde BuscarCI
+    
     useEffect(() => {
         if (location.state?.message) {
             setSuccessMessage(location.state.message);
             if (location.state.ci) {
                 setInitialCI(location.state.ci);
             }
-            // Limpiar el estado después de 5 segundos
+            
             setTimeout(() => {
                 setSuccessMessage('');
             }, 5000);
@@ -49,23 +49,23 @@ function InicioSesion() {
             const expiration = response.expiration;
             saveToken(token, expiration);
             
-            // Get and log the CI extracted from the token
+            
             const userCI = getUserCI();
             console.log('INICIO DE SESIÓN - CI del usuario:', userCI);
             
-            // Check admin status and save it to localStorage
+            
             try {
                 const isAdmin = await checkAndSaveAdminStatus(userCI);
                 console.log('Estado de administrador del usuario:', isAdmin);
             } catch (adminError) {
                 console.error('Error al verificar estado de administrador:', adminError);
-                // Continue with login even if admin check fails
+                
             }
             
             navigate('/Donaciones');
         } catch (error) {
             console.error('Error en login:', error);
-            // Mostrar el mensaje específico del error del backend
+            
             const errorMessage = error || 'C.I. o contraseña incorrectos';
             setErrors({ contrasena: errorMessage });
         }
@@ -79,7 +79,7 @@ function InicioSesion() {
                 <div className="row p-4 m-5 shadow rounded flex-grow-1 shadow w-auto text-light " style={{ background:'rgba(1,1,1,0.19)',  maxWidth: '400px',width: '100%'}}>
                         <h3  className="text-center fw-semibold fs-3 mb-4 pb-0" style={{color:'#fdfdfd'}}>Iniciar Sesión</h3>
                         
-                        {/* Mensaje de éxito */}
+                        
                         {successMessage && (
                             <div className="alert alert-success text-center mb-3" role="alert">
                                 {successMessage}

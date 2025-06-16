@@ -35,8 +35,6 @@ function App() {
                 <Route path="/solicitar" element={<FormularioSolicitud/>} />
                 <Route path="/donaciones" element={<RutaProtegida><Donaciones/></RutaProtegida>} />
                 <Route path="/admin" element={<RutaProtegidaAdmin><AdminPanel/></RutaProtegidaAdmin>} />
-
-                <Route path="/HolaMundo" element={<HolaMundo/>}/>  {/* ARCHIVO TEMPORAL SOLO  PARA TESTEAR LOGIN*/}
             </Routes>
         </Router>
     );

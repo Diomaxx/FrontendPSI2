@@ -8,7 +8,7 @@ import SeguimientoWebSocketListener from "./SeguimientoWebsocketListener.jsx";
 import Header from '../../Common/Header.jsx';
 import "../../Style.css";
 
-// Helper function for datetime formatting
+
 const formatDateTime = (dateString) => {
     if (!dateString) return 'No disponible';
     const date = new Date(dateString);
@@ -25,11 +25,11 @@ const SeguimientoCard = ({ seguimiento }) => {
         setShowMap(!showMap);
     };
 
-    // Determinar el color según el estado
+    
     const getEstadoColor = () => {
         if (seguimiento.estado === "Entregado") return "#28a745";
         if (seguimiento.estado === "En camino") return "#17a2b8";
-        return "#6c757d"; // Pendiente u otros estados
+        return "#6c757d"; 
     };
 
     return (
@@ -120,7 +120,7 @@ const SeguimientoCard = ({ seguimiento }) => {
                     </div>
                 </div>
 
-                {/* Mapa a la derecha cuando está visible */}
+                
                 {showMap && hasTrackingData && (
                     <div className="col-md-5 ps-0 pe-2">
                         <div className="map-container h-100" style={{ minHeight: "250px", borderRadius: "8px", overflow: "hidden" }}>
@@ -137,7 +137,7 @@ const Seguimiento = () => {
     const [seguimientos, setSeguimientos] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Carga inicial
+    
     useEffect(() => {
         const cargarSeguimientos = async () => {
             setLoading(true);

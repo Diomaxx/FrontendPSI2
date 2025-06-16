@@ -15,20 +15,20 @@ function BuscarCI() {
     const [showPasswordForm, setShowPasswordForm] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // Validación para buscar CI
+    
     const ciValidationSchema = Yup.object({
         ci: Yup.string()
             .required('El C.I. es obligatorio'),
     });
 
-    // Validación para establecer contraseña
+    
     const passwordValidationSchema = Yup.object({
         contrasena: Yup.string()
             .min(6, 'La contraseña debe tener al menos 6 caracteres')
             .required('La contraseña es obligatoria')
     });
 
-    // Manejar búsqueda de CI
+    
     const handleCISubmit = async (values, { setSubmitting, setErrors }) => {
         setLoading(true);
         try {
@@ -36,7 +36,7 @@ function BuscarCI() {
             const user = await fetchUserByCI(values.ci);
             console.log('Usuario encontrado:', user);
             
-            // Verificar si el usuario ya tiene una cuenta activa (ya tiene contraseña)
+            
             if (user.active === true) {
                 console.log('Usuario ya tiene cuenta activa, redirigiendo al login');
                 navigate('/login', { 
@@ -48,7 +48,7 @@ function BuscarCI() {
                 return;
             }
             
-            // Si el usuario no está activo, permitir establecer contraseña
+            
             setUserData(user);
             setShowPasswordForm(true);
         } catch (error) {
@@ -60,7 +60,7 @@ function BuscarCI() {
         }
     };
 
-    // Manejar establecimiento de contraseña
+    
     const handlePasswordSubmit = async (values, { setSubmitting, setErrors }) => {
         setLoading(true);
         try {
@@ -68,7 +68,7 @@ function BuscarCI() {
             await setNewPassword(userData.ci, values.contrasena);
             console.log('Contraseña establecida exitosamente');
             
-            // Redirigir al login con mensaje de éxito
+            
             navigate('/login', { 
                 state: { 
                     message: 'Contraseña establecida exitosamente. Ya puedes iniciar sesión.',
@@ -92,7 +92,6 @@ function BuscarCI() {
                      style={{background: 'rgba(1,1,1,0.22)', maxWidth: '500px', width: '100%'}}>
                     
                     {!showPasswordForm ? (
-                        // Formulario inicial para buscar CI
                         <>
                             <h3 className="text-center fw-semibold fs-3 mb-2 pb-0" style={{color: '#fdfdfd'}}>
                                 Crear una Cuenta
@@ -168,7 +167,7 @@ function BuscarCI() {
                                 ¡Usuario Encontrado!
                             </h3>
                             
-                            {/* Mostrar datos del usuario */}
+                            
                             <div className="bg-dark bg-opacity-25 p-3 rounded mb-3">
                                 <p className="mb-1"><strong>Nombre:</strong> {userData?.nombre} {userData?.apellido}</p>
                                 <p className="mb-1"><strong>C.I.:</strong> {userData?.ci}</p>

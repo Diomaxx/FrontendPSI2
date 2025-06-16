@@ -81,7 +81,7 @@ const MetricasPublicas = () => {
                 <div className="flex-grow-1 m-1">
                     <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                         <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1200px', width:'100%'}}>
-                            {/* Centered loading content */}
+                            
                             <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
                                 <div className="glass-card p-5 text-center">
                                     <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
@@ -106,7 +106,7 @@ const MetricasPublicas = () => {
                 <div className="flex-grow-1 m-1">
                     <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                         <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1200px', width:'100%'}}>
-                            {/* Centered error content */}
+                            
                             <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
                                 <div className="glass-card p-5 text-center">
                                     <div className="alert alert-danger mb-0" role="alert">
@@ -273,7 +273,7 @@ const MetricasPublicas = () => {
                      style={{maxWidth: "1200px"}}>
                 
                     <div className="mb-4 mt-4">
-                        {/* Public header section */}
+                        
                         <div className="text-center mb-5">
                             <h2 className="display-5 fw-bold text-white mb-3">
                                 Estadísticas Generales
@@ -283,7 +283,7 @@ const MetricasPublicas = () => {
                             </p>
                         </div>
 
-                        {/* Key Metrics Summary */}
+                        
                         <div className="row g-4 mb-5">
                             <div className="col-md-3">
                                 <div className="glass-card h-100 rounded-3">
@@ -319,9 +319,9 @@ const MetricasPublicas = () => {
                             </div>
                         </div>
 
-                        {/* Charts Section */}
+                        
                         <div className="row g-4">
-                            {/* Monthly requests chart */}
+                            
                             <div className="col-md-8">
                                 <div className="glass-panel h-100 rounded-3">
                                     <div className="card-body p-4">
@@ -333,7 +333,7 @@ const MetricasPublicas = () => {
                                 </div>
                             </div>
 
-                            {/* Most requested products chart */}
+                            
                             <div className="col-md-4">
                                 <div className="glass-panel h-100 rounded-3">
                                     <div className="card-body p-4">
@@ -341,7 +341,7 @@ const MetricasPublicas = () => {
                                         <div style={{ height: '350px' }} ref={chartRefs.productsChart}>
                                             <Pie data={productosMasSolicitadosData} options={pieChartOptions} />
                                         </div>
-                                        {/* Products summary table */}
+                                        
                                         <div className="mt-3 table-responsive">
                                             <table className="table table-dark table-sm table-borderless">
                                                 <thead>

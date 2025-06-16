@@ -2,10 +2,7 @@ import { useEffect } from "react";
 import { Client } from "@stomp/stompjs";
 import { getMetricas } from "../../Services/metricasService.js"; // Import the metrics service
 
-/**
- * WebSocket listener component for Metricas
- * Subscribes to the metrics update channel and triggers refresh when new data arrives
- */
+
 const MetricasWebSocketListener = ({ onActualizarMetricas }) => {
     useEffect(() => {
         const client = new Client({
@@ -18,7 +15,7 @@ const MetricasWebSocketListener = ({ onActualizarMetricas }) => {
                     console.log("Notificación de nuevas métricas recibida");
 
                     try {
-                        // Fetch updated metrics data
+                        
                         const nuevasMetricas = await getMetricas();
                         onActualizarMetricas(nuevasMetricas);
                     } catch (error) {

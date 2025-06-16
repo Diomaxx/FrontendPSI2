@@ -7,12 +7,11 @@ import PromotionManager from "./PromotionManager.jsx";
 import { fetchNonAdminUsers } from "../../Services/adminService.js";
 
 const AdminPanel = () => {
-    // State management for users data and loading states
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
-    const [activeTab, setActiveTab] = useState('status'); // 'status' or 'promotion'
+    const [activeTab, setActiveTab] = useState('status'); 
 
     const handleRefreshUsers = () => {
         setRefreshTrigger(prev => prev + 1);
@@ -45,7 +44,7 @@ const AdminPanel = () => {
             <Header />
             
             <div className=" px-3 px-md-5 py-4">
-                {/* Page title section */}
+                
                 <div className="row mb-2">
                     <div className="col-12">
                         <div className="p-3 text-center">
@@ -98,7 +97,7 @@ const AdminPanel = () => {
                     </div>
                 </div>
 
-                {/* Loading state */}
+                
                 {loading && (
                     <div className="row">
                         <div className="col-12">
@@ -112,7 +111,7 @@ const AdminPanel = () => {
                     </div>
                 )}
 
-                {/* Error state */}
+                
                 {error && (
                     <div className="row">
                         <div className="col-12">
@@ -126,14 +125,14 @@ const AdminPanel = () => {
                     </div>
                 )}
 
-                {/* Main content when data is loaded */}
+                
                 {!loading && !error && (
                     <div className="row">
                         <div className="col-12">
                             <div className="p-0" style={{borderRadius: '16px', overflow: 'hidden'}}>
-                                {/* Tab Content Container */}
+                                
                                 <div className="position-relative">
-                                    {/* Status Management Tab */}
+                                    
                                     <div 
                                         className={`tab-content ${activeTab === 'status' ? 'active' : ''}`}
                                         style={{
@@ -167,7 +166,7 @@ const AdminPanel = () => {
                                         </div>
                                     </div>
 
-                                    {/* Promotion Management Tab */}
+                                    
                                     <div 
                                         className={`tab-content ${activeTab === 'promotion' ? 'active' : ''}`}
                                         style={{

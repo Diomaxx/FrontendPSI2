@@ -44,7 +44,7 @@ const DonationCard = ({donation, onActualizarClick}) => {
                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)"
              }}>
 
-            {/* Barra indicadora de estado */}
+            
             <div className="position-absolute top-0 start-0 h-100"
                  style={{
                      width: "5px",
@@ -585,7 +585,7 @@ const Donaciones = () => {
                             </div>
                             <div className="modal-body bg-light py-4">
                                 <div className="row g-0">
-                                    {/* Columna 1: Datos del Encargado y Estado */}
+                                    
                                     <div className="col-4 pe-3
                                      ">
 
@@ -599,7 +599,7 @@ const Donaciones = () => {
                                                 readOnly
                                             />
                                         </div>
-                                        {/* Opciones selectables verticales */}
+                                        
                                         <div className="mb-4">
                                             <label className="form-label fw-medium mb-2">Seleccione una opción</label>
                                             <div className="d-flex flex-column gap-2">
@@ -644,7 +644,7 @@ const Donaciones = () => {
 
                                     </div>
 
-                                    {/* Columna 2: Mapa de Ubicación */}
+                                    
                                     <div className="col-4 ps-3 pe-3  d-flex flex-column">
                                         <label className="form-label fw-medium mb-2">Su Ubicación Actual</label>
                                         {locationError && (
@@ -664,7 +664,7 @@ const Donaciones = () => {
                                         )}
                                     </div>
 
-                                    {/* Columna 3: Carga de Imagen */}
+                                    
                                     <div className="col-4 ps-3 pe-3 d-flex flex-column">
                                         <label className="form-label fw-medium mb-2">Imagen de Entrega</label>
                                         <div className="d-flex flex-column align-items-center">

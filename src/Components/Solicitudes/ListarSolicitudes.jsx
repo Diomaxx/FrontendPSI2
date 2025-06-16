@@ -38,7 +38,7 @@ const RequestCard = ({ request, onOpenModal, onShowDetails }) => {
                  border: "1px solid rgba(255, 255, 255, 0.1)",
                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)"
              }}>
-            {/* Barra indicadora de estado */}
+            
             <div className="position-absolute top-0 start-0 h-100"
                  style={{
                      width: "5px",
@@ -310,7 +310,7 @@ const ListarSolicitudes = () => {
                                     <div className="form-group">
                                         <label htmlFor="motivoRechazo">Motivo del rechazo:</label>
 
-                                        {/* Botones de frases rápidas */}
+                                        
                                         <div className="d-flex flex-wrap gap-2 my-2">
                                             {[
                                                 "La solicitud presenta información incompleta o inconsistente.",
@@ -329,7 +329,7 @@ const ListarSolicitudes = () => {
                                             ))}
                                         </div>
 
-                                        {/* Textarea editable con botón de limpiar */}
+                                        
                                         <div className="position-relative">
                                               <textarea
                                                   id="motivoRechazo"

@@ -63,7 +63,6 @@ const DonationCard = ({ donation }) => {
                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(0, 0, 0, 0.15)";
              }}>
 
-            {/* Donation image section - takes prominent space */}
             <div className="position-relative" style={{ height: "250px", overflow: "hidden" }}>
                 {donation.imagen ? (
                     <img 
@@ -92,7 +91,6 @@ const DonationCard = ({ donation }) => {
                     </div>
                 )}
                 
-                {/* Gradient overlay for better text readability */}
                 <div className="position-absolute bottom-0 start-0 w-100 h-50"
                      style={{
                          background: "linear-gradient(transparent, rgba(0,0,0,0.7))"
@@ -100,16 +98,13 @@ const DonationCard = ({ donation }) => {
                 </div>
             </div>
 
-            {/* Content section */}
             <div className="p-4 text-white">
-                {/* Main title */}
                 <div className="text-center mb-3">
                     <h5 className="fw-bold mb-2" style={{ fontSize: "1.2rem" }}>
                         Donación {donation.codigo}
                     </h5>
                 </div>
 
-                {/* Gratitude message - main focus */}
                 <div className="text-center mb-3 px-2">
                     <p className="mb-0 fst-italic text-warning" 
                        style={{ 
@@ -121,9 +116,7 @@ const DonationCard = ({ donation }) => {
                     </p>
                 </div>
 
-                {/* Details section */}
                 <div className="mb-3">
-                    {/* Donors count with icon */}
                     <div className="d-flex align-items-center justify-content-center mb-2">
                         <i className="bi bi-people-fill me-2 text-info"></i>
                         <span className="small text-light">
@@ -131,7 +124,6 @@ const DonationCard = ({ donation }) => {
                         </span>
                     </div>
 
-                    {/* Delivery date */}
                     <div className="d-flex align-items-center justify-content-center">
                         <i className="bi bi-calendar-heart me-2 text-info"></i>
                         <span className="small text-light opacity-75">
@@ -143,7 +135,6 @@ const DonationCard = ({ donation }) => {
                     </div>
                 </div>
 
-                {/* Favorite button */}
                 <div className="text-center">
                     <button
                         className="btn btn-link p-0"
@@ -230,13 +221,12 @@ const GaleriaDonaciones = () => {
                 <div className="flex-grow-1 m-1">
                     <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                         <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1200px', width:'100%'}}>
-                            {/* Header section */}
                             <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
                                 <h3 className="text-center mt-2 mb-4 fs-3 text-white fw-semibold">
                                     Galería de Agradecimientos
                                 </h3>
                                 
-                                {/* Centered loading content */}
+                                
                                 <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
                                     <div className="glass-card p-5 text-center">
                                         <div className="spinner-border text-warning mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
@@ -262,13 +252,12 @@ const GaleriaDonaciones = () => {
                 <div className="flex-grow-1 m-1">
                     <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                         <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3" style={{maxWidth:'1200px', width:'100%'}}>
-                            {/* Header section */}
                             <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
                                 <h3 className="text-center mt-2 mb-4 fs-3 text-white fw-semibold">
                                     Galería de Agradecimientos
                                 </h3>
                                 
-                                {/* Centered error content */}
+                                
                                 <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
                                     <div className="glass-card p-5 text-center">
                                         <div className="alert alert-danger mb-0" role="alert">
@@ -295,7 +284,6 @@ const GaleriaDonaciones = () => {
                 <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                     <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3 rounded" style={{maxWidth:'1200px', width:'100%'}}>
                         
-                        {/* Header section */}
                         <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
                             <h3 className="text-center mt-2 mb-2 fs-3 text-white fw-semibold">
                                 Galería de Agradecimientos
@@ -304,7 +292,7 @@ const GaleriaDonaciones = () => {
                                 Recordando a las personas generosas que hicieron posible cada donación
                             </p>
                             
-                            {/* Filter buttons */}
+                            
                             <div className="d-flex flex-wrap justify-content-center gap-2 mt-4">
                                 <div className="btn-group">
                                     <button
@@ -325,7 +313,6 @@ const GaleriaDonaciones = () => {
                             </div>
                         </div>
 
-                        {/* Donations grid */}
                         {filteredDonations.length > 0 ? (
                             <div className="row g-3 justify-content-center p-1 p-md-3">
                                 {filteredDonations.map((donation) => (

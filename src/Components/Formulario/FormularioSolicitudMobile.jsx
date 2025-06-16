@@ -452,7 +452,7 @@ function FormularioSolicitudMobile() {
                             Solicitar Insumos
                         </h3>
                         
-                        {/* SAME BUTTON STRUCTURE AS DESKTOP */}
+                        
                         <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 mt-3 ms-3">
                             <button
                                 type="button"
@@ -529,7 +529,7 @@ function FormularioSolicitudMobile() {
                                     <div className="row">
                                         <div className="col-md-12 pe-0 px-3">
                                             <div className="w-100">
-                                                {/* DATOS DEL SOLICITANTE - SAME AS DESKTOP */}
+                                                
                                                 <div
                                                     className={`transition-section ${showSolicitante ? 'show' : 'hide'}`}
                                                     style={{
@@ -574,7 +574,7 @@ function FormularioSolicitudMobile() {
                                                     </div>
                                                 </div>
 
-                                                {/* DATOS DE LA EMERGENCIA - SAME AS DESKTOP */}
+                                                
                                                 <div
                                                     className={`transition-section ${showEmergencia ? 'show' : 'hide'}`}
                                                     style={{
@@ -638,7 +638,7 @@ function FormularioSolicitudMobile() {
                                                     </div>
                                                 </div>
 
-                                                {/* DATOS DE LA ENTREGA - SAME AS DESKTOP */}
+                                                
                                                 <div
                                                     className={`transition-section ${showEntrega ? 'show' : 'hide'}`}
                                                     style={{
@@ -724,7 +724,7 @@ function FormularioSolicitudMobile() {
                 </div>
             </div>
 
-            {/* Success Modal - SAME AS DESKTOP */}
+            
             <div className={`modal fade ${showSuccessModal ? 'show d-block' : ''}`} 
                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
                 <div className="modal-dialog modal-dialog-centered">
@@ -745,7 +745,7 @@ function FormularioSolicitudMobile() {
                 </div>
             </div>
 
-            {/* Error Modal - SAME AS DESKTOP */}
+            
             <div className={`modal fade ${showErrorModal ? 'show d-block' : ''}`} 
                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
                 <div className="modal-dialog modal-dialog-centered">
