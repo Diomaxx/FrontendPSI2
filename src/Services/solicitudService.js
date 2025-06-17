@@ -33,6 +33,7 @@ const formatSolicitud = (item) => {
         ciSolicitante: item.solicitante?.ci || item.ciUsuario || "No disponible",
         nombreSolicitante: item.solicitante?.nombre || "No disponible",
         apellidoSolicitante: item.solicitante?.apellido || "No disponible",
+        emailSolicitante: item.solicitante?.email || "No disponible",
         comunidad: item.destino?.comunidad || "No disponible",
         direccion: item.destino?.direccion || "Dirección no disponible",
         listadoProductos: item.productos,
