@@ -37,8 +37,12 @@ function Registro() {
             .max(79999999, 'Ingrese un numero de celular válido')
             .min(60000000, 'Ingrese un numero de celular válido'),
         contrasena: Yup.string()
-            .min(6, 'Minimo 6 caracteres')
+            .min(12, 'Minimo 12 caracteres')
             .required('La contraseña es obligatoria')
+            .matches(/[A-Z]/, 'Debe contener al menos una letra mayúscula')
+            .matches(/[a-z]/, 'Debe contener al menos una letra minúscula')
+            .matches(/\d/, 'Debe contener al menos un número')
+            .matches(/[@$!%*?&#_^~\-+=]/, 'Debe contener al menos un carácter especial (@$!%*?&#_^~-=+)')
     });
     const handleSubmit = async (values, { setSubmitting, setErrors }) => {
         console.log('Form values:', values);
