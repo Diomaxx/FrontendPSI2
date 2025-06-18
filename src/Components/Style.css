@@ -113,6 +113,14 @@ text-dark{
     transition: all 0.2s ease-in-out;
 
 }
+.btn-mine-yellow:hover
+{
+    background-color: rgba(227, 171, 28, 0.56);
+    border: 1px solid rgba(227, 180, 60, 0.86);
+    color: #737373;
+    transition: all 0.2s ease-in-out;
+
+}
 .btn-outline-mine:hover {
     background-color: rgba(58, 76, 125, 0.15);
     color: #d6e2ff;

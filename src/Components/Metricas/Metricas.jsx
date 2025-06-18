@@ -322,16 +322,16 @@ const MetricasComponent = () => {
                             doc.setFillColor(240, 240, 240);
                             doc.roundedRect(x, y, width, height, 2, 2, 'FD');
                             
-            doc.setFontSize(10);
-                            doc.setTextColor(100, 100, 100);
-                            doc.text('Imagen no disponible', x + width/2, y + height/2, { align: 'center' });
-                            return false;
+                doc.setFontSize(10);
+                                doc.setTextColor(100, 100, 100);
+                                doc.text('Imagen no disponible', x + width/2, y + height/2, { align: 'center' });
+                                return false;
+                            }
                         }
+                    } catch (error) {
+                        console.error('Error in safelyAddImage:', error);
+                        return false;
                     }
-                } catch (error) {
-                    console.error('Error in safelyAddImage:', error);
-                    return false;
-                }
             };
             
             // Cover page
@@ -339,7 +339,6 @@ const MetricasComponent = () => {
             doc.rect(0, 0, pageWidth, 60, 'F');
             
             // Add logo on cover - using our safe function with corrected aspect ratio
-            // Using more height to prevent the logo from appearing squished
             safelyAddImage(doc, '/logoNOBG.png', pageWidth/2 - 25, 10, 50, 50);
             
             // Title
@@ -661,7 +660,6 @@ const MetricasComponent = () => {
                 },
                 margin: { left: margin, right: margin },
                 didDrawCell: (data) => {
-                    // Add visual emphasis for highest value
                     if (data.section === 'body' && data.column.index === 1) {
                         const row = provincesData[data.row.index];
                         const allValues = provincesData.map(item => item[1]);
@@ -680,12 +678,10 @@ const MetricasComponent = () => {
                 }
             });
             
-            // Add insights about provincial data
             startY = doc.lastAutoTable.finalY + 10;
             doc.setFontSize(10);
             doc.setTextColor(60, 60, 60);
-            
-            // Calculate insights
+
             const topProvince = provincesData[0];
             const totalProvinces = provincesData.length;
             
@@ -695,36 +691,23 @@ const MetricasComponent = () => {
             doc.text(`• ${topProvince[0]} representa el ${((topProvince[1] / metricas.totalSolicitudesRecibidas) * 100).toFixed(1)}% del total de solicitudes`, margin + 5, startY);
             startY += 5;
             doc.text(`• ${totalProvinces} provincias han registrado solicitudes en el sistema`, margin + 5, startY);
-            
-            // Pie charts page (page 5)
             doc.addPage();
-            
-            // Page header
             doc.setFillColor(...primaryColor);
             doc.rect(0, 0, pageWidth, 20, 'F');
             
             doc.setFontSize(14);
             doc.setTextColor(255, 255, 255);
             doc.text('Estado de Solicitudes y Donaciones', pageWidth/2, 13, { align: 'center' });
-            
-            // Add date to header
             doc.setFontSize(8);
             doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
-            
-            // Status charts
             startY = 30;
-            
-            // Create pie chart section with tables side by side - subsection 3.1
             startY = addSubsectionHeader('Estado de Solicitudes', startY, 3, 1);
             
-            // Solicitudes status table
             const solicitudesStatusData = [
                 ['Sin Responder', metricas.solicitudesSinResponder, ((metricas.solicitudesSinResponder / metricas.totalSolicitudesRecibidas) * 100).toFixed(1) + '%'],
                 ['Aprobadas', metricas.solicitudesAprobadas, ((metricas.solicitudesAprobadas / metricas.totalSolicitudesRecibidas) * 100).toFixed(1) + '%'],
                 ['Rechazadas', metricas.solicitudesRechazadas, ((metricas.solicitudesRechazadas / metricas.totalSolicitudesRecibidas) * 100).toFixed(1) + '%']
             ];
-            
-            // Create first table with percentages
             autoTable(doc, {
                 startY: startY,
                 head: [['Estado', 'Cantidad', 'Porcentaje']],
@@ -750,7 +733,6 @@ const MetricasComponent = () => {
                 margin: { left: margin, right: margin }
             });
             
-            // Add solicitudes status chart
             try {
                 const statusChartImg = getChartImageUrl(chartRefs.solicitudesStatusChart);
                 if (statusChartImg) {
@@ -758,7 +740,6 @@ const MetricasComponent = () => {
                     const chartHeight = 80;
                     const chartX = pageWidth - margin - chartWidth - 10;
                     
-                    // Add chart image to the PDF using our safe function
                     safelyAddImage(doc, statusChartImg, chartX, startY - 10, chartWidth, chartHeight);
                 } else {
                     console.error('Could not generate solicitudes status chart image');
@@ -766,12 +747,8 @@ const MetricasComponent = () => {
             } catch (chartError) {
                 console.error('Error adding status chart:', chartError);
             }
-            
-            // Donaciones section - subsection 3.2
             startY = doc.lastAutoTable.finalY + 20;
             startY = addSubsectionHeader('Estado de Donaciones', startY, 3, 2);
-            
-            // Donaciones status table with percentages
             const totalDonaciones = metricas.donacionesPendientes + metricas.donacionesEntregadas;
             const donacionesStatusData = [
                 ['Pendientes', metricas.donacionesPendientes, ((metricas.donacionesPendientes / totalDonaciones) * 100).toFixed(1) + '%'],
@@ -802,16 +779,12 @@ const MetricasComponent = () => {
                 },
                 margin: { left: margin, right: margin }
             });
-            
-            // Add donaciones status chart
             try {
                 const donacionesChartImg = getChartImageUrl(chartRefs.donacionesStatusChart);
                 if (donacionesChartImg) {
                     const chartWidth = 80;
                     const chartHeight = 80;
                     const chartX = pageWidth - margin - chartWidth - 10;
-                    
-                    // Add chart image to the PDF using our safe function
                     safelyAddImage(doc, donacionesChartImg, chartX, startY - 10, chartWidth, chartHeight);
                 } else {
                     console.error('Could not generate donaciones status chart image');
@@ -819,12 +792,7 @@ const MetricasComponent = () => {
             } catch (chartError) {
                 console.error('Error adding donaciones chart:', chartError);
             }
-            
-            // No need to redefine the addFooter function here - we defined it earlier
-            
             addFooter(doc);
-            
-            // Save PDF
             console.log('Saving PDF...');
             doc.save('Reporte_Metricas.pdf');
             console.log('PDF saved successfully!');
@@ -836,8 +804,6 @@ const MetricasComponent = () => {
             alert(`Hubo un error al generar el PDF: ${error.message || 'Error desconocido'}. Por favor, intente nuevamente.`);
         }
     };
-
-    // Function to handle metrics updates from WebSocket
     const handleMetricasActualizadas = (nuevasMetricas) => {
         console.log("🔄 Actualizando métricas con datos del WebSocket");
         setMetricas(nuevasMetricas);

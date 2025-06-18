@@ -7,8 +7,10 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Header from "../Common/Header.jsx";
+import DetalleDonacionModal from "./DetalleDonacionModal";
+import { fetchDonacionPorId } from "../../Services/donacionReporteService.js";
 
-// Helper functions for date formatting
+
 const formatDate = (dateString) => {
     if (!dateString) return 'No disponible';
     const date = new Date(dateString);
@@ -21,7 +23,6 @@ const formatDateTime = (dateString) => {
     return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 };
 
-// Fix for Leaflet marker icon
 const defaultIcon = L.icon({
     iconUrl: '/camionc.png',
     iconSize: [35, 35],
@@ -32,95 +33,124 @@ const defaultIcon = L.icon({
 L.Marker.prototype.options.icon = defaultIcon;
 
 
-const DonationCard = ({donation, onActualizarClick}) => {
+const DonationCard = ({donation, onActualizarClick, onOpenModal, onShowDetail}) => {
     const estado = donation.fechaEntrega ? "Entregado" : "En Espera";
     return (
-        <div className="glass-card p-3 mb-3 position-relative overflow-hidden"
-             style={{
-                 borderRadius: "16px",
-                 height: "100%",
-                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                 border: `1px solid rgba(255, 255, 255, 0.1)`,
-                 boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)"
-             }}>
+      <div
+        className="glass-card p-3 mb-3 position-relative overflow-hidden"
+        style={{
+          borderRadius: "16px",
+          height: "100%",
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          border: `1px solid rgba(255, 255, 255, 0.1)`,
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <div
+          className="position-absolute top-0 start-0 h-100"
+          style={{
+            width: "5px",
+            backgroundColor: estado === "Entregado" ? "#000000" : "#dc3545",
+          }}
+        ></div>
 
-            
-            <div className="position-absolute top-0 start-0 h-100"
-                 style={{
-                     width: "5px",
-                     backgroundColor: estado === "Entregado" ? "#000000" : "#dc3545",
-                 }}></div>
+        <div className="card-body d-flex flex-column text-start text-white">
+          <div className="d-flex justify-content-between align-items-start">
+            <h5 className="fw-bold mb-3 ps-3">{donation.nombre}</h5>
+            <span
+              className="badge"
+              style={{
+                backgroundColor: estado === "Entregado" ? "#000000" : "#dc3545",
+                color: "white",
+                padding: "6px 12px",
+                borderRadius: "50px",
+                fontSize: "0.75rem",
+                fontWeight: "500",
+              }}
+            >
+              {estado}
+            </span>
+          </div>
 
-            <div className="card-body d-flex flex-column text-start text-white">
-                <div className="d-flex justify-content-between align-items-start">
-                    <h5 className="fw-bold mb-3 ps-3">{donation.nombre}</h5>
-                    <span className="badge"
-                          style={{
-                              backgroundColor: estado === "Entregado" ? "#000000" : "#dc3545",
-                              color: "white",
-                              padding: "6px 12px",
-                              borderRadius: "50px",
-                              fontSize: "0.75rem",
-                              fontWeight: "500"
-                          }}>
-                    {estado}
-                </span>
-                </div>
-
-                <div className="ps-3">
-                    <div className="mb-2 d-flex align-items-center">
-                        <i className="bi bi-box-seam me-2 text-white"></i>
-                        <p className="card-text mb-0 text-white">
-                            <span className="text-light opacity-75">Aprobado:</span> {formatDate(donation.fechaAprobacion)}
-                        </p>
-                    </div>
-
-                    <div className="mb-2 d-flex align-items-center">
-                        <i className="bi bi-person-badge me-2 text-white"></i>
-                        <p className="card-text mb-0 text-white">
-                            <span className="text-light opacity-75">Cod. Encargado:</span> {donation.encargado}
-                        </p>
-                    </div>
-
-                    {donation.fechaEntrega && (
-                        <div className="mb-2 d-flex align-items-center">
-                            <i className="bi bi-calendar-check me-2 text-white"></i>
-                            <p className="card-text mb-0 text-white">
-                                <span className="text-light opacity-75">Entregado:</span> {formatDateTime(donation.fechaEntrega)}
-                            </p>
-                        </div>
-                    )}
-
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                        <button
-                            className="btn btn-link p-0 text-decoration-none text-info"
-                            onClick={() => onActualizarClick(donation)}
-                            data-bs-toggle="modal"
-                            data-bs-target="#estadoModal"
-                            disabled={donation.fechaEntrega || donation.estado === "Iniciando armado de paquete" || donation.estado === "Pendiente"}
-                            hidden={donation.fechaEntrega || donation.estado === "Iniciando armado de paquete" || donation.estado === "Pendiente" }
-                        >
-                            <i className="bi bi-arrow-repeat me-1"></i> Actualizar
-                        </button>
-                    </div>
-
-                    <div className="mt-3">
-                        {donation.imagen ? (
-                            <img src={`${donation.imagen}`} className="card-img-top mt-2 img-fluid"
-                                 alt="Donación" style={{borderRadius: "8px"}}/>
-                        ) : (
-                            <img src="/boxbox.png" className="card-img-bottom mt-2 img-fluid" alt="Truck"
-                                 style={{
-                                     borderRadius: "8px",
-                                     maxWidth: "300px",
-                                     maxHeight: "200px",
-                                     alignSelf: "center"
-                                 }}/>
-                        )}
-                    </div>
-                </div>
+          <div className="ps-3">
+            <div className="mb-2 d-flex align-items-center">
+              <i className="bi bi-box-seam me-2 text-white"></i>
+              <p className="card-text mb-0 text-white">
+                <span className="text-light opacity-75">Aprobado:</span>{" "}
+                {formatDate(donation.fechaAprobacion)}
+              </p>
             </div>
+
+            <div className="mb-2 d-flex align-items-center">
+              <i className="bi bi-person-badge me-2 text-white"></i>
+              <p className="card-text mb-0 text-white">
+                <span className="text-light opacity-75">Cod. Encargado:</span>{" "}
+                {donation.encargado}
+              </p>
+            </div>
+
+            {donation.fechaEntrega && (
+              <div className="mb-2 d-flex align-items-center">
+                <i className="bi bi-calendar-check me-2 text-white"></i>
+                <p className="card-text mb-0 text-white">
+                  <span className="text-light opacity-75">Entregado:</span>{" "}
+                  {formatDateTime(donation.fechaEntrega)}
+                </p>
+              </div>
+            )}
+
+            <div className="d-flex justify-content-between align-items-center mt-3">
+              <button
+                className="btn btn-link p-0 text-decoration-none text-info"
+                onClick={() => onActualizarClick(donation)}
+                data-bs-toggle="modal"
+                data-bs-target="#estadoModal"
+                disabled={
+                  donation.fechaEntrega ||
+                  donation.estado === "Iniciando armado de paquete" ||
+                  donation.estado === "Pendiente"
+                }
+                hidden={
+                  donation.fechaEntrega ||
+                  donation.estado === "Iniciando armado de paquete" ||
+                  donation.estado === "Pendiente"
+                }
+              >
+                <i className="bi bi-arrow-repeat me-1"></i> Actualizar
+              </button>
+              <button
+                className="btn btn-link p-0 text-decoration-none text-info"
+                onClick={() => onShowDetail(donation)}
+              >
+                <i className="bi bi-info-circle me-1"></i> Detalle
+              </button>
+            </div>
+
+            <div className="mt-3">
+              {donation.imagen ? (
+                <img
+                  src={`${donation.imagen}`}
+                  className="card-img-top mt-2 img-fluid"
+                  alt="Donación"
+                  style={{ borderRadius: "8px" }}
+                />
+              ) : (
+                <img
+                  src="/boxbox.png"
+                  className="card-img-bottom mt-2 img-fluid"
+                  alt="Truck"
+                  style={{
+                    borderRadius: "8px",
+                    maxWidth: "300px",
+                    maxHeight: "200px",
+                    alignSelf: "center",
+                  }}
+                />
+              )}
+            </div>
+          </div>
         </div>
+      </div>
     );
 
 };
@@ -136,14 +166,25 @@ const Donaciones = () => {
     const [sendError, setSendError] = useState("");
     const [userLocation, setUserLocation] = useState(null);
     const [locationError, setLocationError] = useState("");
-    const [locationAccuracy, setLocationAccuracy] = useState(null); // Track accuracy of location
-    const [isGettingLocation, setIsGettingLocation] = useState(false); // Track if we're getting location
-    const [selectedOption, setSelectedOption] = useState(1); // Default selected option
-    const [modalOpen, setModalOpen] = useState(false); // Track if modal is open
-    const [mapKey, setMapKey] = useState(0); // Key to force map refresh
-    const modalOpenTimeRef = useRef(null); // Reference to track when modal opened
-    const watchPositionId = useRef(null); // For storing watchPosition ID
+    const [locationAccuracy, setLocationAccuracy] = useState(null);
+    const [isGettingLocation, setIsGettingLocation] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(1);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [mapKey, setMapKey] = useState(0);
+    const modalOpenTimeRef = useRef(null);
+    const watchPositionId = useRef(null);
+    const [showModal, setShowModal] = useState(false);
+    const [donacionSeleccionada, setDonacionSeleccionada] = useState(null);
 
+    const onShowDetail = async (donation) => {
+        try {
+            const detalle = await fetchDonacionPorId(donation.id);
+            setDonacionSeleccionada(detalle);
+            setShowModal(true);
+        } catch (error) {
+            console.error("Error al cargar detalle de donación:", error);
+        }
+    };
     useEffect(() => {
         const loadDonations = async () => {
             const data = await fetchDonations();
@@ -161,12 +202,8 @@ const Donaciones = () => {
 
         loadDonations();
     }, []);
-
-    // Get user's current location when the component mounts
     useEffect(() => {
-        // We'll only get location when the modal opens now, not on component mount
 
-        // Cleanup watch position if it exists
         return () => {
             if (watchPositionId.current) {
                 navigator.geolocation.clearWatch(watchPositionId.current);
@@ -174,8 +211,6 @@ const Donaciones = () => {
             }
         };
     }, []);
-
-    // Function to get accurate location with retries and watchPosition
     const getAccurateLocation = () => {
         if (!("geolocation" in navigator)) {
             setLocationError("Su navegador no soporta geolocalización.");
@@ -185,7 +220,6 @@ const Donaciones = () => {
         setIsGettingLocation(true);
         setLocationError("");
 
-        // Get a single high accuracy position
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const newLocation = {
@@ -230,18 +264,15 @@ const Donaciones = () => {
         setModalOpen(true);
         modalOpenTimeRef.current = Date.now();
 
-        // Get fresh location when modal opens - only once
         getAccurateLocation();
     };
 
-    // Effect to refresh map after modal is shown
     useEffect(() => {
         if (modalOpen && modalOpenTimeRef.current) {
-            // Wait for modal animation to complete (usually around 300-500ms)
             const refreshTimeout = setTimeout(() => {
-                setMapKey(prev => prev + 1); // Change key to force re-render
+                setMapKey(prev => prev + 1);
                 console.log("Mapa refrescado después de mostrar modal");
-            }, 800); // Wait slightly longer than the modal transition
+            }, 800);
 
             return () => {
                 clearTimeout(refreshTimeout);
@@ -249,7 +280,6 @@ const Donaciones = () => {
         }
     }, [modalOpen]);
 
-    // Listen for modal close
     useEffect(() => {
         const handleModalClose = () => {
             setModalOpen(false);
@@ -268,15 +298,12 @@ const Donaciones = () => {
     const handleSubmitEstado = async (e) => {
         e.preventDefault();
 
-        // Validación de la imagen solo si el estado es "Entregado"
         if (nuevoEstado === "Entregado" && !imagenBase64) {
             setImageError("Debe seleccionar una imagen para continuar.");
             return;
         } else {
             setImageError("");
         }
-
-        // Validate location
         if (!userLocation || !userLocation.lat || !userLocation.lng) {
             setLocationError("No se pudo obtener su ubicación. No se puede actualizar el estado.");
             return;
@@ -332,7 +359,6 @@ const Donaciones = () => {
         }
     };
 
-    // Map component for displaying current location
     const LocationMap = ({ location }) => {
         const [position, setPosition] = useState(location);
         const [accuracy, setAccuracy] = useState(locationAccuracy);
@@ -340,7 +366,6 @@ const Donaciones = () => {
         const accuracyCircleRef = useRef(null);
         const mapRef = useRef(null);
 
-        // Function to fetch address for a location
         const fetchAddress = async (lat, lng) => {
             try {
                 const response = await fetch(
@@ -355,7 +380,6 @@ const Donaciones = () => {
             }
         };
 
-        // Calculate appropriate zoom level based on accuracy
         const getZoomLevelBasedOnAccuracy = (accuracyInMeters) => {
             if (accuracyInMeters < 10) return 18;
             if (accuracyInMeters < 50) return 17;
@@ -365,29 +389,23 @@ const Donaciones = () => {
             return 13;
         };
 
-        // Custom marker for better visibility
         const markerIcon = new L.Icon({
             iconUrl: "/camionc.png",
             iconSize: [35, 35],
             iconAnchor: [17, 17],
             popupAnchor: [0, -11]
         });
-
-        // Location marker component with events
         const LocationMarker = () => {
             const map = useMapEvents({
                 locationfound(e) {
                     const newPos = e.latlng;
                     setPosition(newPos);
                     setAccuracy(e.accuracy);
-                    setUserLocation(newPos); // Update parent state
-                    setLocationAccuracy(e.accuracy); // Update parent accuracy state
+                    setUserLocation(newPos);
+                    setLocationAccuracy(e.accuracy);
 
-                    // Fly to user's location with appropriate zoom
                     const zoomLevel = getZoomLevelBasedOnAccuracy(e.accuracy);
                     map.flyTo(newPos, zoomLevel);
-
-                    // Get address for the location
                     fetchAddress(newPos.lat, newPos.lng);
 
                     // Add accuracy circle
@@ -402,32 +420,23 @@ const Donaciones = () => {
                         fillOpacity: 0.15,
                         weight: 1
                     }).addTo(map);
-
-                    // Set isGettingLocation to false since we've found the location
                     setIsGettingLocation(false);
                 },
                 click(e) {
                     const newPos = e.latlng;
                     setPosition(newPos);
-                    setUserLocation(newPos); // Update parent state
-
-                    // Remove accuracy circle when manually selecting
+                    setUserLocation(newPos);
                     if (accuracyCircleRef.current) {
                         accuracyCircleRef.current.remove();
                         accuracyCircleRef.current = null;
-                        setLocationAccuracy(null); // Clear accuracy when manually setting
+                        setLocationAccuracy(null);
                     }
 
-                    // Get address for clicked location
                     fetchAddress(newPos.lat, newPos.lng);
                 },
             });
-
-            // Try to locate on mount, but only once
             useEffect(() => {
-                // If we already have a position, use it
                 if (position) {
-                    // Show accuracy circle if we have accuracy data
                     if (accuracy && map && !accuracyCircleRef.current) {
                         accuracyCircleRef.current = L.circle(position, {
                             radius: accuracy,
@@ -437,11 +446,9 @@ const Donaciones = () => {
                             weight: 1
                         }).addTo(map);
 
-                        // Fetch address
                         fetchAddress(position.lat, position.lng);
                     }
                 } else {
-                    // Otherwise try to locate just once
                     const options = {
                         enableHighAccuracy: true,
                         timeout: 10000,
@@ -449,8 +456,6 @@ const Donaciones = () => {
                     };
                     map.locate(options);
                 }
-                // We're intentionally only running this once when the component mounts
-                // eslint-disable-next-line react-hooks/exhaustive-deps
             }, []);
 
             return position === null ? null : (
@@ -462,16 +467,12 @@ const Donaciones = () => {
                         dragend: (e) => {
                             const newPos = e.target.getLatLng();
                             setPosition(newPos);
-                            setUserLocation(newPos); // Update parent state
-
-                            // Remove accuracy circle when marker is dragged
+                            setUserLocation(newPos);
                             if (accuracyCircleRef.current) {
                                 accuracyCircleRef.current.remove();
                                 accuracyCircleRef.current = null;
-                                setLocationAccuracy(null); // Clear accuracy when manually setting
+                                setLocationAccuracy(null);
                             }
-
-                            // Get address for the new location
                             fetchAddress(newPos.lat, newPos.lng);
                         },
                     }}
@@ -483,19 +484,20 @@ const Donaciones = () => {
                                 <p className="mb-1">{address}</p>
                                 <small className="text-muted">
                                     Lat: {position.lat.toFixed(6)}, Lng: {position.lng.toFixed(6)}
-                                    {accuracy && <span> (Precisión: ±{accuracy.toFixed(0)}m)</span>}
-                                        </small>
-                                        </div>
-                                        </Popup>
-                                        )}
-                                </Marker>
-                                );
-                                };
+                                    {accuracy &&
+                                        <span>
+                                            '(Precisión: ±{accuracy.toFixed(0)}m)'
+                                        </span>
+                                    }
+                                </small>
+                            </div>
+                        </Popup>
+                    )}
+                </Marker>
+            );
+        };
 
-        // Return null if no location
         if (!position && !location) return null;
-
-        // Initialize with location from props if available
         const initialPosition = position || location;
         const zoomLevel = accuracy ? getZoomLevelBasedOnAccuracy(accuracy) : 15;
 
@@ -543,7 +545,8 @@ const Donaciones = () => {
     };
 
     return (
-        <div className="don-div">
+
+    <div className="don-div">
             <Header />
             <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                 <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3 rounded" style={{maxWidth: '1200px', width: '100%'}}>
@@ -566,12 +569,21 @@ const Donaciones = () => {
                     <div className="row g-4 justify-content-center p-1 p-md-3">
                         {filteredDonations.map((donation, index) => (
                             <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-4">
-                                <DonationCard donation={donation} onActualizarClick={handleActualizarClick}/>
+                                <DonationCard
+                                    donation={donation}
+                                    onActualizarClick={handleActualizarClick}
+                                    onShowDetail={onShowDetail}
+                                />
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
+            <DetalleDonacionModal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                donacion={donacionSeleccionada}
+            />
             <div className="modal fade" id="estadoModal" tabIndex="-1" aria-labelledby="estadoModalLabel"
                  aria-hidden="true" >
                 <div className="modal-dialog modal-dialog-centered" style={{maxWidth: '900px', width: '100%'}}>
