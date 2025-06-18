@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Link, useNavigate } from "react-router-dom";
 import '../Style.css';
-import { fetchDonations, actualizarEstadoDonacion } from "../../Services/donacionService.js";
+import { fetchDonations, actualizarEstadoDonacion, cambiarDestinoDonacion } from "../../Services/donacionService.js";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -104,7 +104,7 @@ const DonationCard = ({donation, onActualizarClick, onOpenModal, onShowDetail}) 
                 className="btn btn-link p-0 text-decoration-none text-info"
                 onClick={() => onActualizarClick(donation)}
                 data-bs-toggle="modal"
-                data-bs-target="#estadoModal"
+                data-bs-target="#opcionesModal"
                 disabled={
                   donation.fechaEntrega ||
                   donation.estado === "Iniciando armado de paquete" ||
@@ -175,6 +175,51 @@ const Donaciones = () => {
     const watchPositionId = useRef(null);
     const [showModal, setShowModal] = useState(false);
     const [donacionSeleccionada, setDonacionSeleccionada] = useState(null);
+
+    {/*TEST DE CAMBIO DE UBICACION - No Funciona*/}
+    const [comunidad, setComunidad] = useState("");
+    const [provincia, setProvincia] = useState("");
+    const [direccion, setDireccion] = useState("");
+
+    const handleSubmitDireccion = async (e) => {
+        e.preventDefault();
+        setSendError("");
+
+        if (!selectedDonation || !selectedDonation.idDonacion) {
+            setSendError("No se ha seleccionado una donación válida.");
+            return;
+        }
+
+        if (!userLocation) {
+            setSendError("No se pudo obtener la ubicación.");
+            return;
+        }
+
+        const destinoDto = {
+            direccion,
+            provincia,
+            comunidad,
+            latitud: userLocation.lat,
+            longitud: userLocation.lng
+        };
+
+        try {
+            await cambiarDestinoDonacion(selectedDonation.idDonacion, destinoDto);
+            document.getElementById("cerrarModal").click();
+            alert("Dirección actualizada correctamente.");
+        } catch (err) {
+            setSendError(err.message);
+        }
+    };
+    useEffect(() => {
+        if (selectedDonation) {
+            setComunidad(selectedDonation.comunidadDestino || "");
+            setProvincia(selectedDonation.provinciaDestino || "");
+            setDireccion(selectedDonation.direccionDestino || "");
+        }
+    }, [selectedDonation]);
+
+    {/*FIN TEST CAMBIO DIRECCION*/}
 
     const onShowDetail = async (donation) => {
         try {
@@ -502,7 +547,7 @@ const Donaciones = () => {
         const zoomLevel = accuracy ? getZoomLevelBasedOnAccuracy(accuracy) : 15;
 
         return (
-            <div style={{ height: '300px', width: '300px', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{ height: '300px', width: 'inherit', borderRadius: '8px', overflow: 'hidden' }}>
                 <MapContainer
                     key={mapKey}
                     center={[initialPosition.lat, initialPosition.lng]}
@@ -546,8 +591,8 @@ const Donaciones = () => {
 
     return (
 
-    <div className="don-div">
-            <Header />
+        <div className="don-div">
+            <Header/>
             <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                 <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3 rounded" style={{maxWidth: '1200px', width: '100%'}}>
                     <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
@@ -584,8 +629,182 @@ const Donaciones = () => {
                 onHide={() => setShowModal(false)}
                 donacion={donacionSeleccionada}
             />
+            <div className="modal fade " id="opcionesModal" tabIndex="-1" aria-labelledby="opcionesModalLabel"
+                 aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-lg">
+                    <div className="modal-content border-0 rounded-4 shadow">
+                        <div className="modal-header bg-mine text-white rounded-top-4 border-0">
+                            <h5 className="modal-title fw-bold" id="opcionesModalLabel">
+                                <i className="bi bi-pencil-square me-2"></i> Selecciona una acción
+                            </h5>
+                            <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                        </div>
+                        <div className="modal-body modal-body-p bg-mine p-4">
+                            <div className="row g-4 justify-content-center">
+                                {/* Opción 1: Actualizar Estado */}
+                                <div className="col-12 col-md-6 modal-body-a">
+                                    <div
+                                        className="glass-card h-75 p-4 position-relative text-center modal-body-a"
+                                        style={{
+                                            cursor: 'pointer',
+                                            transition: 'all 0.3s ease-in-out',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            minHeight: '260px',
+                                            borderRadius: '20px',
+                                        }}
+                                        data-bs-dismiss="modal"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#estadoModal"
+                                    >
+                                        <div
+                                            className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 mt-4"
+                                            style={{
+                                                width: '80px',
+                                                height: '80px',
+                                                background: 'linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(40, 167, 69, 0.1))',
+                                                border: '2px solid rgba(40, 167, 69, 0.3)'
+                                            }}
+                                        >
+                                            <i className="bi bi-arrow-repeat text-success"
+                                               style={{fontSize: '2rem'}}></i>
+                                        </div>
+                                        <h4 className="fw-bold text-white mb-0">Actualizar Estado</h4>
+                                    </div>
+                                </div>
+
+                                {/* Opción 2: Cambiar Dirección */}
+                                <div className="col-12 col-md-6">
+                                    <div
+                                        className="glass-card h-100 p-4 position-relative text-center"
+                                        style={{
+                                            cursor: 'pointer',
+                                            transition: 'all 0.3s ease-in-out',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            minHeight: '260px',
+                                            borderRadius: '20px',
+                                        }}
+                                        data-bs-dismiss="modal"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#direccionModal"
+                                    >
+                                        <div
+                                            className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 mt-4"
+                                            style={{
+                                                width: '80px',
+                                                height: '80px',
+                                                background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.1))',
+                                                border: '2px solid rgba(255, 193, 7, 0.3)'
+                                            }}
+                                        >
+                                            <i className="bi bi-geo-alt text-warning" style={{fontSize: '2rem'}}></i>
+                                        </div>
+                                        <h4 className="fw-bold text-white mb-0">Cambiar Dirección</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/*CAMBIAR DIRECCION*/}
+            <div className="modal fade" id="direccionModal" tabIndex="-1" aria-labelledby="direccionModalLabel"
+                 aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered" style={{maxWidth: '900px', width: '100%'}}>
+                    <div className="modal-content rounded-3 border-0 shadow">
+                        <form onSubmit={handleSubmitEstado}>
+                            <div className="modal-header bg-mine text-light rounded-top-3 border-0">
+                                <h5 className="modal-title fw-semibold" id="direccionModalLabel">
+                                    <i className="bi bi-arrow-repeat me-2"></i>Actualizar Direccion de Entrega
+                                </h5>
+                                <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                            </div>
+                            <div className="modal-body bg-light py-4">
+                                <div className="d-flex flex-row">
+                                    <div className="mb-4 ">
+                                        <label className="form-label fw-medium">CI Encargado</label>
+                                        <input
+                                            type="text"
+                                            className="form-control rounded-3 bg-white"
+                                            value={selectedDonation?.encargado || ''}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="d-flex flex-column">
+                                        <div className="mb-3">
+                                            <label className="form-label fw-medium">Comunidad</label>
+                                            <input
+                                                type="text"
+                                                className="form-control rounded-3 bg-white"
+                                                value={comunidad}
+                                                onChange={(e) => setComunidad(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className=" mb-3">
+                                            <label className="form-label fw-medium">Provincia</label>
+                                            <input
+                                                type="text"
+                                                className="form-control rounded-3 bg-white"
+                                                value={provincia}
+                                                onChange={(e) => setProvincia(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className=" mb-3">
+                                            <label className="form-label fw-medium">Dirección completa</label>
+                                            <textarea
+                                                className="form-control rounded-3 bg-white"
+                                                value={direccion}
+                                                onChange={(e) => setDireccion(e.target.value)}
+                                                rows="2"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="ps-3 pe-3  d-flex flex-column">
+                                        <label className="form-label fw-medium mb-2">Nueva Ubicación para la Entrega</label>
+                                        {locationError && (
+                                            <div className="alert alert-danger py-2 rounded-3" role="alert">
+                                                {locationError}
+                                            </div>
+                                        )}
+                                        {!locationError && userLocation && (
+                                            <div className="d-flex flex-column align-items-left">
+                                                <div className="rounded-3 overflow-hidden mb-2"
+                                                     style={{width: '300px', height: '300px'}}>
+                                                    <LocationMap location={userLocation}/>
+                                                    </div>
+                                                    <div className=" small text-muted align-items-left">
+                                                        Coordenadas: {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
+                                                    </div>
+                                                </div>
+                                            )}
+                                    </div>
+                                </div>
+                                <div className="modal-footer bg-light rounded-bottom-3 border-top border-light">
+                                    <button type="button" id="cerrarModal"
+                                            className="btn btn-warning rounded-3 rounded-pill"
+                                            data-bs-dismiss="modal">Cancelar
+                                    </button>
+                                    <button type="submit" className="btn btn-outline-dark rounded-3 rounded-pill ">
+                                        <i className="bi bi-check-circle me-1"></i>Actualizar
+                                    </button>
+                                    {sendError &&
+                                        <div className="text-danger" style={{fontSize: "smaller"}}>{sendError}</div>}
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {/*ACTUALIZAR ESTADO*/}
             <div className="modal fade" id="estadoModal" tabIndex="-1" aria-labelledby="estadoModalLabel"
-                 aria-hidden="true" >
+                 aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" style={{maxWidth: '900px', width: '100%'}}>
                     <div className="modal-content rounded-3 border-0 shadow">
                         <form onSubmit={handleSubmitEstado}>
@@ -593,15 +812,14 @@ const Donaciones = () => {
                                 <h5 className="modal-title fw-semibold" id="estadoModalLabel">
                                     <i className="bi bi-arrow-repeat me-2"></i>Actualizar Estado
                                 </h5>
-                                <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
                             </div>
                             <div className="modal-body bg-light py-4">
                                 <div className="row g-0">
-                                    
+
                                     <div className="col-4 pe-3
                                      ">
-
-
                                         <div className="mb-4">
                                             <label className="form-label fw-medium">CI Encargado</label>
                                             <input
@@ -611,7 +829,7 @@ const Donaciones = () => {
                                                 readOnly
                                             />
                                         </div>
-                                        
+
                                         <div className="mb-4">
                                             <label className="form-label fw-medium mb-2">Seleccione una opción</label>
                                             <div className="d-flex flex-column gap-2">
@@ -625,8 +843,13 @@ const Donaciones = () => {
                                                     }}
                                                 >
                                                     <div className="d-flex align-items-center">
-                                                        <div className={`rounded-circle me-3 ${selectedOption === 2 ? 'bg-warning' : 'bg-light'}`}
-                                                             style={{width: '20px', height: '20px', border: '2px solid #212529'}}>
+                                                        <div
+                                                            className={`rounded-circle me-3 ${selectedOption === 2 ? 'bg-warning' : 'bg-light'}`}
+                                                            style={{
+                                                                width: '20px',
+                                                                height: '20px',
+                                                                border: '2px solid #212529'
+                                                            }}>
                                                         </div>
                                                         <div>
                                                             <span className="fw-medium">En camino</span>
@@ -643,8 +866,13 @@ const Donaciones = () => {
                                                     }}
                                                 >
                                                     <div className="d-flex align-items-center">
-                                                        <div className={`rounded-circle me-3 ${selectedOption === 3 ? 'bg-warning' : 'bg-light'}`}
-                                                             style={{width: '20px', height: '20px', border: '2px solid #212529'}}>
+                                                        <div
+                                                            className={`rounded-circle me-3 ${selectedOption === 3 ? 'bg-warning' : 'bg-light'}`}
+                                                            style={{
+                                                                width: '20px',
+                                                                height: '20px',
+                                                                border: '2px solid #212529'
+                                                            }}>
                                                         </div>
                                                         <div>
                                                             <span className="fw-medium">Entregado</span>
@@ -656,7 +884,7 @@ const Donaciones = () => {
 
                                     </div>
 
-                                    
+
                                     <div className="col-4 ps-3 pe-3  d-flex flex-column">
                                         <label className="form-label fw-medium mb-2">Su Ubicación Actual</label>
                                         {locationError && (
@@ -666,8 +894,9 @@ const Donaciones = () => {
                                         )}
                                         {!locationError && userLocation && (
                                             <div className="d-flex flex-column align-items-center">
-                                                <div className="rounded-3 overflow-hidden mb-2" style={{ width: '300px', height: '300px' }}>
-                                                    <LocationMap location={userLocation} />
+                                                <div className="rounded-3 overflow-hidden mb-2"
+                                                     style={{width: '300px', height: '300px'}}>
+                                                    <LocationMap location={userLocation}/>
                                                 </div>
                                                 <div className="text-center small text-muted">
                                                     Coordenadas: {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
@@ -676,7 +905,7 @@ const Donaciones = () => {
                                         )}
                                     </div>
 
-                                    
+
                                     <div className="col-4 ps-3 pe-3 d-flex flex-column">
                                         <label className="form-label fw-medium mb-2">Imagen de Entrega</label>
                                         <div className="d-flex flex-column align-items-center">
@@ -689,7 +918,7 @@ const Donaciones = () => {
                                                     required={nuevoEstado === "Entregado"}
                                                 />
                                                 {imageError &&
-                                                    <div className="text-danger mt-1" style={{ fontSize: "smaller" }}>
+                                                    <div className="text-danger mt-1" style={{fontSize: "smaller"}}>
                                                         {imageError}
                                                     </div>
                                                 }
@@ -700,12 +929,18 @@ const Donaciones = () => {
                                                         src={URL.createObjectURL(imagen)}
                                                         alt="Vista previa"
                                                         className="img-thumbnail rounded-3"
-                                                        style={{ width: "250px", height: "250px", objectFit: "cover" }}
+                                                        style={{width: "250px", height: "250px", objectFit: "cover"}}
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="text-center text-muted d-flex flex-column align-items-center justify-content-center"
-                                                     style={{ width: "250px", height: "250px", border: "2px dashed #ccc", borderRadius: "0.5rem" }}>
+                                                <div
+                                                    className="text-center text-muted d-flex flex-column align-items-center justify-content-center"
+                                                    style={{
+                                                        width: "250px",
+                                                        height: "250px",
+                                                        border: "2px dashed #ccc",
+                                                        borderRadius: "0.5rem"
+                                                    }}>
                                                     <i className="bi bi-camera fs-2 mb-2"></i>
                                                     <p className="mb-0">Seleccione una imagen</p>
                                                 </div>
@@ -715,11 +950,15 @@ const Donaciones = () => {
                                 </div>
                             </div>
                             <div className="modal-footer bg-light rounded-bottom-3 border-top border-light">
-                                <button type="button" id="cerrarModal" className="btn btn-warning rounded-3 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" id="cerrarModal"
+                                        className="btn btn-warning rounded-3 rounded-pill"
+                                        data-bs-dismiss="modal">Cancelar
+                                </button>
                                 <button type="submit" className="btn btn-outline-dark rounded-3 rounded-pill ">
                                     <i className="bi bi-check-circle me-1"></i>Actualizar
                                 </button>
-                                {sendError && <div className="text-danger" style={{ fontSize: "smaller" }}>{sendError}</div>}
+                                {sendError &&
+                                    <div className="text-danger" style={{fontSize: "smaller"}}>{sendError}</div>}
                             </div>
                         </form>
                     </div>

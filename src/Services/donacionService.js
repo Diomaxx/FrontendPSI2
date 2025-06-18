@@ -50,3 +50,28 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
     }
 };
 
+
+export const cambiarDestinoDonacion = async (idDonacion, destinoDto) => {
+    console.log("Cambiando destino de donación:", { idDonacion, ...destinoDto });
+
+    try {
+        const response = await axios.post(
+            `https://dasalas.shop:8443/api/donaciones/cambiar-destino/${idDonacion}`,
+            destinoDto,
+            getAuthConfig()
+        );
+
+        console.log("Respuesta de cambio de destino:", response.data);
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.data && error.response.data.error) {
+            const mensaje = error.response.data.error;
+            console.warn("Mensaje del servidor:", mensaje);
+            alert(mensaje);
+            throw new Error(mensaje);
+        } else {
+            console.error("Error inesperado:", error);
+            throw new Error("Ocurrió un error inesperado al cambiar el destino de la donación.");
+        }
+    }
+};

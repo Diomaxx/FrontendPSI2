@@ -83,6 +83,15 @@ text-dark{
     background: linear-gradient( 90deg, rgb(31, 32, 51), rgba(19, 21, 73, 0.93));
     border-bottom: 1px solid #2d3c66;
 }
+
+.modal-body-p{
+    background-color: rgba(6, 16, 65, 0.59);
+    backdrop-filter: blur(6px);
+}
+.modal-body-a{
+    opacity:1.0 !important;
+}
+
 .bg-mine-50{
     background: linear-gradient( 90deg, rgba(31, 32, 51, 0.81), rgba(19, 21, 73, 0.57));
     border-bottom: 1px solid #2d3c66;

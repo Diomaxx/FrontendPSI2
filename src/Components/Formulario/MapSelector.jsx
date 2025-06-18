@@ -125,7 +125,7 @@ const LocationMarker = ({ onLocationChange }) => {
                         <p className="mb-1">{address}</p>
                         <small className="text-muted">
                             Lat: {position.lat.toFixed(6)}, Lng: {position.lng.toFixed(6)}
-                            {accuracy && <span> (Precisión: ±{accuracy.toFixed(0)}m)</span>}
+                            {accuracy && <span> '(Precisión: ±{accuracy.toFixed(0)}m)'</span>}
                         </small>
                     </div>
                 </Popup>
