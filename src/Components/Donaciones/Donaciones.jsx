@@ -175,17 +175,55 @@ const Donaciones = () => {
     const watchPositionId = useRef(null);
     const [showModal, setShowModal] = useState(false);
     const [donacionSeleccionada, setDonacionSeleccionada] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-    {/*TEST DE CAMBIO DE UBICACION - No Funciona*/}
+    {/* Estados para el cambio de ubicación - Funcionalidad de auto-llenado implementada */}
     const [comunidad, setComunidad] = useState("");
     const [provincia, setProvincia] = useState("");
     const [direccion, setDireccion] = useState("");
+
+    // Nueva función para manejar automáticamente el llenado de campos de ubicación
+    const handleLocationUpdate = async (location) => {
+        const { lat, lng } = location;
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&zoom=18&accept-language=es`);
+            const data = await response.json();
+            const address = data.address;
+            
+            let provinciaExtraida = '';
+            if (address.state && address.state.includes('Santa Cruz')) {
+                provinciaExtraida = address.county || '';
+            } else {
+                provinciaExtraida = address.state || '';
+            }
+            
+            const addressComponents = [];
+            if (address.building) addressComponents.push(address.building);
+            if (address.house_number) addressComponents.push(`Nº ${address.house_number}`);
+            if (address.road) addressComponents.push(address.road);
+            if (address.neighbourhood) addressComponents.push(`Barrio ${address.neighbourhood}`);
+            if (address.suburb) addressComponents.push(address.suburb);
+            
+            const localidad = address.city || address.town || address.village || address.hamlet || address.municipality || '';
+            
+            const direccionCompleta = addressComponents.join(', ');
+            
+            setProvincia(provinciaExtraida);
+            setComunidad(localidad);
+            setDireccion(direccionCompleta || data.display_name || 'Dirección no disponible');
+            
+        } catch (error) {
+            console.error("Error al obtener información de la dirección:", error);
+            setDireccion(`Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+        }
+    };
 
     const handleSubmitDireccion = async (e) => {
         e.preventDefault();
         setSendError("");
 
-        if (!selectedDonation || !selectedDonation.idDonacion) {
+        if (!selectedDonation || !selectedDonation.id) {
             setSendError("No se ha seleccionado una donación válida.");
             return;
         }
@@ -196,17 +234,36 @@ const Donaciones = () => {
         }
 
         const destinoDto = {
-            direccion,
-            provincia,
-            comunidad,
+            direccion: direccion || 'Dirección no disponible',
+            provincia: provincia || 'Provincia no disponible',
+            comunidad: comunidad || 'Comunidad no disponible',
             latitud: userLocation.lat,
             longitud: userLocation.lng
         };
 
         try {
-            await cambiarDestinoDonacion(selectedDonation.idDonacion, destinoDto);
-            document.getElementById("cerrarModal").click();
-            alert("Dirección actualizada correctamente.");
+            await cambiarDestinoDonacion(selectedDonation.id, destinoDto);
+            document.getElementById("cerrarModalDireccion").click();
+            
+            setSuccessMessage("Dirección actualizada correctamente");
+            setShowSuccessMessage(true);
+            
+            setTimeout(() => {
+                setShowSuccessMessage(false);
+            }, 3000);
+            
+            const data = await fetchDonations();
+            const formatted = data.map(donation => ({
+                id: donation.idDonacion,
+                nombre: donation.codigo,
+                encargado: donation.encargado?.ci,
+                imagen: donation.imagen,
+                fechaEntrega: donation.fechaEntrega,
+                fechaAprobacion: donation.fechaAprobacion,
+                estado: donation.estado
+            }));
+            setDonations(formatted);
+            
         } catch (err) {
             setSendError(err.message);
         }
@@ -219,7 +276,6 @@ const Donaciones = () => {
         }
     }, [selectedDonation]);
 
-    {/*FIN TEST CAMBIO DIRECCION*/}
 
     const onShowDetail = async (donation) => {
         try {
@@ -365,7 +421,7 @@ const Donaciones = () => {
                 selectedDonation.encargado,
                 nuevoEstado,
                 imagenBase64,
-                userLocation.lat,  // Include location in the request
+                userLocation.lat,  
                 userLocation.lng
             );
 
@@ -410,6 +466,12 @@ const Donaciones = () => {
         const [address, setAddress] = useState("");
         const accuracyCircleRef = useRef(null);
         const mapRef = useRef(null);
+        
+        const oldDestination = selectedDonation?.solicitud?.destino;
+        const oldPosition = oldDestination ? {
+            lat: oldDestination.latitud,
+            lng: oldDestination.longitud
+        } : null;
 
         const fetchAddress = async (lat, lng) => {
             try {
@@ -420,18 +482,19 @@ const Donaciones = () => {
                 if (data && data.display_name) {
                     setAddress(data.display_name);
                 }
+                await handleLocationUpdate({ lat, lng });
             } catch (error) {
                 console.error("Error fetching address:", error);
             }
         };
 
         const getZoomLevelBasedOnAccuracy = (accuracyInMeters) => {
-            if (accuracyInMeters < 10) return 18;
-            if (accuracyInMeters < 50) return 17;
-            if (accuracyInMeters < 100) return 16;
-            if (accuracyInMeters < 500) return 15;
-            if (accuracyInMeters < 1000) return 14;
-            return 13;
+            if (accuracyInMeters < 10) return 17;
+            if (accuracyInMeters < 50) return 16;
+            if (accuracyInMeters < 100) return 15;
+            if (accuracyInMeters < 500) return 14;
+            if (accuracyInMeters < 1000) return 13;
+            return 12;
         };
 
         const markerIcon = new L.Icon({
@@ -439,6 +502,13 @@ const Donaciones = () => {
             iconSize: [35, 35],
             iconAnchor: [17, 17],
             popupAnchor: [0, -11]
+        });
+
+        const oldLocationIcon = new L.Icon({
+            iconUrl: "/caja.svg",
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
         });
         const LocationMarker = () => {
             const map = useMapEvents({
@@ -453,7 +523,6 @@ const Donaciones = () => {
                     map.flyTo(newPos, zoomLevel);
                     fetchAddress(newPos.lat, newPos.lng);
 
-                    // Add accuracy circle
                     if (accuracyCircleRef.current) {
                         accuracyCircleRef.current.remove();
                     }
@@ -493,13 +562,17 @@ const Donaciones = () => {
 
                         fetchAddress(position.lat, position.lng);
                     }
-                } else {
+                } else if (!oldPosition) {
                     const options = {
                         enableHighAccuracy: true,
                         timeout: 10000,
                         maximumAge: 0
                     };
                     map.locate(options);
+                } else {
+                    setPosition(oldPosition);
+                    setUserLocation(oldPosition);
+                    fetchAddress(oldPosition.lat, oldPosition.lng);
                 }
             }, []);
 
@@ -544,13 +617,13 @@ const Donaciones = () => {
 
         if (!position && !location) return null;
         const initialPosition = position || location;
-        const zoomLevel = accuracy ? getZoomLevelBasedOnAccuracy(accuracy) : 15;
+        const zoomLevel = accuracy ? getZoomLevelBasedOnAccuracy(accuracy) : 12;
 
         return (
             <div style={{ height: '300px', width: 'inherit', borderRadius: '8px', overflow: 'hidden' }}>
                 <MapContainer
                     key={mapKey}
-                    center={[initialPosition.lat, initialPosition.lng]}
+                    center={oldPosition ? [oldPosition.lat, oldPosition.lng] : [initialPosition.lat, initialPosition.lng]}
                     zoom={zoomLevel}
                     style={{ height: '100%', width: '100%' }}
                     dragging={true}
@@ -567,6 +640,24 @@ const Donaciones = () => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; OpenStreetMap contributors"
                     />
+                    {/* Marcador de ubicación antigua */}
+                    {oldPosition && (
+                        <Marker
+                            position={[oldPosition.lat, oldPosition.lng]}
+                            icon={oldLocationIcon}
+                        >
+                            <Popup>
+                                <div>
+                                    <strong>Dirección actual:</strong>
+                                    <p className="mb-1">{oldDestination.direccion}</p>
+                                    <p className="mb-1">{oldDestination.comunidad}, {oldDestination.provincia}</p>
+                                    <small className="text-muted">
+                                        Lat: {oldPosition.lat.toFixed(6)}, Lng: {oldPosition.lng.toFixed(6)}
+                                    </small>
+                                </div>
+                            </Popup>
+                        </Marker>
+                    )}
                     <LocationMarker />
                 </MapContainer>
                 <div className="text-center mt-2 small text-muted">
@@ -593,6 +684,27 @@ const Donaciones = () => {
 
         <div className="don-div">
             <Header/>
+            
+            {showSuccessMessage && (
+                <div 
+                    className="position-fixed top-0 start-50 translate-middle-x mt-5"
+                    style={{
+                        zIndex: 9999,
+                        borderRadius: '10px',
+                        background: 'linear-gradient(90deg, rgb(31, 32, 51), rgba(19, 21, 73, 0.93))',
+                        color: 'white',
+                        padding: '12px 24px',
+                        border: '1px solid white',
+                        fontWeight: '500'
+                    }}
+                >
+                    <div className="d-flex align-items-center">
+                        <i className="bi bi-check-circle me-2"></i>
+                        {successMessage}
+                    </div>
+                </div>
+            )}
+            
             <div className="container-fluid h-100 d-flex justify-content-center align-items-center">
                 <div className="w-100 w-md-75 h-100 p-2 m-1 m-md-3 rounded" style={{maxWidth: '1200px', width: '100%'}}>
                     <div className="rounded pt-3 pb-3 ms-1 ms-md-3 me-1 me-md-3">
@@ -713,7 +825,7 @@ const Donaciones = () => {
                  aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" style={{maxWidth: '900px', width: '100%'}}>
                     <div className="modal-content rounded-3 border-0 shadow">
-                        <form onSubmit={handleSubmitEstado}>
+                        <form onSubmit={handleSubmitDireccion}>
                             <div className="modal-header bg-mine text-light rounded-top-3 border-0">
                                 <h5 className="modal-title fw-semibold" id="direccionModalLabel">
                                     <i className="bi bi-arrow-repeat me-2"></i>Actualizar Direccion de Entrega
@@ -734,39 +846,53 @@ const Donaciones = () => {
                                     </div>
                                     <div className="d-flex flex-column">
                                         <div className="mb-3">
-                                            <label className="form-label fw-medium">Comunidad</label>
+                                            <label className="form-label fw-medium">
+                                                Comunidad 
+                                                <small className="text-muted ms-1">(Se llena automáticamente)</small>
+                                            </label>
                                             <input
                                                 type="text"
                                                 className="form-control rounded-3 bg-white"
                                                 value={comunidad}
-                                                onChange={(e) => setComunidad(e.target.value)}
+                                                placeholder="Seleccione una ubicación en el mapa"
                                                 required
+                                                readOnly
                                             />
                                         </div>
                                         <div className=" mb-3">
-                                            <label className="form-label fw-medium">Provincia</label>
+                                            <label className="form-label fw-medium">
+                                                Provincia 
+                                                <small className="text-muted ms-1">(Se llena automáticamente)</small>
+                                            </label>
                                             <input
                                                 type="text"
                                                 className="form-control rounded-3 bg-white"
                                                 value={provincia}
-                                                onChange={(e) => setProvincia(e.target.value)}
+                                                placeholder="Seleccione una ubicación en el mapa"
                                                 required
+                                                readOnly
                                             />
                                         </div>
                                         <div className=" mb-3">
-                                            <label className="form-label fw-medium">Dirección completa</label>
+                                            <label className="form-label fw-medium">
+                                                Dirección completa 
+                                                <small className="text-muted ms-1">(Se llena automáticamente)</small>
+                                            </label>
                                             <textarea
                                                 className="form-control rounded-3 bg-white"
                                                 value={direccion}
-                                                onChange={(e) => setDireccion(e.target.value)}
                                                 rows="2"
+                                                placeholder="Seleccione una ubicación en el mapa para auto-llenar"
                                                 required
+                                                readOnly
                                             />
                                         </div>
                                     </div>
 
                                     <div className="ps-3 pe-3  d-flex flex-column">
-                                        <label className="form-label fw-medium mb-2">Nueva Ubicación para la Entrega</label>
+                                        <label className="form-label fw-medium mb-2">
+                                            Nueva Ubicación para la Entrega
+                                        </label>
                                         {locationError && (
                                             <div className="alert alert-danger py-2 rounded-3" role="alert">
                                                 {locationError}
@@ -786,12 +912,12 @@ const Donaciones = () => {
                                     </div>
                                 </div>
                                 <div className="modal-footer bg-light rounded-bottom-3 border-top border-light">
-                                    <button type="button" id="cerrarModal"
+                                    <button type="button" id="cerrarModalDireccion"
                                             className="btn btn-warning rounded-3 rounded-pill"
                                             data-bs-dismiss="modal">Cancelar
                                     </button>
                                     <button type="submit" className="btn btn-outline-dark rounded-3 rounded-pill ">
-                                        <i className="bi bi-check-circle me-1"></i>Actualizar
+                                        <i className="bi bi-check-circle me-1"></i>Actualizar Dirección
                                     </button>
                                     {sendError &&
                                         <div className="text-danger" style={{fontSize: "smaller"}}>{sendError}</div>}
