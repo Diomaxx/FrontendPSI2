@@ -18,9 +18,8 @@ import {
   LineElement,
 } from 'chart.js';
 import { Bar, Pie, Line } from 'react-chartjs-2';
-// PDF generation
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+// PDF generation service
+import { generateMetricsPDF } from '../../Services/pdfGeneratorService.js';
 
 // Register Chart.js components
 ChartJS.register(
@@ -79,15 +78,6 @@ const MetricasComponent = () => {
             informacion: true
         }
     });
-
-    // Chart refs for PDF export
-    const chartRefs = {
-        monthlyChart: useRef(null),
-        productsChart: useRef(null),
-        solicitudesStatusChart: useRef(null),
-        provincesChart: useRef(null),
-        donacionesStatusChart: useRef(null)
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -240,570 +230,128 @@ const MetricasComponent = () => {
         }));
     };
 
-    // Function to generate PDF report
-    const generatePDF = () => {
+    // Function to prepare chart data for PDF generation
+    const prepareChartDataForPDF = () => {
+        return {
+            solicitudesPorMesData: {
+                labels: Object.keys(metricas.solicitudesPorMes),
+                datasets: [
+                    {
+                        label: 'Solicitudes',
+                        data: Object.values(metricas.solicitudesPorMes),
+                        backgroundColor: [
+                            'rgb(25, 73, 115)',
+                            'rgb(59, 119, 157)',
+                            'rgb(102, 147, 194)',
+                            'rgb(158, 196, 222)',
+                            'rgb(204, 229, 245)',
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 1)',
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            productosMasSolicitadosData: {
+                labels: Object.keys(metricas.topProductosMasSolicitados),
+                datasets: [
+                    {
+                        label: 'Cantidad',
+                        data: Object.values(metricas.topProductosMasSolicitados),
+                        backgroundColor: [
+                            'rgb(25, 73, 115)',
+                            'rgb(59, 119, 157)',
+                            'rgb(102, 147, 194)',
+                            'rgb(158, 196, 222)',
+                            'rgb(204, 229, 245)',
+                        ],
+                        borderColor: [
+                            'rgba(0, 0, 0, 0.34)',
+                            'rgba(0, 0, 0, 0.34)',
+                            'rgba(0, 0, 0, 0.34)',
+                            'rgba(0, 0, 0, 0.34)',
+                            'rgba(0, 0, 0, 0.34)',
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            solicitudesStatusData: {
+                labels: ['Sin Responder', 'Aprobadas', 'Rechazadas'],
+                datasets: [
+                    {
+                        data: [
+                            metricas.solicitudesSinResponder,
+                            metricas.solicitudesAprobadas,
+                            metricas.solicitudesRechazadas,
+                        ],
+                        backgroundColor: [
+                            'rgb(25, 73, 115)',
+                            'rgb(102, 147, 194)',
+                            'rgb(158, 196, 222)',
+                        ],
+                        borderColor: 'rgba(0, 0, 0, 1)',
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            donacionesStatusData: {
+                labels: ['Pendientes', 'Entregadas'],
+                datasets: [
+                    {
+                        data: [
+                            metricas.donacionesPendientes,
+                            metricas.donacionesEntregadas,
+                        ],
+                        backgroundColor: [
+                            'rgb(25, 73, 115)',
+                            'rgb(102, 147, 194)',
+                        ],
+                        borderColor: 'rgba(0, 0, 0, 1)',
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            solicitudesPorProvinciaData: {
+                labels: Object.keys(metricas.solicitudesPorProvincia),
+                datasets: [
+                    {
+                        label: 'Solicitudes',
+                        data: Object.values(metricas.solicitudesPorProvincia),
+                        backgroundColor: [
+                            'rgb(25, 73, 115)',
+                            'rgb(59, 119, 157)',
+                            'rgb(102, 147, 194)',
+                            'rgb(158, 196, 222)',
+                            'rgb(204, 229, 245)',
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 1)',
+                        borderWidth: 1,
+                    },
+                ],
+            }
+        };
+    };
+
+    // Function to generate PDF report - now simplified to use the PDF service
+    const generatePDF = async () => {
         if (!metricas) {
             alert('No hay datos de métricas disponibles para generar el PDF.');
             return;
         }
 
         try {
-            console.log('Starting PDF generation...');
-
-        // Create a new jsPDF instance
-        const doc = new jsPDF('portrait', 'mm', 'a4');
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-            const margin = 15;
-        const contentWidth = pageWidth - (margin * 2);
-        
-            console.log('PDF document created with dimensions:', { pageWidth, pageHeight });
+            // Prepare chart data for the PDF service
+            const chartData = prepareChartDataForPDF();
             
-            // Add fonts if needed
-            // doc.addFont('fonts/Roboto-Regular.ttf', 'Roboto', 'normal');
-            // doc.addFont('fonts/Roboto-Bold.ttf', 'Roboto', 'bold');
+            // Call the PDF generation service
+            await generateMetricsPDF(metricas, chartData);
             
-            // Color constants
-            const primaryColor = [25, 73, 115];
-            const secondaryColor = [35, 35, 35];
-            const accentColor = [255, 193, 7];
-            const lightGray = [230, 230, 230];
-            
-            // Add current date
-            const currentDate = new Date().toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-            
-            console.log('Generated date:', currentDate);
-            
-            // Define footer function early so it can be used anywhere in the code
-            const addFooter = (doc, pages = null) => {
-                const pageCount = pages || doc.internal.getNumberOfPages();
-                doc.setFontSize(8);
-                
-                for(let i = 1; i <= pageCount; i++) {
-                    doc.setPage(i);
-                    doc.setTextColor(150, 150, 150);
-                    
-                    // Page number
-                    doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin, pageHeight - 10, { align: 'right' });
-                    
-                    // System name and date on footer
-                    doc.text('Sistema de Seguimiento de Donaciones', margin, pageHeight - 10);
-                    doc.text(`Generado: ${currentDate}`, pageWidth/2, pageHeight - 10, { align: 'center' });
-                    
-                    // Footer line
-                    doc.setDrawColor(200, 200, 200);
-                    doc.setLineWidth(0.5);
-                    doc.line(margin, pageHeight - 15, pageWidth - margin, pageHeight - 15);
-                }
-            };
-            
-            // Helper function to safely add images to PDF
-            const safelyAddImage = (doc, imageSrc, x, y, width, height) => {
-                try {
-                    // Check if the image path is a data URL or a regular path
-                    if (imageSrc.startsWith('data:')) {
-                        // It's already a data URL, use it directly
-                        doc.addImage(imageSrc, 'PNG', x, y, width, height, undefined, 'FAST');
-                        return true;
-                    } else {
-                        // For regular paths, we need a fallback mechanism
-                        try {
-                            doc.addImage(imageSrc, 'PNG', x, y, width, height, undefined, 'FAST');
-                            return true;
-                        } catch (directError) {
-                            console.error(`Could not load image from ${imageSrc}:`, directError);
-                            
-                            // Fallback: Create a placeholder
-                            doc.setDrawColor(200, 200, 200);
-                            doc.setFillColor(240, 240, 240);
-                            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
-                            
-                doc.setFontSize(10);
-                                doc.setTextColor(100, 100, 100);
-                                doc.text('Imagen no disponible', x + width/2, y + height/2, { align: 'center' });
-                                return false;
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error in safelyAddImage:', error);
-                        return false;
-                    }
-            };
-            
-            // Cover page
-            doc.setFillColor(...primaryColor);
-            doc.rect(0, 0, pageWidth, 60, 'F');
-            
-            // Add logo on cover - using our safe function with corrected aspect ratio
-            safelyAddImage(doc, '/logoNOBG.png', pageWidth/2 - 25, 10, 50, 50);
-            
-            // Title
-            doc.setFontSize(24);
-            doc.setTextColor(50, 50, 50);
-            doc.text('Reporte de Distribución', pageWidth/2, 80, { align: 'center' });
-            
-            // Subtitle
-            doc.setFontSize(12);
-            doc.setTextColor(80, 80, 80);
-            doc.text('Sistema de Seguimiento de Donaciones', pageWidth/2, 90, { align: 'center' });
-            
-            // Date
-            doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            doc.text(`Informe generado el: ${currentDate}`, pageWidth/2, 100, { align: 'center' });
-            
-            // Decorative element
-            doc.setDrawColor(...accentColor);
-            doc.setLineWidth(1);
-            doc.line(margin + 20, 110, pageWidth - margin - 20, 110);
-            
-            // Add footer to the cover page
-            addFooter(doc, 1);
-            
-            // Add summary page - moving directly to this page without the index
-            doc.addPage();
-            
-            // Section header style
-            const addSectionHeader = (text, y, sectionNumber) => {
-                doc.setFillColor(...primaryColor);
-                doc.rect(margin, y - 6, contentWidth, 10, 'F');
-                doc.setFontSize(12);
-                doc.setTextColor(255, 255, 255);
-                doc.text(text, margin + 5, y);
-                return y + 15;
-            };
-            
-            // Page header
-            doc.setFillColor(...primaryColor);
-            doc.rect(0, 0, pageWidth, 20, 'F');
-            
-            doc.setFontSize(14);
-            doc.setTextColor(255, 255, 255);
-            doc.text('Resumen General', pageWidth/2, 13, { align: 'center' });
-            
-            // Add date to header
-            doc.setFontSize(8);
-            doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
-            
-            // Main metrics in boxes
-            let startY = 30;
-            doc.setDrawColor(...lightGray);
-            
-            // Create a row of key metrics boxes
-            const createMetricBoxes = (metrics, startY) => {
-                const boxWidth = contentWidth / metrics.length;
-                const boxHeight = 25;
-                
-                metrics.forEach((metric, index) => {
-                    const xPos = margin + (index * boxWidth);
-                    
-                    // Box background
-                    doc.setFillColor(250, 250, 250);
-                    doc.roundedRect(xPos, startY, boxWidth - 4, boxHeight, 1, 1, 'F');
-                    
-                    // Metric value
-            doc.setFontSize(16);
-                    doc.setTextColor(...secondaryColor);
-                    doc.text(metric.value.toString(), xPos + boxWidth/2, startY + 12, { align: 'center' });
-                    
-                    // Metric label
-                    doc.setFontSize(8);
-                    doc.setTextColor(100, 100, 100);
-                    doc.text(metric.label, xPos + boxWidth/2, startY + 20, { align: 'center' });
-                });
-                
-                return startY + boxHeight + 10;
-            };
-            
-            // Section subtitle style
-            const addSubsectionHeader = (text, y, sectionNumber, subsectionNumber) => {
-                doc.setFontSize(11);
-                doc.setTextColor(...primaryColor);
-                doc.text(text, margin, y);
-                
-                doc.setDrawColor(...lightGray);
-                doc.setLineWidth(0.5);
-                doc.line(margin, y + 3, margin + doc.getTextWidth(text), y + 3);
-                
-                return y + 10;
-            };
-            
-            // Add section 1.1 subtitle
-            startY = addSubsectionHeader('Principales Métricas', startY, 1, 1);
-            
-            // Row 1 of metrics
-            const row1Metrics = [
-                { label: 'Solicitudes Atendidas', value: metricas.totalSolicitudesRecibidas },
-                { label: 'Donaciones Entregadas', value: metricas.donacionesEntregadas },
-                { label: 'Solicitudes Sin Responder', value: metricas.solicitudesSinResponder }
-            ];
-            
-            startY = createMetricBoxes(row1Metrics, startY);
-            
-            // Row 2 of metrics
-            const row2Metrics = [
-                { label: 'Solicitudes Aprobadas', value: metricas.solicitudesAprobadas },
-                { label: 'Solicitudes Rechazadas', value: metricas.solicitudesRechazadas },
-                { label: 'Donaciones Pendientes', value: metricas.donacionesPendientes }
-            ];
-            
-            startY = createMetricBoxes(row2Metrics, startY);
-            
-            // Row 3 of metrics
-            const row3Metrics = [
-                { label: 'Tiempo Prom. Respuesta (días)', value: formatTime(metricas.tiempoPromedioRespuesta) },
-                { label: 'Tiempo Prom. Entrega (días)', value: formatTime(metricas.tiempoPromedioEntrega) }
-            ];
-            
-            startY = createMetricBoxes(row3Metrics, startY + 5);
-            
-            // Add subsection 1.2 header
-            startY = addSubsectionHeader('Productos más Solicitados', startY + 10, 1, 2);
-            
-            // Products table
-            const productsData = Object.entries(metricas.topProductosMasSolicitados)
-                .map(([product, count]) => [product, count])
-                .sort((a, b) => b[1] - a[1]); // Sort by count descending
-            
-            autoTable(doc, {
-                startY: startY,
-                head: [['Producto', 'Cantidad', '% del Total']],
-                body: productsData.map(([product, count]) => {
-                    const totalProducts = productsData.reduce((sum, [_, c]) => sum + c, 0);
-                    const percentage = ((count / totalProducts) * 100).toFixed(1);
-                    return [product, count, `${percentage}%`];
-                }),
-                theme: 'grid',
-                styles: { 
-                    fontSize: 9,
-                    cellPadding: 4
-                },
-                headStyles: {
-                    fillColor: primaryColor,
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 248, 248]
-                },
-                columnStyles: {
-                    0: { cellWidth: 'auto' },
-                    1: { cellWidth: 25, halign: 'center' },
-                    2: { cellWidth: 25, halign: 'center' }
-                },
-                margin: { left: margin, right: margin }
-            });
-            
-            // Add insights about product distribution
-            startY = doc.lastAutoTable.finalY + 10;
-            doc.setFontSize(10);
-            doc.setTextColor(60, 60, 60);
-            
-            // Calculate insights
-            const topProduct = productsData[0];
-            const totalProductCount = productsData.reduce((sum, [_, count]) => sum + count, 0);
-            
-            doc.text('Análisis de productos solicitados:', margin, startY);
-            startY += 5;
-            doc.setFontSize(9);
-            doc.text(`• El producto más solicitado es "${topProduct[0]}" con ${topProduct[1]} solicitudes (${((topProduct[1] / totalProductCount) * 100).toFixed(1)}% del total)`, margin + 5, startY);
-            startY += 5;
-            
-            if (productsData.length > 1) {
-                const secondProduct = productsData[1];
-                doc.text(`• El segundo producto más solicitado es "${secondProduct[0]}" con ${secondProduct[1]} solicitudes (${((secondProduct[1] / totalProductCount) * 100).toFixed(1)}% del total)`, margin + 5, startY);
-                startY += 5;
-            }
-            
-            doc.text(`• En total se muestran los ${productsData.length} tipos diferentes de productos más solicitados`, margin + 5, startY);
-            startY += 10;
-            
-            // Monthly data section on page 4
-            doc.addPage();
-            
-            // Page header
-            doc.setFillColor(...primaryColor);
-            doc.rect(0, 0, pageWidth, 20, 'F');
-            
-            doc.setFontSize(14);
-            doc.setTextColor(255, 255, 255);
-            doc.text('Análisis por Periodos y Ubicación', pageWidth/2, 13, { align: 'center' });
-            
-            // Add date to header
-            doc.setFontSize(8);
-            doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
-            
-            // Solicitudes por mes section - subsection 2.1
-            startY = 30;
-            startY = addSubsectionHeader('Solicitudes por Mes', startY, 2, 1);
-            
-            // Create data for monthly chart and ensure it's sorted chronologically
-            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            const monthOrder = {};
-            monthNames.forEach((month, index) => {
-                monthOrder[month] = index;
-            });
-            
-            const monthlyData = Object.entries(metricas.solicitudesPorMes)
-                .map(([month, count]) => [month, count])
-                .sort((a, b) => {
-                    // Try to sort by month name if possible
-                    const monthA = monthOrder[a[0]];
-                    const monthB = monthOrder[b[0]];
-                    if (monthA !== undefined && monthB !== undefined) {
-                        return monthA - monthB;
-                    }
-                    // Otherwise sort alphabetically
-                    return a[0].localeCompare(b[0]);
-                });
-            
-            // Enhanced monthly data table with better styling
-            autoTable(doc, {
-                startY: startY,
-                head: [['Mes', 'Solicitudes']],
-                body: monthlyData,
-                theme: 'grid',
-                styles: { 
-                    fontSize: 9,
-                    cellPadding: 5
-                },
-                headStyles: {
-                    fillColor: primaryColor,
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 248, 248]
-                },
-                columnStyles: {
-                    0: { cellWidth: 'auto' },
-                    1: { cellWidth: 30, halign: 'center' }
-                },
-                margin: { left: margin, right: margin },
-                didDrawCell: (data) => {
-                    // Add visual emphasis for highest value
-                    if (data.section === 'body' && data.column.index === 1) {
-                        const row = monthlyData[data.row.index];
-                        const allValues = monthlyData.map(item => item[1]);
-                        const maxValue = Math.max(...allValues);
-                        
-                        if (row[1] === maxValue) {
-                            doc.setFillColor(245, 245, 160);
-                            doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, 'F');
-                            doc.setTextColor(0, 0, 0);
-                            doc.text(row[1].toString(), data.cell.x + data.cell.width/2, data.cell.y + data.cell.height/2, {
-                                align: 'center',
-                                baseline: 'middle'
-                            });
-                        }
-                    }
-                }
-            });
-            
-            // Add some insights about the monthly data
-            startY = doc.lastAutoTable.finalY + 10;
-            doc.setFontSize(10);
-            doc.setTextColor(60, 60, 60);
-            
-            // Calculate insights
-            const allMonthlyValues = monthlyData.map(item => item[1]);
-            const maxMonth = monthlyData.find(item => item[1] === Math.max(...allMonthlyValues));
-            const minMonth = monthlyData.find(item => item[1] === Math.min(...allMonthlyValues));
-            const averageRequests = allMonthlyValues.reduce((sum, val) => sum + val, 0) / allMonthlyValues.length;
-            
-            doc.text('Resumen de tendencia mensual:', margin, startY);
-            startY += 5;
-            doc.setFontSize(9);
-            doc.text(`• Mes con mayor número de solicitudes: ${maxMonth[0]} (${maxMonth[1]} solicitudes)`, margin + 5, startY);
-            startY += 5;
-            doc.text(`• Mes con menor número de solicitudes: ${minMonth[0]} (${minMonth[1]} solicitudes)`, margin + 5, startY);
-            startY += 5;
-            doc.text(`• Promedio mensual de solicitudes: ${averageRequests.toFixed(1)} solicitudes`, margin + 5, startY);
-            startY += 10;
-            
-            // Provincial data section - subsection 2.2
-            startY = addSubsectionHeader('Solicitudes por Provincia', startY + 5, 2, 2);
-            
-            const provincesData = Object.entries(metricas.solicitudesPorProvincia)
-                .map(([province, count]) => [province, count])
-                .sort((a, b) => b[1] - a[1]); // Sort by count descending
-            
-            // Provinces table with enhanced styling
-            autoTable(doc, {
-                startY: startY,
-                head: [['Provincia', 'Solicitudes', '% del Total']],
-                body: provincesData.map(([province, count]) => {
-                    const percentage = ((count / metricas.totalSolicitudesRecibidas) * 100).toFixed(1);
-                    return [province, count, `${percentage}%`];
-                }),
-                theme: 'grid',
-                styles: { 
-                    fontSize: 9,
-                    cellPadding: 4
-                },
-                headStyles: {
-                    fillColor: primaryColor,
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 248, 248]
-                },
-                columnStyles: {
-                    0: { cellWidth: 'auto' },
-                    1: { cellWidth: 30, halign: 'center' },
-                    2: { cellWidth: 30, halign: 'center' }
-                },
-                margin: { left: margin, right: margin },
-                didDrawCell: (data) => {
-                    if (data.section === 'body' && data.column.index === 1) {
-                        const row = provincesData[data.row.index];
-                        const allValues = provincesData.map(item => item[1]);
-                        const maxValue = Math.max(...allValues);
-                        
-                        if (row[1] === maxValue) {
-                            doc.setFillColor(245, 245, 160);
-                            doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height, 'F');
-                            doc.setTextColor(0, 0, 0);
-                            doc.text(row[1].toString(), data.cell.x + data.cell.width/2, data.cell.y + data.cell.height/2, {
-                                align: 'center',
-                                baseline: 'middle'
-                            });
-                        }
-                    }
-                }
-            });
-            
-            startY = doc.lastAutoTable.finalY + 10;
-            doc.setFontSize(10);
-            doc.setTextColor(60, 60, 60);
-
-            const topProvince = provincesData[0];
-            const totalProvinces = provincesData.length;
-            
-            doc.text('Distribución geográfica:', margin, startY);
-            startY += 5;
-            doc.setFontSize(9);
-            doc.text(`• ${topProvince[0]} representa el ${((topProvince[1] / metricas.totalSolicitudesRecibidas) * 100).toFixed(1)}% del total de solicitudes`, margin + 5, startY);
-            startY += 5;
-            doc.text(`• ${totalProvinces} provincias han registrado solicitudes en el sistema`, margin + 5, startY);
-            doc.addPage();
-            doc.setFillColor(...primaryColor);
-            doc.rect(0, 0, pageWidth, 20, 'F');
-            
-            doc.setFontSize(14);
-            doc.setTextColor(255, 255, 255);
-            doc.text('Estado de Solicitudes y Donaciones', pageWidth/2, 13, { align: 'center' });
-            doc.setFontSize(8);
-            doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
-            startY = 30;
-            startY = addSubsectionHeader('Estado de Solicitudes', startY, 3, 1);
-            
-            const solicitudesStatusData = [
-                ['Sin Responder', metricas.solicitudesSinResponder, ((metricas.solicitudesSinResponder / metricas.totalSolicitudesRecibidas) * 100).toFixed(1) + '%'],
-                ['Aprobadas', metricas.solicitudesAprobadas, ((metricas.solicitudesAprobadas / metricas.totalSolicitudesRecibidas) * 100).toFixed(1) + '%'],
-                ['Rechazadas', metricas.solicitudesRechazadas, ((metricas.solicitudesRechazadas / metricas.totalSolicitudesRecibidas) * 100).toFixed(1) + '%']
-            ];
-            autoTable(doc, {
-                startY: startY,
-                head: [['Estado', 'Cantidad', 'Porcentaje']],
-                body: solicitudesStatusData,
-                theme: 'grid',
-                styles: { 
-                    fontSize: 9,
-                    cellPadding: 4
-                },
-                headStyles: {
-                    fillColor: primaryColor,
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 248, 248]
-                },
-                columnStyles: {
-                    0: { cellWidth: 'auto' },
-                    1: { cellWidth: 25, halign: 'center' },
-                    2: { cellWidth: 25, halign: 'center' }
-                },
-                margin: { left: margin, right: margin }
-            });
-            
-            try {
-                const statusChartImg = getChartImageUrl(chartRefs.solicitudesStatusChart);
-                if (statusChartImg) {
-                    const chartWidth = 80;
-                    const chartHeight = 80;
-                    const chartX = pageWidth - margin - chartWidth - 10;
-                    
-                    safelyAddImage(doc, statusChartImg, chartX, startY - 10, chartWidth, chartHeight);
-                } else {
-                    console.error('Could not generate solicitudes status chart image');
-                }
-            } catch (chartError) {
-                console.error('Error adding status chart:', chartError);
-            }
-            startY = doc.lastAutoTable.finalY + 20;
-            startY = addSubsectionHeader('Estado de Donaciones', startY, 3, 2);
-            const totalDonaciones = metricas.donacionesPendientes + metricas.donacionesEntregadas;
-            const donacionesStatusData = [
-                ['Pendientes', metricas.donacionesPendientes, ((metricas.donacionesPendientes / totalDonaciones) * 100).toFixed(1) + '%'],
-                ['Entregadas', metricas.donacionesEntregadas, ((metricas.donacionesEntregadas / totalDonaciones) * 100).toFixed(1) + '%']
-            ];
-            
-            autoTable(doc, {
-                startY: startY,
-                head: [['Estado', 'Cantidad', 'Porcentaje']],
-                body: donacionesStatusData,
-                theme: 'grid',
-                styles: { 
-                    fontSize: 9,
-                    cellPadding: 4
-                },
-                headStyles: {
-                    fillColor: primaryColor,
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [248, 248, 248]
-                },
-                columnStyles: {
-                    0: { cellWidth: 'auto' },
-                    1: { cellWidth: 25, halign: 'center' },
-                    2: { cellWidth: 25, halign: 'center' }
-                },
-                margin: { left: margin, right: margin }
-            });
-            try {
-                const donacionesChartImg = getChartImageUrl(chartRefs.donacionesStatusChart);
-                if (donacionesChartImg) {
-                    const chartWidth = 80;
-                    const chartHeight = 80;
-                    const chartX = pageWidth - margin - chartWidth - 10;
-                    safelyAddImage(doc, donacionesChartImg, chartX, startY - 10, chartWidth, chartHeight);
-                } else {
-                    console.error('Could not generate donaciones status chart image');
-                }
-            } catch (chartError) {
-                console.error('Error adding donaciones chart:', chartError);
-            }
-            addFooter(doc);
-            console.log('Saving PDF...');
-            doc.save('Reporte_Metricas.pdf');
-            console.log('PDF saved successfully!');
         } catch (error) {
-            console.error('Error detallado al generar PDF:', error);
-            if (error.stack) {
-                console.error('Stack trace:', error.stack);
-            }
+            console.error('Error al generar PDF:', error);
             alert(`Hubo un error al generar el PDF: ${error.message || 'Error desconocido'}. Por favor, intente nuevamente.`);
         }
     };
+
     const handleMetricasActualizadas = (nuevasMetricas) => {
         console.log("🔄 Actualizando métricas con datos del WebSocket");
         setMetricas(nuevasMetricas);
@@ -1464,9 +1012,9 @@ const MetricasComponent = () => {
                                             <div className="glass-panel h-100 rounded-3">
                                                 <div className="card-body p-4">
                                                     <h5 className="card-title mb-3 text-light">Solicitudes por Mes</h5>
-                                                    <div style={{ height: '300px' }} ref={chartRefs.monthlyChart}>
-                                                        <Bar data={solicitudesPorMesData} options={chartOptions} />
-                                                    </div>
+                                                                                                <div style={{ height: '300px' }}>
+                                                <Bar data={solicitudesPorMesData} options={chartOptions} />
+                                            </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1476,9 +1024,9 @@ const MetricasComponent = () => {
                                             <div className="glass-panel h-100 rounded-3">
                                                 <div className="card-body p-4">
                                                     <h5 className="card-title mb-3 text-light">Productos Más Solicitados</h5>
-                                                    <div style={{ height: '300px' }} ref={chartRefs.productsChart}>
-                                                        <Pie data={productosMasSolicitadosData} options={pieChartOptions} />
-                                                    </div>
+                                                                                                <div style={{ height: '300px' }}>
+                                                <Pie data={productosMasSolicitadosData} options={pieChartOptions} />
+                                            </div>
                                                                     <div className="mt-3 table-responsive">
                                                                         <table className="table table-dark table-sm table-borderless">
                                                                             <thead>
@@ -1563,9 +1111,9 @@ const MetricasComponent = () => {
                                             <div className="glass-panel h-100 rounded-3">
                                                 <div className="card-body p-4">
                                                     <h5 className="card-title mb-3 text-light">Estado de Solicitudes</h5>
-                                                    <div style={{ height: '300px' }} ref={chartRefs.solicitudesStatusChart}>
-                                                        <Pie data={solicitudesStatusData} options={pieChartOptions} />
-                                                    </div>
+                                                                                                <div style={{ height: '300px' }}>
+                                                <Pie data={solicitudesStatusData} options={pieChartOptions} />
+                                            </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1575,9 +1123,9 @@ const MetricasComponent = () => {
                                             <div className="glass-panel h-100 rounded-3">
                                                 <div className="card-body p-4">
                                                     <h5 className="card-title mb-3 text-light ">Solicitudes por Provincia</h5>
-                                                    <div style={{ height: '300px' }} ref={chartRefs.provincesChart}>
-                                                        <Bar data={solicitudesPorProvinciaData} options={chartOptions} />
-                                                    </div>
+                                                                                                <div style={{ height: '300px' }}>
+                                                <Bar data={solicitudesPorProvinciaData} options={chartOptions} />
+                                            </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1629,9 +1177,9 @@ const MetricasComponent = () => {
                                             <div className="glass-panel h-100 rounded-3">
                                                 <div className="card-body p-4">
                                                     <h5 className="card-title mb-3 text-light">Estado de Donaciones</h5>
-                                                    <div style={{ height: '300px' }} ref={chartRefs.donacionesStatusChart}>
-                                                        <Pie data={donacionesStatusData} options={pieChartOptions} />
-                                                    </div>
+                                                                                                <div style={{ height: '300px' }}>
+                                                <Pie data={donacionesStatusData} options={pieChartOptions} />
+                                            </div>
                                                 </div>
                                             </div>
                                         </div>
