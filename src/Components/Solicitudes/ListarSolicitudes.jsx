@@ -309,7 +309,16 @@ const ListarSolicitudes = () => {
               </div>
             </div>
 
-            {filteredRequests.length > 0 ? (
+            {loading ? (
+              <div className="d-flex justify-content-center align-items-center" style={{ height: "300px" }}>
+                <div className="text-center">
+                  <div className="spinner-border text-light" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                  </div>
+                  <p className="mt-3 text-white">Cargando solicitudes...</p>
+                </div>
+              </div>
+            ) : filteredRequests.length > 0 ? (
               <div className="row g-3 justify-content-center p-1 p-md-3">
                 {filteredRequests.map((request, index) => (
                   <div key={index} className="col-12 col-md-6 col-lg-4">
@@ -323,7 +332,7 @@ const ListarSolicitudes = () => {
               </div>
             ) : (
               <div className="text-center p-5">
-                <p>
+                <p className="text-white">
                   No hay solicitudes disponibles con los filtros seleccionados
                 </p>
               </div>

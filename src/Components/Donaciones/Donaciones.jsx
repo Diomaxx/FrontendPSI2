@@ -158,6 +158,7 @@ const DonationCard = ({donation, onActualizarClick, onOpenModal, onShowDetail}) 
 const Donaciones = () => {
     const [filter, setFilter] = useState("Todos");
     const [donations, setDonations] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [selectedDonation, setSelectedDonation] = useState(null);
     const [nuevoEstado, setNuevoEstado] = useState("Pendiente");
     const [imagen, setImagen] = useState(null);
@@ -252,17 +253,24 @@ const Donaciones = () => {
                 setShowSuccessMessage(false);
             }, 3000);
             
-            const data = await fetchDonations();
-            const formatted = data.map(donation => ({
-                id: donation.idDonacion,
-                nombre: donation.codigo,
-                encargado: donation.encargado?.ci,
-                imagen: donation.imagen,
-                fechaEntrega: donation.fechaEntrega,
-                fechaAprobacion: donation.fechaAprobacion,
-                estado: donation.estado
-            }));
-            setDonations(formatted);
+            setLoading(true);
+            try {
+                const data = await fetchDonations();
+                const formatted = data.map(donation => ({
+                    id: donation.idDonacion,
+                    nombre: donation.codigo,
+                    encargado: donation.encargado?.ci,
+                    imagen: donation.imagen,
+                    fechaEntrega: donation.fechaEntrega,
+                    fechaAprobacion: donation.fechaAprobacion,
+                    estado: donation.estado
+                }));
+                setDonations(formatted);
+            } catch (error) {
+                console.error("Error al recargar donaciones:", error);
+            } finally {
+                setLoading(false);
+            }
             
         } catch (err) {
             setSendError(err.message);
@@ -288,17 +296,24 @@ const Donaciones = () => {
     };
     useEffect(() => {
         const loadDonations = async () => {
-            const data = await fetchDonations();
-            const formatted = data.map(donation => ({
-                id: donation.idDonacion,
-                nombre: donation.codigo,
-                encargado: donation.encargado?.ci,
-                imagen: donation.imagen,
-                fechaEntrega: donation.fechaEntrega,
-                fechaAprobacion: donation.fechaAprobacion,
-                estado: donation.estado
-            }));
-            setDonations(formatted);
+            setLoading(true);
+            try {
+                const data = await fetchDonations();
+                const formatted = data.map(donation => ({
+                    id: donation.idDonacion,
+                    nombre: donation.codigo,
+                    encargado: donation.encargado?.ci,
+                    imagen: donation.imagen,
+                    fechaEntrega: donation.fechaEntrega,
+                    fechaAprobacion: donation.fechaAprobacion,
+                    estado: donation.estado
+                }));
+                setDonations(formatted);
+            } catch (error) {
+                console.error("Error al cargar donaciones:", error);
+            } finally {
+                setLoading(false);
+            }
         };
 
         loadDonations();
@@ -723,17 +738,32 @@ const Donaciones = () => {
                         </div>
                     </div>
 
-                    <div className="row g-4 justify-content-center p-1 p-md-3">
-                        {filteredDonations.map((donation, index) => (
-                            <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-4">
-                                <DonationCard
-                                    donation={donation}
-                                    onActualizarClick={handleActualizarClick}
-                                    onShowDetail={onShowDetail}
-                                />
+                    {loading ? (
+                        <div className="d-flex justify-content-center align-items-center" style={{ height: "300px" }}>
+                            <div className="text-center">
+                                <div className="spinner-border text-light" role="status">
+                                    <span className="visually-hidden">Cargando...</span>
+                                </div>
+                                <p className="mt-3 text-white">Cargando donaciones...</p>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ) : filteredDonations.length > 0 ? (
+                        <div className="row g-4 justify-content-center p-1 p-md-3">
+                            {filteredDonations.map((donation, index) => (
+                                <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-4">
+                                    <DonationCard
+                                        donation={donation}
+                                        onActualizarClick={handleActualizarClick}
+                                        onShowDetail={onShowDetail}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center p-5">
+                            <p className="text-white">No hay donaciones disponibles</p>
+                        </div>
+                    )}
                 </div>
             </div>
             <DetalleDonacionModal
