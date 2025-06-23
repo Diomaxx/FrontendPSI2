@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from "react-leaf
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Custom marker icon for better visibility
 const markerIcon = new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
     iconSize: [25, 41],
@@ -19,21 +18,17 @@ const LocationMarker = ({ onLocationChange }) => {
     const [address, setAddress] = useState("");
     const accuracyCircleRef = useRef(null);
     
-    // Handle map events (click, location found)
     const map = useMapEvents({
         locationfound(e) {
             setPosition(e.latlng);
             setAccuracy(e.accuracy);
             onLocationChange(e.latlng);
             
-            // Fly to user's location with appropriate zoom level based on accuracy
             const zoomLevel = getZoomLevelBasedOnAccuracy(e.accuracy);
             map.flyTo(e.latlng, zoomLevel);
             
-            // Get address for the detected location
             fetchAddress(e.latlng.lat, e.latlng.lng);
             
-            // Add accuracy circle
             if (accuracyCircleRef.current) {
                 accuracyCircleRef.current.remove();
             }
@@ -50,18 +45,15 @@ const LocationMarker = ({ onLocationChange }) => {
             setPosition(e.latlng);
             onLocationChange(e.latlng);
             
-            // Remove accuracy circle when manually selecting a location
             if (accuracyCircleRef.current) {
                 accuracyCircleRef.current.remove();
                 accuracyCircleRef.current = null;
             }
             
-            // Get address for the clicked location
             fetchAddress(e.latlng.lat, e.latlng.lng);
         },
     });
     
-    // Function to get zoom level based on accuracy
     const getZoomLevelBasedOnAccuracy = (accuracyInMeters) => {
         if (accuracyInMeters < 10) return 18;
         if (accuracyInMeters < 50) return 17;
@@ -71,7 +63,6 @@ const LocationMarker = ({ onLocationChange }) => {
         return 13;
     };
     
-    // Function to fetch address for a location
     const fetchAddress = async (lat, lng) => {
         try {
             const response = await fetch(
@@ -86,12 +77,11 @@ const LocationMarker = ({ onLocationChange }) => {
         }
     };
     
-    // Request location on initial load
     useEffect(() => {
         const options = {
-            enableHighAccuracy: true,  // Request high accuracy
-            timeout: 5000,  // Timeout after 5 seconds
-            maximumAge: 0  // Don't use cached position
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
         };
         map.locate(options);
     }, [map]);
@@ -106,14 +96,12 @@ const LocationMarker = ({ onLocationChange }) => {
                     const newPos = e.target.getLatLng();
                     setPosition(newPos);
                     onLocationChange(newPos);
-                    
-                    // Remove accuracy circle when marker is dragged
+
                     if (accuracyCircleRef.current) {
                         accuracyCircleRef.current.remove();
                         accuracyCircleRef.current = null;
                     }
                     
-                    // Get address for the new location
                     fetchAddress(newPos.lat, newPos.lng);
                 },
             }}
@@ -135,7 +123,7 @@ const LocationMarker = ({ onLocationChange }) => {
 };
 
 const MapSelector = ({ onLocationChange }) => {
-    // Starting with Santa Cruz de la Sierra, Bolivia coordinates
+    
     return (
         <MapContainer 
             center={[-17.7833, -63.1821]} 

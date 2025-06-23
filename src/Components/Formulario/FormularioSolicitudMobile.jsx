@@ -33,14 +33,12 @@ function FormularioSolicitudMobile() {
         preciseDireccion: ""
     });
     
-    // Track section completion status - SAME AS DESKTOP
     const [sectionStatus, setSectionStatus] = useState({
         solicitante: false,
         entrega: false,
         emergencia: false
     });
     
-    // Track validation errors for sections - SAME AS DESKTOP
     const [validationErrors, setValidationErrors] = useState({
         solicitante: false,
         entrega: false,
@@ -48,10 +46,8 @@ function FormularioSolicitudMobile() {
         productos: false
     });
 
-    // Track which section should be forcibly opened due to errors - SAME AS DESKTOP
     const [forceOpenSection, setForceOpenSection] = useState(null);
 
-    // Desktop-like section states - SAME AS DESKTOP
     const [showSolicitante, setShowSolicitante] = useState(false);
     const [showEntrega, setShowEntrega] = useState(false);
     const [showEmergencia, setShowEmergencia] = useState(false);
@@ -90,7 +86,6 @@ function FormularioSolicitudMobile() {
         categoria: Yup.string().required('Seleccione el tipo de emergencia')
     });
 
-    // SAME FUNCTIONS AS DESKTOP
     const checkSolicitanteComplete = (values) => {
         const isComplete = values.nombreSolicitante && 
                           values.apellidoSolicitante && 
@@ -121,7 +116,6 @@ function FormularioSolicitudMobile() {
         return isComplete;
     };
 
-    // Check all sections on values change - SAME AS DESKTOP
     useEffect(() => {
         if (formikRef.current) {
             const values = formikRef.current.values;
@@ -132,13 +126,11 @@ function FormularioSolicitudMobile() {
     }, [formikRef.current?.values]);
 
     useEffect(() => {
-        // Open section that needs attention if forced - SAME AS DESKTOP
         if (forceOpenSection) {
             if (forceOpenSection === 'solicitante') setShowSolicitante(true);
             if (forceOpenSection === 'entrega') setShowEntrega(true);
             if (forceOpenSection === 'emergencia') setShowEmergencia(true);
             
-            // Clear the force after handling
             setTimeout(() => setForceOpenSection(null), 500);
         }
     }, [forceOpenSection]);
@@ -147,7 +139,6 @@ function FormularioSolicitudMobile() {
         console.log("Mobile form initial values loaded");
     }, []);
 
-    // Handle location change for mobile - SAME AS DESKTOP
     const handleLocationChange = async (location) => {
         const { lat, lng } = location;
         try {
@@ -193,7 +184,6 @@ function FormularioSolicitudMobile() {
         }
     };
 
-    // Mobile-specific form submission - SAME LOGIC AS DESKTOP
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const solicitanteComplete = checkSolicitanteComplete(values);
@@ -280,7 +270,6 @@ function FormularioSolicitudMobile() {
 
     registerLocale('es', es);
 
-    // Mobile DatePicker component - SAME AS DESKTOP BUT MOBILE-OPTIMIZED
     const MobileDatePicker = ({ name }) => {
         const { setFieldValue } = useFormikContext();
         const [field, meta] = useField(name);
@@ -316,7 +305,6 @@ function FormularioSolicitudMobile() {
             <Header/>
             <style>
                 {`
-                    /* Mobile-specific improvements while maintaining desktop design */
                     @keyframes fadeIn {
                         from { opacity: 0; }
                         to { opacity: 1; }
@@ -343,15 +331,14 @@ function FormularioSolicitudMobile() {
                         animation: slideDown 0.5s ease-in-out;
                     }
                     
-                    /* Mobile optimizations */
                     .form-control {
-                        font-size: 16px !important; /* Prevents zoom on iOS */
+                        font-size: 16px !important;
                         padding: 12px 15px !important;
                         border-radius: 8px !important;
                     }
                     
                     .btn {
-                        min-height: 48px !important; /* Better touch target */
+                        min-height: 48px !important;
                         font-size: 16px !important;
                         padding: 12px 20px !important;
                     }
@@ -382,7 +369,6 @@ function FormularioSolicitudMobile() {
                         animation: fadeIn 0.3s ease-in-out;
                     }
                     
-                    /* Mobile-specific spacing and layout */
                     @media (max-width: 767px) {
                         .form-label {
                             font-weight: 500 !important;
@@ -420,7 +406,6 @@ function FormularioSolicitudMobile() {
                         }
                     }
                     
-                    /* Ensure better touch targets on mobile */
                     @media (max-width: 767px) {
                         .btn-outline-light, .btn-success, .btn-danger {
                             padding: 15px 20px !important;

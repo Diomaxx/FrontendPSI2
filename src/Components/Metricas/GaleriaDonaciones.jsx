@@ -13,15 +13,12 @@ const formatDate = (dateString) => {
 
 
 const DonationCard = ({ donation }) => {
-    // State for favorite toggle
     const [isFavorite, setIsFavorite] = useState(false);
 
-    // Get the count of donors
     const getDonantesCount = () => {
         return donation.donantes ? donation.donantes.length : 0;
     };
 
-    // xxxxxx
     const getGratitudeMessage = () => {
         const count = getDonantesCount();
         if (count === 0) {
@@ -38,7 +35,6 @@ const DonationCard = ({ donation }) => {
         }
     };
 
-    // Handle favorite toggle
     const handleFavoriteToggle = () => {
         setIsFavorite(!isFavorite);
     };
@@ -165,25 +161,18 @@ const DonationCard = ({ donation }) => {
     );
 };
 
-/**
- * Main component that displays the donations gallery
- */
 const GaleriaDonaciones = () => {
-    // State management for donations data
     const [donations, setDonations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    // State for filters - changed to date-based filtering
     const [dateFilter, setDateFilter] = useState("Recientes");
 
-    // Fetch donations data on component mount
     useEffect(() => {
         const fetchDonationsData = async () => {
             try {
                 setLoading(true);
                 
-                // Use the service function to get donations with donors
                 const donacionesData = await getDonacionesConDonantes();
                 
                 setDonations(donacionesData);
@@ -200,20 +189,17 @@ const GaleriaDonaciones = () => {
         fetchDonationsData();
     }, []);
 
-    // Filter donations based on date and only show those with images
     const filteredDonations = [...donations]
-        .filter(donation => donation.imagen && donation.imagen.trim() !== '') // Only show donations with images
+        .filter(donation => donation.imagen && donation.imagen.trim() !== '')
         .sort((a, b) => {
-            // Create dates for comparison - use fechaEntrega if available, otherwise use idDonacion as fallback
-            const dateA = a.fechaEntrega ? new Date(a.fechaEntrega) : new Date(a.idDonacion * 1000000); // Simple fallback
-            const dateB = b.fechaEntrega ? new Date(b.fechaEntrega) : new Date(b.idDonacion * 1000000); // Simple fallback
+            const dateA = a.fechaEntrega ? new Date(a.fechaEntrega) : new Date(a.idDonacion * 1000000);
+            const dateB = b.fechaEntrega ? new Date(b.fechaEntrega) : new Date(b.idDonacion * 1000000);
             
             return dateFilter === "Recientes"
-                ? dateB - dateA  // Most recent first
-                : dateA - dateB; // Oldest first
+                ? dateB - dateA
+                : dateA - dateB;
         });
 
-    // Loading state
     if (loading) {
         return (
             <div className="list-div">
@@ -244,7 +230,6 @@ const GaleriaDonaciones = () => {
         );
     }
 
-    // Error state
     if (error) {
         return (
             <div className="list-div">

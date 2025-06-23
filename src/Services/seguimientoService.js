@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthHeaders, getAuthConfig } from "../Components/Common/authHeaders";
 
-const API_SEGUIMIENTOS = "https://dasalas.shop:8443/api/seguimientodonaciones/completos"; // Ajusta si el endpoint es diferente
+const API_SEGUIMIENTOS = "https://dasalas.shop:8443/api/seguimientodonaciones/completos"; 
 
 
 export const fetchSeguimientos = async () => {

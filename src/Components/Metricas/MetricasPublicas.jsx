@@ -3,7 +3,7 @@ import { getMetricas } from '../../Services/metricasService.js';
 import '../Style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Header from "../Common/Header.jsx";
-// Chart.js imports
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,7 +18,7 @@ import {
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 
-// Register Chart.js components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,7 +31,7 @@ ChartJS.register(
   Legend
 );
 
-// Function to format time values
+
 const formatTime = (value) => {
     if (value < 1) {
         return '<1 día';
@@ -40,16 +40,13 @@ const formatTime = (value) => {
     }
 };
 
-/**
- * MetricasPublicas Component - Public version of metrics
- * Shows only general overview without authentication requirements
- */
+
 const MetricasPublicas = () => {
     const [metricas, setMetricas] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Chart refs for rendering
+
     const chartRefs = {
         monthlyChart: useRef(null),
         productsChart: useRef(null)
@@ -73,7 +70,7 @@ const MetricasPublicas = () => {
         fetchData();
     }, []);
 
-    // Loading state
+
     if (loading) {
         return (
             <div className="list-div">
@@ -98,7 +95,7 @@ const MetricasPublicas = () => {
         );
     }
 
-    // Error state
+
     if (error) {
         return (
             <div className="list-div">
@@ -127,8 +124,7 @@ const MetricasPublicas = () => {
 
     if (!metricas) return null;
 
-    // Prepare chart data for public view
-    // 1. Solicitudes por mes
+
     const solicitudesPorMesData = {
         labels: Object.keys(metricas.solicitudesPorMes),
         datasets: [
@@ -148,7 +144,7 @@ const MetricasPublicas = () => {
         ],
     };
 
-    // 2. Productos más solicitados
+
     const productosMasSolicitadosData = {
         labels: Object.keys(metricas.topProductosMasSolicitados),
         datasets: [
@@ -174,7 +170,7 @@ const MetricasPublicas = () => {
         ],
     };
 
-    // Chart options for public view
+
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -231,7 +227,7 @@ const MetricasPublicas = () => {
         }
     };
 
-    // Pie chart options (no scales)
+
     const pieChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -353,7 +349,7 @@ const MetricasPublicas = () => {
                                                 <tbody>
                                                     {Object.entries(metricas.topProductosMasSolicitados)
                                                         .sort((a, b) => b[1] - a[1])
-                                                        .slice(0, 5) // Show only top 5 for public view
+                                                        .slice(0, 5)
                                                         .map(([product, count], index) => (
                                                             <tr key={index}>
                                                                 <td className="text-light">{product}</td>

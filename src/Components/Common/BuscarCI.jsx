@@ -161,7 +161,7 @@ function BuscarCI() {
                             )}
                         </>
                     ) : (
-                        // Formulario para establecer contraseña
+                        
                         <>
                             <h3 className="text-center fw-semibold fs-3 mb-2 pb-0" style={{color: '#fdfdfd'}}>
                                 ¡Usuario Encontrado!

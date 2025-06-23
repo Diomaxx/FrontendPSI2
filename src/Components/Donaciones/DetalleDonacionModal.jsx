@@ -91,7 +91,7 @@ export const generateDonacionPDF = (donacion) => {
     }
   };
 
-  // Cover Page
+  
   doc.setFillColor(25, 73, 115);
   doc.rect(0, 0, pageWidth, 60, "F");
   safelyAddImage(doc, '/logoNOBG.png', pageWidth/2 - 25, 10, 50, 50);
@@ -122,7 +122,7 @@ export const generateDonacionPDF = (donacion) => {
       .text(`Reporte de Donación ${donacion.codigoDonacion}`, pageWidth / 2, 25, { align: "center" })
       .setFont(undefined, 'normal');
 
-  currentY = 35;  // Secciones
+  currentY = 35;
   addSection("A. Información General de la Donación", [
     `ID: ${donacion.idDonacion}`,
     `Código: ${donacion.codigoDonacion}`,
@@ -212,7 +212,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
           style={{ maxHeight: "75vh", overflowY: "auto" }}
           className="bg-dark-subtle"
         >
-          {/* A. Información General */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Información General</h4>
             <p className="border-bottom border-light-subtle pb-1">
@@ -233,7 +233,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
               <strong>Categoría Donación:</strong> {donacion.categoriaDonacion}
             </p>
           </section>
-          {/* B. Encargado */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Encargado de Entrega</h4>
             <p className="border-bottom border-light-subtle pb-1">
@@ -250,7 +250,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
             </p>
           </section>
 
-          {/* C. Datos de Solicitud */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Datos de la Solicitud</h4>
             <p className="border-bottom border-light-subtle pb-1">
@@ -283,7 +283,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
             </p>
           </section>
 
-          {/* D. Solicitante */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Datos del Solicitante</h4>
             <p className="border-bottom border-light-subtle pb-1">
@@ -301,7 +301,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
             </p>
           </section>
 
-          {/* E. Ubicación de Entrega */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Ubicación de Entrega</h4>
             <p className="border-bottom border-light-subtle pb-1">
@@ -321,7 +321,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
             </p>
           </section>
 
-          {/* F. Estado Actual */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Estado Actual</h4>
             <p className="border-bottom border-light-subtle pb-1">
@@ -339,7 +339,7 @@ const DetalleDonacionModal = ({ show, onHide, donacion }) => {
             </p>
           </section>
 
-          {/* G. Historial y Métricas */}
+          
           <section className="mb-4">
             <h4 className="fw-bold ">Historial y Métricas</h4>
             <p className="border-bottom border-light-subtle pb-1">

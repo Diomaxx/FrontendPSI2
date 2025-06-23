@@ -171,20 +171,16 @@ const ConfirmationModal = ({ show, user, onConfirm, onCancel, isLoading }) => {
 };
 
 const PromotionManager = ({ users, onUserUpdated }) => {
-    // State for managing modal and loading states
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    // State for search functionality
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Handle opening the confirmation modal
     const handleOpenModal = (user) => {
         setSelectedUser(user);
         setShowModal(true);
     };
 
-    // Handle closing the modal
     const handleCloseModal = () => {
         if (!isLoading) {
             setShowModal(false);
@@ -192,25 +188,19 @@ const PromotionManager = ({ users, onUserUpdated }) => {
         }
     };
 
-    // Handle confirming the promotion
     const handleConfirmPromotion = async () => {
         if (!selectedUser) return;
 
         try {
             setIsLoading(true);
             
-            // Call the API to promote user
             await promoteUserToAdmin(selectedUser.idUsuario);
             
-            // Refresh the users list
             onUserUpdated();
             
-            // Close modal
             setShowModal(false);
             setSelectedUser(null);
             
-            // Show success message
-
             alert(`${selectedUser.nombre} ${selectedUser.apellido} ha sido promovido a administrador exitosamente.`);
             
         } catch (error) {
@@ -221,12 +211,10 @@ const PromotionManager = ({ users, onUserUpdated }) => {
         }
     };
 
-    // Handle search input change
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    // Filter users that are not already admins and apply search filter
     const eligibleUsers = users.filter(user => !user.admin);
     
     const filteredUsers = eligibleUsers.filter(user => {
@@ -245,7 +233,6 @@ const PromotionManager = ({ users, onUserUpdated }) => {
     });
     
     const sortedUsers = [...filteredUsers].sort((a, b) => {
-        // Sort by active status first (active users first), then by name
         if (a.active !== b.active) {
             return b.active - a.active;
         }

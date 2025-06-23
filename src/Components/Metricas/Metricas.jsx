@@ -4,7 +4,7 @@ import '../Style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Header from "../Common/Header.jsx";
 import MetricasWebSocketListener from './MetricasWebsocketListener.jsx';
-// Chart.js imports
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,10 +18,8 @@ import {
   LineElement,
 } from 'chart.js';
 import { Bar, Pie, Line } from 'react-chartjs-2';
-// PDF generation service
 import { generateMetricsPDF } from '../../Services/pdfGeneratorService.js';
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -34,7 +32,6 @@ ChartJS.register(
   Legend
 );
 
-// Function to format time values
 const formatTime = (value) => {
     if (value < 1) {
         return '<1 día';
@@ -48,13 +45,11 @@ const MetricasComponent = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    // State for filters
     const [timeRange, setTimeRange] = useState('all');
     const [provinceFilter, setProvinceFilter] = useState('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [activeTab, setActiveTab] = useState('general');
 
-    // State for visible metrics
     const [visibleMetrics, setVisibleMetrics] = useState({
         general: {
             solicitudesRecibidas: true,
@@ -97,32 +92,26 @@ const MetricasComponent = () => {
         fetchData();
     }, []);
 
-    // Function to handle time range changes
     const handleTimeRangeChange = (range) => {
         setTimeRange(range);
         filterData(range, provinceFilter, categoryFilter);
     };
 
-    // Function to handle province filter changes
     const handleProvinceChange = (province) => {
         setProvinceFilter(province);
         filterData(timeRange, province, categoryFilter);
     };
 
-    // Function to handle category filter changes
     const handleCategoryChange = (category) => {
         setCategoryFilter(category);
         filterData(timeRange, provinceFilter, category);
     };
 
-    // Function to filter the data based on selected filters
     const filterData = (time, province, category) => {
         if (!metricas) return;
         
-        // Clone the original metrics data for filtering
         let filteredData = { ...metricas };
         
-        // Apply time range filter
         if (time !== 'all') {
             const now = new Date();
             let startDate;
@@ -146,25 +135,16 @@ const MetricasComponent = () => {
             
             console.log(`Filtering data from ${startDate} to now`);
             
-            // For a complete implementation, you would filter each metric based on date
-            // This is a simplified version - in a real app, you'd have API endpoints for these filters
-            
-            // Filter monthly data to show only relevant months
+
             if (startDate && filteredData.solicitudesPorMes) {
-                // In a real implementation, you would use the backend to get filtered data
-                // For this demo, we'll simulate filtering by showing a message
                 console.log(`Applied time filter: ${time}`);
             }
         }
         
-        // Apply province filter
         if (province !== 'all') {
             console.log(`Filtering data for province: ${province}`);
             
-            // Filter province-specific data
-            // In a real implementation, you would use the backend to get filtered data
             if (filteredData.solicitudesPorProvincia) {
-                // Display only selected province data
                 const selectedProvinceData = {};
                 if (filteredData.solicitudesPorProvincia[province]) {
                     selectedProvinceData[province] = filteredData.solicitudesPorProvincia[province];
@@ -173,12 +153,9 @@ const MetricasComponent = () => {
             }
         }
         
-        // Apply category filter
         if (category !== 'all') {
             console.log(`Filtering by category: ${category}`);
             
-            // Toggle visibility based on category
-            // This is a UI-level filter
             if (category === 'solicitudes') {
                 setActiveTab('solicitudes');
             } else if (category === 'donaciones') {
@@ -200,11 +177,8 @@ const MetricasComponent = () => {
             }
         }
         
-        // In a complete implementation, you would update the data state here
-        // For now, we're just logging filter changes
         console.log('Filters applied:', { time, province, category });
         
-        // Show a notification to the user
         const filterMessage = document.getElementById('filter-message');
         if (filterMessage) {
             filterMessage.innerHTML = `<div class="mt-2 mb-3 alert alert-info">
@@ -219,7 +193,6 @@ const MetricasComponent = () => {
         }
     };
 
-    // Function to toggle visibility of specific metrics
     const toggleMetricVisibility = (tab, metric) => {
         setVisibleMetrics(prev => ({
             ...prev,
@@ -230,7 +203,6 @@ const MetricasComponent = () => {
         }));
     };
 
-    // Function to prepare chart data for PDF generation
     const prepareChartDataForPDF = () => {
         return {
             solicitudesPorMesData: {
@@ -332,7 +304,6 @@ const MetricasComponent = () => {
         };
     };
 
-    // Function to generate PDF report - now simplified to use the PDF service
     const generatePDF = async () => {
         if (!metricas) {
             alert('No hay datos de métricas disponibles para generar el PDF.');
@@ -340,10 +311,8 @@ const MetricasComponent = () => {
         }
 
         try {
-            // Prepare chart data for the PDF service
             const chartData = prepareChartDataForPDF();
             
-            // Call the PDF generation service
             await generateMetricsPDF(metricas, chartData);
             
         } catch (error) {
@@ -405,15 +374,12 @@ const MetricasComponent = () => {
 
     if (!metricas) return null;
 
-    // Prepare chart data
-    // 1. Solicitudes por mes
     const solicitudesPorMesData = {
         labels: Object.keys(metricas.solicitudesPorMes),
         datasets: [
             {
                 label: 'Solicitudes',
                 data: Object.values(metricas.solicitudesPorMes),
-                // CHART COLORS: Modify these color values to change the bar chart colors
                 backgroundColor: [
                     'rgb(25, 73, 115)',
                     'rgb(59, 119, 157)',
@@ -427,14 +393,12 @@ const MetricasComponent = () => {
         ],
     };
 
-    // 2. Productos más solicitados
     const productosMasSolicitadosData = {
         labels: Object.keys(metricas.topProductosMasSolicitados),
         datasets: [
             {
                 label: 'Cantidad',
                 data: Object.values(metricas.topProductosMasSolicitados),
-                // CHART COLORS: Modify this array to change the pie chart segment colors
                 backgroundColor: [
                     'rgb(25, 73, 115)',
                     'rgb(59, 119, 157)',
@@ -442,7 +406,6 @@ const MetricasComponent = () => {
                     'rgb(158, 196, 222)',
                     'rgb(204, 229, 245)',
                 ],
-                // CHART COLORS: Modify this array to change the pie chart border colors
                 borderColor: [
                     'rgba(0, 0, 0, 0.34)',
                     'rgba(0, 0, 0, 0.34)',
@@ -455,7 +418,6 @@ const MetricasComponent = () => {
         ],
     };
 
-    // 3. Solicitudes por status
     const solicitudesStatusData = {
         labels: ['Sin Responder', 'Aprobadas', 'Rechazadas'],
         datasets: [
@@ -465,7 +427,6 @@ const MetricasComponent = () => {
                     metricas.solicitudesAprobadas,
                     metricas.solicitudesRechazadas,
                 ],
-                // CHART COLORS: Modify this array to change the status pie chart colors
                 backgroundColor: [
                     'rgb(25, 73, 115)',
                     'rgb(102, 147, 194)',
@@ -477,7 +438,6 @@ const MetricasComponent = () => {
         ],
     };
 
-    // 4. Donaciones status
     const donacionesStatusData = {
         labels: ['Pendientes', 'Entregadas'],
         datasets: [
@@ -486,7 +446,6 @@ const MetricasComponent = () => {
                     metricas.donacionesPendientes,
                     metricas.donacionesEntregadas,
                 ],
-                // CHART COLORS: Modify this array to change the donations status pie chart colors
                 backgroundColor: [
                     'rgb(25, 73, 115)',
                     'rgb(102, 147, 194)',
@@ -497,14 +456,12 @@ const MetricasComponent = () => {
         ],
     };
     
-    // 5. Solicitudes por provincia
     const solicitudesPorProvinciaData = {
         labels: Object.keys(metricas.solicitudesPorProvincia),
         datasets: [
             {
                 label: 'Solicitudes',
                 data: Object.values(metricas.solicitudesPorProvincia),
-                // CHART COLORS: Modify these color values to change the province bar chart colors
                 backgroundColor: [
                     'rgb(25, 73, 115)',
                     'rgb(59, 119, 157)',
@@ -519,14 +476,12 @@ const MetricasComponent = () => {
         ],
     };
 
-    // Chart options for consistent styling
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 labels: {
-                    // CHART COLORS: Modify this to change the color of legend text
                     color: 'white',
                     font: {
                         family: "'Segoe UI', sans-serif"
@@ -537,7 +492,6 @@ const MetricasComponent = () => {
                 display: false,
             },
             tooltip: {
-                // CHART COLORS: Modify this to change the tooltip background color
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',
                 titleFont: {
                     family: "'Segoe UI', sans-serif",
@@ -555,34 +509,29 @@ const MetricasComponent = () => {
         scales: {
             x: {
                 ticks: {
-                    // CHART COLORS: Modify this to change the color of x-axis labels
                     color: 'white',
                     font: {
                         family: "'Segoe UI', sans-serif"
                     }
                 },
                 grid: {
-                    // CHART COLORS: Modify this to change the color of x-axis grid lines
                     color: 'rgba(255, 255, 255, 0.1)'
                 }
             },
             y: {
                 ticks: {
-                    // CHART COLORS: Modify this to change the color of y-axis labels
                     color: 'white',
                     font: {
                         family: "'Segoe UI', sans-serif"
                     }
                 },
                 grid: {
-                    // CHART COLORS: Modify this to change the color of y-axis grid lines
                     color: 'rgba(255, 255, 255, 0.1)'
                 }
             }
         }
     };
 
-    // Pie chart options (no scales)
     const pieChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -590,7 +539,6 @@ const MetricasComponent = () => {
             legend: {
                 position: 'bottom',
                 labels: {
-                    // CHART COLORS: Modify this to change the color of pie chart legend text
                     color: 'white',
                     padding: 10,
                     usePointStyle: true,
@@ -600,7 +548,6 @@ const MetricasComponent = () => {
                 }
             },
             tooltip: {
-                // CHART COLORS: Modify this to change the pie chart tooltip background color
                 backgroundColor: 'rgba(0, 0, 0, 0.7)',
                 titleFont: {
                     family: "'Segoe UI', sans-serif",
@@ -691,7 +638,6 @@ const MetricasComponent = () => {
                                         <button 
                                             className="btn btn-sm btn-outline-light rounded-pill" 
                                             onClick={() => {
-                                                // Reset all metrics to visible
                                                 setVisibleMetrics({
                                                     general: {
                                                         solicitudesRecibidas: true,

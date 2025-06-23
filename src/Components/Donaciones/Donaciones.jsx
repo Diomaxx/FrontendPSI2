@@ -178,12 +178,12 @@ const Donaciones = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-    {/* Estados para el cambio de ubicación - Funcionalidad de auto-llenado implementada */}
+    
     const [comunidad, setComunidad] = useState("");
     const [provincia, setProvincia] = useState("");
     const [direccion, setDireccion] = useState("");
 
-    // Nueva función para manejar automáticamente el llenado de campos de ubicación
+    
     const handleLocationUpdate = async (location) => {
         const { lat, lng } = location;
         try {
@@ -640,7 +640,7 @@ const Donaciones = () => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; OpenStreetMap contributors"
                     />
-                    {/* Marcador de ubicación antigua */}
+                    
                     {oldPosition && (
                         <Marker
                             position={[oldPosition.lat, oldPosition.lng]}
@@ -754,7 +754,6 @@ const Donaciones = () => {
                         </div>
                         <div className="modal-body modal-body-p bg-mine p-4">
                             <div className="row g-4 justify-content-center">
-                                {/* Opción 1: Actualizar Estado */}
                                 <div className="col-12 col-md-6 modal-body-a">
                                     <div
                                         className="glass-card h-75 p-4 position-relative text-center modal-body-a"
@@ -785,7 +784,6 @@ const Donaciones = () => {
                                     </div>
                                 </div>
 
-                                {/* Opción 2: Cambiar Dirección */}
                                 <div className="col-12 col-md-6">
                                     <div
                                         className="glass-card h-100 p-4 position-relative text-center"
@@ -820,7 +818,6 @@ const Donaciones = () => {
                 </div>
             </div>
 
-            {/*CAMBIAR DIRECCION*/}
             <div className="modal fade" id="direccionModal" tabIndex="-1" aria-labelledby="direccionModalLabel"
                  aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" style={{maxWidth: '900px', width: '100%'}}>
@@ -928,7 +925,6 @@ const Donaciones = () => {
                     </div>
                 </div>
             </div>
-            {/*ACTUALIZAR ESTADO*/}
             <div className="modal fade" id="estadoModal" tabIndex="-1" aria-labelledby="estadoModalLabel"
                  aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" style={{maxWidth: '900px', width: '100%'}}>

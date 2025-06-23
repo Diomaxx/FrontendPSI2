@@ -4,7 +4,7 @@ import "../Style.css";
 import { getSolicitudesResumen, aprobarSolicitud, rechazarSolicitud } from "../../Services/solicitudService.js";
 import Header from "../Common/Header.jsx";
 
-// Helper function for date formatting
+
 const formatDate = (dateString) => {
     const date = new Date(dateString);
     return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Client } from "@stomp/stompjs";
-import { fetchSeguimientos } from "../../../Services/seguimientoService.js"; // Asegurate de importar esto
+import { fetchSeguimientos } from "../../../Services/seguimientoService.js";
 
 const SeguimientoWebSocketListener = ({ onRecargarSeguimientos }) => {
     useEffect(() => {

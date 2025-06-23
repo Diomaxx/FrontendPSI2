@@ -11,7 +11,6 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     
-    // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); 
 
@@ -138,13 +137,13 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
         return `${currentQuantity} / ${maxQuantity} max`;
     };
 
-    // Pagination logic
+    
     const indexOfLastProduct = currentPage * itemsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
     const totalPages = Math.ceil(products.length / itemsPerPage);
 
-    // Change page
+    
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
     const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
@@ -270,19 +269,19 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                             
                                             
                                             {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
-                                                // Calculate which page numbers to show
+                                                
                                                 let pageNum;
                                                 if (totalPages <= 5) {
-                                                    // Show pages 1-5 if we have 5 or fewer pages
+                                                    
                                                     pageNum = idx + 1;
                                                 } else if (currentPage <= 3) {
-                                                    // Show pages 1-5 if current page is close to beginning
+                                                    
                                                     pageNum = idx + 1;
                                                 } else if (currentPage >= totalPages - 2) {
-                                                    // Show last 5 pages if current page is close to end
+                                                    
                                                     pageNum = totalPages - 4 + idx;
                                                 } else {
-                                                    // Otherwise show 2 before and 2 after current page
+                                                    
                                                     pageNum = currentPage - 2 + idx;
                                                 }
                                                 
@@ -381,7 +380,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                     <Button
                         className="btn-success text-light rounded-pill"
                         onClick={() => {
-                            // Crear formato legible para mostrar al usuario
+                            
                             const formatted = Object.entries(selectedProducts)
                                 .map(([id, quantity]) => {
                                     const product = products.find((p) => p.id_articulo === parseInt(id));
@@ -389,7 +388,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
                                 })
                                 .join(", ");
 
-                            // Crear formato para la API ["1:10", "2:15", etc]
+                            
                             const apiFormat = Object.entries(selectedProducts)
                                 .map(([id, quantity]) => `${id}:${quantity}`);
 

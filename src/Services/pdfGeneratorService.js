@@ -1,4 +1,3 @@
-// PDF Generator Service - Handles all PDF generation logic for metrics
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import {
@@ -14,7 +13,6 @@ import {
   LineElement,
 } from 'chart.js';
 
-// Register Chart.js components for PDF charts
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,11 +25,6 @@ ChartJS.register(
   Legend
 );
 
-/**
- * Formats time values for display in the PDF
- * @param {number} value - Time value to format
- * @returns {string} Formatted time string
- */
 const formatTime = (value) => {
     if (value < 1) {
         return '<1 día';
@@ -40,32 +33,18 @@ const formatTime = (value) => {
     }
 };
 
-/**
- * Safely adds an image to the PDF document with fallback for missing images
- * @param {jsPDF} doc - PDF document instance
- * @param {string} imageSrc - Image source (data URL or file path)
- * @param {number} x - X coordinate
- * @param {number} y - Y coordinate
- * @param {number} width - Image width
- * @param {number} height - Image height
- * @returns {boolean} Success status
- */
 const safelyAddImage = (doc, imageSrc, x, y, width, height) => {
     try {
-        // Check if the image path is a data URL or a regular path
         if (imageSrc.startsWith('data:')) {
-            // It's already a data URL, use it directly
             doc.addImage(imageSrc, 'PNG', x, y, width, height, undefined, 'FAST');
             return true;
         } else {
-            // For regular paths, we need a fallback mechanism
             try {
                 doc.addImage(imageSrc, 'PNG', x, y, width, height, undefined, 'FAST');
                 return true;
             } catch (directError) {
                 console.error(`Could not load image from ${imageSrc}:`, directError);
                 
-                // Fallback: Create a placeholder
                 doc.setDrawColor(200, 200, 200);
                 doc.setFillColor(240, 240, 240);
                 doc.roundedRect(x, y, width, height, 2, 2, 'FD');
@@ -82,15 +61,9 @@ const safelyAddImage = (doc, imageSrc, x, y, width, height) => {
     }
 };
 
-/**
- * Creates temporary invisible charts optimized for PDF export
- * @param {Object} chartData - Data for all charts
- * @returns {Promise<Object>} Object containing all temporary chart instances
- */
 const createTemporaryChartsForPDF = async (chartData) => {
     console.log('Creating temporary invisible charts for PDF...');
     
-    // Create container for temporary charts
     const tempContainer = document.createElement('div');
     tempContainer.style.position = 'absolute';
     tempContainer.style.left = '-9999px';
@@ -103,7 +76,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
     const tempCharts = {};
     
     try {
-        // PDF-optimized chart options
         const pdfChartOptions = {
             responsive: false,
             maintainAspectRatio: false,
@@ -145,7 +117,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
             }
         };
         
-        // 1. Monthly Chart (Bar)
         const monthlyCanvas = document.createElement('canvas');
         monthlyCanvas.width = 600;
         monthlyCanvas.height = 400;
@@ -157,7 +128,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
             options: pdfChartOptions
         });
         
-        // 2. Products Chart (Pie)
         const productsCanvas = document.createElement('canvas');
         productsCanvas.width = 400;
         productsCanvas.height = 400;
@@ -169,7 +139,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
             options: pdfPieChartOptions
         });
         
-        // 3. Provinces Chart (Bar)
         const provincesCanvas = document.createElement('canvas');
         provincesCanvas.width = 600;
         provincesCanvas.height = 400;
@@ -181,7 +150,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
             options: pdfChartOptions
         });
         
-        // 4. Solicitudes Status Chart (Pie)
         const solicitudesStatusCanvas = document.createElement('canvas');
         solicitudesStatusCanvas.width = 400;
         solicitudesStatusCanvas.height = 400;
@@ -193,7 +161,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
             options: pdfPieChartOptions
         });
         
-        // 5. Donaciones Status Chart (Pie)
         const donacionesStatusCanvas = document.createElement('canvas');
         donacionesStatusCanvas.width = 400;
         donacionesStatusCanvas.height = 400;
@@ -207,14 +174,12 @@ const createTemporaryChartsForPDF = async (chartData) => {
         
         console.log('All temporary charts created successfully');
         
-        // Wait for charts to render
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         return tempCharts;
         
     } catch (error) {
         console.error('Error creating temporary charts:', error);
-        // Clean up on error
         if (tempContainer.parentNode) {
             tempContainer.parentNode.removeChild(tempContainer);
         }
@@ -222,11 +187,6 @@ const createTemporaryChartsForPDF = async (chartData) => {
     }
 };
 
-/**
- * Captures images from temporary chart instances
- * @param {Object} tempCharts - Object containing temporary chart instances
- * @returns {Object} Object containing chart images as data URLs
- */
 const captureTemporaryChartImages = (tempCharts) => {
     console.log('Capturing images from temporary charts...');
     
@@ -235,27 +195,27 @@ const captureTemporaryChartImages = (tempCharts) => {
     try {
         if (tempCharts.monthly) {
             chartImages.monthly = tempCharts.monthly.canvas.toDataURL('image/png', 1.0);
-            console.log('✅ Monthly chart captured');
+            console.log('Monthly chart captured');
         }
         
         if (tempCharts.products) {
             chartImages.products = tempCharts.products.canvas.toDataURL('image/png', 1.0);
-            console.log('✅ Products chart captured');
+            console.log('Products chart captured');
         }
         
         if (tempCharts.provinces) {
             chartImages.provinces = tempCharts.provinces.canvas.toDataURL('image/png', 1.0);
-            console.log('✅ Provinces chart captured');
+            console.log('Provinces chart captured');
         }
         
         if (tempCharts.solicitudesStatus) {
             chartImages.solicitudesStatus = tempCharts.solicitudesStatus.canvas.toDataURL('image/png', 1.0);
-            console.log('✅ Solicitudes status chart captured');
+            console.log('Solicitudes status chart captured');
         }
         
         if (tempCharts.donacionesStatus) {
             chartImages.donacionesStatus = tempCharts.donacionesStatus.canvas.toDataURL('image/png', 1.0);
-            console.log('✅ Donaciones status chart captured');
+            console.log('Donaciones status chart captured');
         }
         
         return chartImages;
@@ -266,22 +226,16 @@ const captureTemporaryChartImages = (tempCharts) => {
     }
 };
 
-/**
- * Cleans up temporary chart instances and DOM elements
- * @param {Object} tempCharts - Object containing temporary chart instances
- */
 const cleanupTemporaryCharts = (tempCharts) => {
     console.log('Cleaning up temporary charts...');
     
     try {
-        // Destroy all charts
         Object.values(tempCharts).forEach(chart => {
             if (chart && chart.destroy) {
                 chart.destroy();
             }
         });
         
-        // Remove container
         const tempContainer = document.getElementById('temp-charts-container');
         if (tempContainer && tempContainer.parentNode) {
             tempContainer.parentNode.removeChild(tempContainer);
@@ -293,12 +247,6 @@ const cleanupTemporaryCharts = (tempCharts) => {
     }
 };
 
-/**
- * Main function to generate PDF report with metrics data
- * @param {Object} metricas - Metrics data object
- * @param {Object} chartData - Prepared chart data for all graphs
- * @returns {Promise<void>}
- */
 export const generateMetricsPDF = async (metricas, chartData) => {
     if (!metricas) {
         alert('No hay datos de métricas disponibles para generar el PDF.');
@@ -308,13 +256,9 @@ export const generateMetricsPDF = async (metricas, chartData) => {
     try {
         console.log('Starting PDF generation with temporary charts...');
         
-        // Step 1: Create temporary invisible charts optimized for PDF
         const tempCharts = await createTemporaryChartsForPDF(chartData);
-        
-        // Step 2: Capture images from temporary charts
         const chartImages = captureTemporaryChartImages(tempCharts);
 
-        // Create a new jsPDF instance
         const doc = new jsPDF('portrait', 'mm', 'a4');
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
@@ -323,13 +267,11 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         
         console.log('PDF document created with dimensions:', { pageWidth, pageHeight });
         
-        // Color constants for consistent styling
         const primaryColor = [25, 73, 115];
         const secondaryColor = [35, 35, 35];
         const accentColor = [255, 193, 7];
         const lightGray = [230, 230, 230];
         
-        // Add current date
         const currentDate = new Date().toLocaleDateString('es-ES', {
             day: '2-digit',
             month: '2-digit',
@@ -338,7 +280,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         
         console.log('Generated date:', currentDate);
         
-        // Define footer function for consistent page footers
         const addFooter = (doc, pages = null) => {
             const pageCount = pages || doc.internal.getNumberOfPages();
             doc.setFontSize(8);
@@ -347,54 +288,42 @@ export const generateMetricsPDF = async (metricas, chartData) => {
                 doc.setPage(i);
                 doc.setTextColor(150, 150, 150);
                 
-                // Page number
                 doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin, pageHeight - 10, { align: 'right' });
                 
-                // System name and date on footer
                 doc.text('Sistema de Seguimiento de Donaciones', margin, pageHeight - 10);
                 doc.text(`Generado: ${currentDate}`, pageWidth/2, pageHeight - 10, { align: 'center' });
                 
-                // Footer line
                 doc.setDrawColor(200, 200, 200);
                 doc.setLineWidth(0.5);
                 doc.line(margin, pageHeight - 15, pageWidth - margin, pageHeight - 15);
             }
         };
         
-        // === COVER PAGE ===
         doc.setFillColor(...primaryColor);
         doc.rect(0, 0, pageWidth, 60, 'F');
         
-        // Add logo on cover
         safelyAddImage(doc, '/logoNOBG.png', pageWidth/2 - 25, 10, 50, 50);
         
-        // Title
         doc.setFontSize(24);
         doc.setTextColor(50, 50, 50);
         doc.text('Reporte de Distribución', pageWidth/2, 80, { align: 'center' });
         
-        // Subtitle
         doc.setFontSize(12);
         doc.setTextColor(80, 80, 80);
         doc.text('Sistema de Seguimiento de Donaciones', pageWidth/2, 90, { align: 'center' });
         
-        // Date
         doc.setFontSize(10);
         doc.setTextColor(100, 100, 100);
         doc.text(`Informe generado el: ${currentDate}`, pageWidth/2, 100, { align: 'center' });
         
-        // Decorative element
         doc.setDrawColor(...accentColor);
         doc.setLineWidth(1);
         doc.line(margin + 20, 110, pageWidth - margin - 20, 110);
         
-        // Add footer to the cover page
         addFooter(doc, 1);
         
-        // === SUMMARY PAGE ===
         doc.addPage();
         
-        // Section header helper function
         const addSectionHeader = (text, y, sectionNumber) => {
             doc.setFillColor(...primaryColor);
             doc.rect(margin, y - 6, contentWidth, 10, 'F');
@@ -404,7 +333,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             return y + 15;
         };
         
-        // Page header
         doc.setFillColor(...primaryColor);
         doc.rect(0, 0, pageWidth, 20, 'F');
         
@@ -412,15 +340,12 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         doc.setTextColor(255, 255, 255);
         doc.text('Resumen General', pageWidth/2, 13, { align: 'center' });
         
-        // Add date to header
         doc.setFontSize(8);
         doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
         
-        // Main metrics in boxes
         let startY = 30;
         doc.setDrawColor(...lightGray);
         
-        // Helper function to create metric boxes
         const createMetricBoxes = (metrics, startY) => {
             const boxWidth = contentWidth / metrics.length;
             const boxHeight = 25;
@@ -428,16 +353,13 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             metrics.forEach((metric, index) => {
                 const xPos = margin + (index * boxWidth);
                 
-                // Box background
                 doc.setFillColor(250, 250, 250);
                 doc.roundedRect(xPos, startY, boxWidth - 4, boxHeight, 1, 1, 'F');
                 
-                // Metric value
                 doc.setFontSize(16);
                 doc.setTextColor(...secondaryColor);
                 doc.text(metric.value.toString(), xPos + boxWidth/2, startY + 12, { align: 'center' });
                 
-                // Metric label
                 doc.setFontSize(8);
                 doc.setTextColor(100, 100, 100);
                 doc.text(metric.label, xPos + boxWidth/2, startY + 20, { align: 'center' });
@@ -446,7 +368,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             return startY + boxHeight + 10;
         };
         
-        // Subsection header helper function
         const addSubsectionHeader = (text, y, sectionNumber, subsectionNumber) => {
             doc.setFontSize(11);
             doc.setTextColor(...primaryColor);
@@ -459,10 +380,8 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             return y + 10;
         };
         
-        // Add section 1.1 subtitle
         startY = addSubsectionHeader('Principales Métricas', startY, 1, 1);
         
-        // Row 1 of metrics
         const row1Metrics = [
             { label: 'Solicitudes Atendidas', value: metricas.totalSolicitudesRecibidas },
             { label: 'Donaciones Entregadas', value: metricas.donacionesEntregadas },
@@ -471,7 +390,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         
         startY = createMetricBoxes(row1Metrics, startY);
         
-        // Row 2 of metrics
         const row2Metrics = [
             { label: 'Solicitudes Aprobadas', value: metricas.solicitudesAprobadas },
             { label: 'Solicitudes Rechazadas', value: metricas.solicitudesRechazadas },
@@ -480,7 +398,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         
         startY = createMetricBoxes(row2Metrics, startY);
         
-        // Row 3 of metrics
         const row3Metrics = [
             { label: 'Tiempo Prom. Respuesta (días)', value: formatTime(metricas.tiempoPromedioRespuesta) },
             { label: 'Tiempo Prom. Entrega (días)', value: formatTime(metricas.tiempoPromedioEntrega) }
@@ -488,33 +405,27 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         
         startY = createMetricBoxes(row3Metrics, startY + 5);
         
-        // Add subsection 1.2 header
         startY = addSubsectionHeader('Productos más Solicitados', startY + 10, 1, 2);
         
-        // Products table and chart side by side
         const productsData = Object.entries(metricas.topProductosMasSolicitados)
             .map(([product, count]) => [product, count])
-            .sort((a, b) => b[1] - a[1]); // Sort by count descending
+            .sort((a, b) => b[1] - a[1]);
         
-        // Add products chart on the right side
         if (chartImages.products) {
             const chartWidth = 70;
             const chartHeight = 70;
             const chartX = pageWidth - margin - chartWidth;
             
-            // Add chart title
             doc.setFontSize(10);
             doc.setTextColor(...primaryColor);
             doc.text('Distribución de Productos', chartX + chartWidth/2, startY - 5, { align: 'center' });
             
-            // Add the chart image
             doc.addImage(chartImages.products, 'PNG', chartX, startY, chartWidth, chartHeight);
             
-            console.log('✅ Products chart added to PDF successfully');
+            console.log('Products chart added to PDF successfully');
         } else {
-            console.warn('❌ Products chart image not available');
+            console.warn('Products chart image not available');
             
-            // Add placeholder rectangle
             doc.setDrawColor(200, 200, 200);
             doc.setFillColor(240, 240, 240);
             doc.rect(pageWidth - margin - 70, startY, 70, 70, 'FD');
@@ -523,7 +434,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             doc.text('Gráfico no disponible', pageWidth - margin - 35, startY + 35, { align: 'center' });
         }
         
-        // Products table (adjusted width to accommodate chart)
         autoTable(doc, {
             startY: startY,
             head: [['Producto', 'Cantidad', '% del Total']],
@@ -550,15 +460,13 @@ export const generateMetricsPDF = async (metricas, chartData) => {
                 1: { cellWidth: 25, halign: 'center' },
                 2: { cellWidth: 25, halign: 'center' }
             },
-            margin: { left: margin, right: margin + 80 } // Leave space for chart
+            margin: { left: margin, right: margin + 80 }
         });
         
-        // Add insights about product distribution
         startY = doc.lastAutoTable.finalY + 10;
         doc.setFontSize(10);
         doc.setTextColor(60, 60, 60);
         
-        // Calculate insights
         const topProduct = productsData[0];
         const totalProductCount = productsData.reduce((sum, [_, count]) => sum + count, 0);
         
@@ -577,10 +485,8 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         doc.text(`• En total se muestran los ${productsData.length} tipos diferentes de productos más solicitados`, margin + 5, startY);
         startY += 10;
         
-        // === MONTHLY DATA PAGE ===
         doc.addPage();
         
-        // Page header
         doc.setFillColor(...primaryColor);
         doc.rect(0, 0, pageWidth, 20, 'F');
         
@@ -588,37 +494,30 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         doc.setTextColor(255, 255, 255);
         doc.text('Análisis por Periodos y Ubicación', pageWidth/2, 13, { align: 'center' });
         
-        // Add date to header
         doc.setFontSize(8);
         doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
         
-        // Solicitudes por mes section - subsection 2.1
         startY = 30;
         startY = addSubsectionHeader('Solicitudes por Mes', startY, 2, 1);
         
-        // Add monthly chart at the top of the section
         if (chartImages.monthly) {
             const chartWidth = 140;
             const chartHeight = 90;
-            const chartX = (pageWidth - chartWidth) / 2; // Center the chart
+            const chartX = (pageWidth - chartWidth) / 2;
             
-            // Add chart title
             doc.setFontSize(12);
             doc.setTextColor(...primaryColor);
             doc.text('Tendencia Mensual de Solicitudes', pageWidth/2, startY - 5, { align: 'center' });
             
-            // Add the chart image
             doc.addImage(chartImages.monthly, 'PNG', chartX, startY, chartWidth, chartHeight);
             
-            startY += chartHeight + 15; // Move down after chart
-            console.log('✅ Monthly chart added to PDF successfully');
+            startY += chartHeight + 15;
+            console.log('Monthly chart added to PDF successfully');
         } else {
-            console.warn('❌ Monthly chart image not available');
-            // Continue without chart
+            console.warn('Monthly chart image not available');
             startY += 10;
         }
         
-        // Create data for monthly chart and ensure it's sorted chronologically
         const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
         const monthOrder = {};
         monthNames.forEach((month, index) => {
@@ -628,17 +527,14 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         const monthlyData = Object.entries(metricas.solicitudesPorMes)
             .map(([month, count]) => [month, count])
             .sort((a, b) => {
-                // Try to sort by month name if possible
                 const monthA = monthOrder[a[0]];
                 const monthB = monthOrder[b[0]];
                 if (monthA !== undefined && monthB !== undefined) {
                     return monthA - monthB;
                 }
-                // Otherwise sort alphabetically
                 return a[0].localeCompare(b[0]);
             });
         
-        // Enhanced monthly data table with better styling
         autoTable(doc, {
             startY: startY,
             head: [['Mes', 'Solicitudes']],
@@ -662,7 +558,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             },
             margin: { left: margin, right: margin },
             didDrawCell: (data) => {
-                // Add visual emphasis for highest value
                 if (data.section === 'body' && data.column.index === 1) {
                     const row = monthlyData[data.row.index];
                     const allValues = monthlyData.map(item => item[1]);
@@ -681,12 +576,10 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             }
         });
         
-        // Add some insights about the monthly data
         startY = doc.lastAutoTable.finalY + 10;
         doc.setFontSize(10);
         doc.setTextColor(60, 60, 60);
         
-        // Calculate insights
         const allMonthlyValues = monthlyData.map(item => item[1]);
         const maxMonth = monthlyData.find(item => item[1] === Math.max(...allMonthlyValues));
         const minMonth = monthlyData.find(item => item[1] === Math.min(...allMonthlyValues));
@@ -702,10 +595,8 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         doc.text(`• Promedio mensual de solicitudes: ${averageRequests.toFixed(1)} solicitudes`, margin + 5, startY);
         startY += 10;
         
-        // === PROVINCIAL DATA PAGE ===
         doc.addPage();
         
-        // Page header for provinces section
         doc.setFillColor(...primaryColor);
         doc.rect(0, 0, pageWidth, 20, 'F');
         
@@ -713,19 +604,16 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         doc.setTextColor(255, 255, 255);
         doc.text('Análisis Geográfico', pageWidth/2, 13, { align: 'center' });
         
-        // Add date to header
         doc.setFontSize(8);
         doc.text(`Generado: ${currentDate}`, pageWidth - margin, 13, { align: 'right' });
         
-        // Provincial data section - subsection 2.2
         startY = 30;
         startY = addSubsectionHeader('Solicitudes por Provincia', startY, 2, 2);
         
         const provincesData = Object.entries(metricas.solicitudesPorProvincia)
             .map(([province, count]) => [province, count])
-            .sort((a, b) => b[1] - a[1]); // Sort by count descending
+            .sort((a, b) => b[1] - a[1]);
         
-        // Provinces table with enhanced styling (full width)
         autoTable(doc, {
             startY: startY,
             head: [['Provincia', 'Solicitudes', '% del Total']],
@@ -751,7 +639,7 @@ export const generateMetricsPDF = async (metricas, chartData) => {
                 1: { cellWidth: 30, halign: 'center' },
                 2: { cellWidth: 30, halign: 'center' }
             },
-            margin: { left: margin, right: margin }, // Full width table
+            margin: { left: margin, right: margin },
             didDrawCell: (data) => {
                 if (data.section === 'body' && data.column.index === 1) {
                     const row = provincesData[data.row.index];
@@ -786,25 +674,21 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         doc.text(`• ${totalProvinces} provincias han registrado solicitudes en el sistema`, margin + 5, startY);
         startY += 15;
         
-        // Add provinces chart centered below the insights
         if (chartImages.provinces) {
             const chartWidth = 120;
             const chartHeight = 80;
-            const chartX = (pageWidth - chartWidth) / 2; // Center the chart
+            const chartX = (pageWidth - chartWidth) / 2;
             
-            // Add chart title
             doc.setFontSize(12);
             doc.setTextColor(...primaryColor);
             doc.text('Gráfico de Distribución por Provincia', pageWidth/2, startY, { align: 'center' });
             
-            // Add the chart image
             doc.addImage(chartImages.provinces, 'PNG', chartX, startY + 5, chartWidth, chartHeight);
             
-            console.log('✅ Provinces chart added to PDF successfully');
+            console.log('Provinces chart added to PDF successfully');
         } else {
-            console.warn('❌ Provinces chart image not available');
+            console.warn('Provinces chart image not available');
             
-            // Add placeholder rectangle centered
             const placeholderWidth = 120;
             const placeholderHeight = 80;
             const placeholderX = (pageWidth - placeholderWidth) / 2;
@@ -817,7 +701,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             doc.text('Gráfico no disponible', pageWidth/2, startY + 45, { align: 'center' });
         }
         
-        // === STATUS ANALYSIS PAGE ===
         doc.addPage();
         doc.setFillColor(...primaryColor);
         doc.rect(0, 0, pageWidth, 20, 'F');
@@ -862,7 +745,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             margin: { left: margin, right: margin }
         });
         
-        // Store position after solicitudes table for charts below
         const solicitudesTableEndY = doc.lastAutoTable.finalY;
         startY = doc.lastAutoTable.finalY + 20;
         startY = addSubsectionHeader('Estado de Donaciones', startY, 3, 2);
@@ -898,10 +780,8 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             margin: { left: margin, right: margin }
         });
         
-        // Store position after donaciones table
         const donacionesTableEndY = doc.lastAutoTable.finalY;
         
-        // Add both status charts side by side below the tables
         const chartsY = Math.max(solicitudesTableEndY, donacionesTableEndY) + 15;
         const chartWidth = 70;
         const chartHeight = 70;
@@ -909,47 +789,39 @@ export const generateMetricsPDF = async (metricas, chartData) => {
         const totalChartsWidth = (chartWidth * 2) + chartSpacing;
         const chartsStartX = (pageWidth - totalChartsWidth) / 2;
         
-        // Add solicitudes status chart on the left
         if (chartImages.solicitudesStatus) {
             const chartX = chartsStartX;
             
-            // Add chart title
             doc.setFontSize(10);
             doc.setTextColor(...primaryColor);
             doc.text('Estado de Solicitudes', chartX + chartWidth/2, chartsY - 5, { align: 'center' });
             
-            // Add the chart image
             doc.addImage(chartImages.solicitudesStatus, 'PNG', chartX, chartsY, chartWidth, chartHeight);
             
-            console.log('✅ Solicitudes status chart added to PDF successfully');
+            console.log('Solicitudes status chart added to PDF successfully');
         } else {
-            console.warn('❌ Solicitudes status chart image not available');
+            console.warn('Solicitudes status chart image not available');
         }
         
-        // Add donaciones status chart on the right
         if (chartImages.donacionesStatus) {
             const chartX = chartsStartX + chartWidth + chartSpacing;
             
-            // Add chart title
             doc.setFontSize(10);
             doc.setTextColor(...primaryColor);
             doc.text('Estado de Donaciones', chartX + chartWidth/2, chartsY - 5, { align: 'center' });
             
-            // Add the chart image
             doc.addImage(chartImages.donacionesStatus, 'PNG', chartX, chartsY, chartWidth, chartHeight);
             
-            console.log('✅ Donaciones status chart added to PDF successfully');
+            console.log('Donaciones status chart added to PDF successfully');
         } else {
-            console.warn('❌ Donaciones status chart image not available');
+            console.warn('Donaciones status chart image not available');
         }
         
-        // Add footer to all pages
         addFooter(doc);
         console.log('Saving PDF...');
         doc.save('Reporte_Metricas.pdf');
         console.log('PDF saved successfully!');
         
-        // Step 3: Clean up temporary charts
         cleanupTemporaryCharts(tempCharts);
         
     } catch (error) {
@@ -958,7 +830,6 @@ export const generateMetricsPDF = async (metricas, chartData) => {
             console.error('Stack trace:', error.stack);
         }
         
-        // Clean up temporary charts even if there was an error
         if (typeof tempCharts !== 'undefined') {
             cleanupTemporaryCharts(tempCharts);
         }
