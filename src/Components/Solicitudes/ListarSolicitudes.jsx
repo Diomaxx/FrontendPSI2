@@ -6,9 +6,10 @@ import Header from "../Common/Header.jsx";
 
 
 const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+  const [year, month, day] = dateString.split("-");
+  return `${day}/${month}/${year}`;
 };
+
 
 const formatDateTime = (dateString) => {
     const date = new Date(dateString);
