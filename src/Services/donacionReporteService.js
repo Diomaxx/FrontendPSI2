@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthConfig } from "../Components/Common/authHeaders";
 
-const API_DONACIONES_REPORTE = "https://dasalas.shop:8443/api/historial/reporte-completo/";
+const API_DONACIONES_REPORTE = "https://springboot-backend-dpyv.onrender.com/api/historial/reporte-completo/";
 
 export const fetchDonationsReporte = async () => {
     try {
@@ -18,7 +18,7 @@ export const fetchDonationsReporte = async () => {
 
 
 export const fetchDonacionPorId = async (id) => {
-    const url = `https://dasalas.shop:8443/api/historial/reporte-completo/${id}`;
+    const url = `https://springboot-backend-dpyv.onrender.com/api/historial/reporte-completo/${id}`;
     try {
         const response = await fetch(url, {
             method: "GET",

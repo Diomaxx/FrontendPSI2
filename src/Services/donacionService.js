@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthHeaders, getAuthConfig } from "../Components/Common/authHeaders";
 
-const API_DONACIONES = "https://dasalas.shop:8443/api/donaciones/new";
+const API_DONACIONES = "https://springboot-backend-dpyv.onrender.com/api/donaciones/new";
 
 export const fetchDonations = async () => {
     try {
@@ -22,7 +22,7 @@ export const actualizarEstadoDonacion = async (idDonacion, ciUsuario, estado, im
 
     try {
         const response = await axios.post(
-            `https://dasalas.shop:8443/api/donaciones/actualizar/${idDonacion}`,
+            `https://springboot-backend-dpyv.onrender.com/api/donaciones/actualizar/${idDonacion}`,
             {
                 ciUsuario,
                 estado,
@@ -56,7 +56,7 @@ export const cambiarDestinoDonacion = async (idDonacion, destinoDto) => {
 
     try {
         const response = await axios.post(
-            `https://dasalas.shop:8443/api/donaciones/cambiar-destino/${idDonacion}`,
+            `https://springboot-backend-dpyv.onrender.com/api/donaciones/cambiar-destino/${idDonacion}`,
             destinoDto,
             getAuthConfig()
         );

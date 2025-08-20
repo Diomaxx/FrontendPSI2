@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 
-const API_URL = 'https://dasalas.shop:8443/auth';
-const USUARIO_URL = 'https://dasalas.shop:8443/api/usuarios';
+const API_URL = 'https://springboot-backend-dpyv.onrender.com/auth';
+const USUARIO_URL = 'https://springboot-backend-dpyv.onrender.com/api/usuarios';
 
 export let globalCI = null;
 

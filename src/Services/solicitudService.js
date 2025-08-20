@@ -2,7 +2,7 @@ import axios from "axios";
 import { getUserCI } from "./authService";
 import { getAuthHeadersWithContentType, getAuthConfig } from "../Components/Common/authHeaders";
 
-const API_SOLICITUDES = "https://dasalas.shop:8443/api/solicitudes/resumen";
+const API_SOLICITUDES = "https://springboot-backend-dpyv.onrender.com/api/solicitudes/resumen";
 
 
 export const getSolicitudesResumen = async () => {
@@ -55,7 +55,7 @@ export const aprobarSolicitud = async (idSolicitud) => {
         console.log("Aprobando con CI del usuario:", userCI);
         
         const response = await axios.post(
-            `https://dasalas.shop:8443/api/solicitudes-sin-responder/aprobar/${idSolicitud}`, 
+            `https://springboot-backend-dpyv.onrender.com/api/solicitudes-sin-responder/aprobar/${idSolicitud}`, 
             userCI,
             {
                 headers: getAuthHeadersWithContentType("text/plain"),
@@ -74,7 +74,7 @@ export const aprobarSolicitud = async (idSolicitud) => {
 export const rechazarSolicitud = async (idSolicitud, motivo) => {
     try {
         const response = await axios.post(
-            `https://dasalas.shop:8443/api/solicitudes-sin-responder/rechazar/${idSolicitud}`, 
+            `https://springboot-backend-dpyv.onrender.com/api/solicitudes-sin-responder/rechazar/${idSolicitud}`, 
             motivo,
             {
                 headers: getAuthHeadersWithContentType("text/plain"),
@@ -91,7 +91,7 @@ export const rechazarSolicitud = async (idSolicitud, motivo) => {
 
 export const addSolicitud = async (solicitudData) => {
     try {
-        const response = await axios.post("https://dasalas.shop:8443/api/solicitudes-sin-responder/crear-completa", solicitudData, {
+        const response = await axios.post("https://springboot-backend-dpyv.onrender.com/api/solicitudes-sin-responder/crear-completa", solicitudData, {
             headers: {
                 "Content-Type": "application/json"
             },

@@ -165,7 +165,7 @@ const RoutingMachine = ({ seguimiento }) => {
             
             
             const response = await axios.post(
-                'https://dasalas.shop:8443/proxy/ruta',
+                'https://springboot-backend-dpyv.onrender.com/proxy/ruta',
                 {
                     coordinates: coordinates,
                     preference: 'fastest',

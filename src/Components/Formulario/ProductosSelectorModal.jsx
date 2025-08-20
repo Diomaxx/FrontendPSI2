@@ -17,7 +17,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
     const fetchProductos = async () => {
         setLoading(true);
         try {
-            const productsResponse = await fetch("https://dasalas.shop:8443/proxy/inventario");
+            const productsResponse = await fetch("https://springboot-backend-dpyv.onrender.com/proxy/inventario");
             ;
             if (!productsResponse.ok) {
                 throw new Error('Error al obtener los productos');
@@ -25,7 +25,7 @@ export default function ProductSelectorModal({ setFieldValue, cantidadPersonas }
             const productsData = await productsResponse.json();
             setProducts(productsData);
 
-            const stockResponse = await fetch('https://dasalas.shop:8443/api/solicitudes-sin-responder/inventario');
+            const stockResponse = await fetch('https://springboot-backend-dpyv.onrender.com/api/solicitudes-sin-responder/inventario');
             if (!stockResponse.ok) {
                 throw new Error('Error al obtener el stock disponible');
             }

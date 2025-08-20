@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthHeaders, getAuthConfig } from "../Components/Common/authHeaders";
 
-const API_BASE = "https://dasalas.shop:8443/api/usuarios";
+const API_BASE = "https://springboot-backend-dpyv.onrender.com/api/usuarios";
 
 export const fetchNonAdminUsers = async () => {
     try {

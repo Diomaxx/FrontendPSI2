@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthHeaders, getAuthConfig } from "../Components/Common/authHeaders";
 
-const API_SEGUIMIENTOS = "https://dasalas.shop:8443/api/seguimientodonaciones/completos"; 
+const API_SEGUIMIENTOS = "https://springboot-backend-dpyv.onrender.com/api/seguimientodonaciones/completos"; 
 
 
 export const fetchSeguimientos = async () => {
@@ -16,7 +16,7 @@ export const fetchSeguimientos = async () => {
 
 export const donacionesEntregadas = async () => {
     try {
-        const response = await axios.get('https://dasalas.shop:8443/api/seguimientodonaciones/contar-entregadas', getAuthConfig());
+        const response = await axios.get('https://springboot-backend-dpyv.onrender.com/api/seguimientodonaciones/contar-entregadas', getAuthConfig());
         console.log("Total donaciones entregadas:", response.data);
         return response.data;
     } catch (error) {
