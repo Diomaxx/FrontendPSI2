@@ -6,7 +6,7 @@ import { getMetricas } from "../../Services/metricasService.js";
 const MetricasWebSocketListener = ({ onActualizarMetricas }) => {
     useEffect(() => {
         const client = new Client({
-            brokerURL: "wss://dasalas.shop:8443/ws",
+            brokerURL: "wss://springboot-backend-dpyv.onrender.com/ws",
             reconnectDelay: 5000,
             onConnect: () => {
                 console.log("Conectado a WebSocket para Métricas");
